@@ -7,7 +7,7 @@ namespace SquadSync.Data.Repositories.IRepositories
         Task<IEnumerable<User>> GetAllUsersAync();
         Task<User> GetUserByGuidAsync(Guid guid);
         Task<User> GetUserByEmailNormalizedAsync(string emailNormalized);
-        Task AddUserAsync(User user);
+        Task CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(Guid guid);
     }
