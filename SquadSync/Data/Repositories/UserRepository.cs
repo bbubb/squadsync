@@ -31,7 +31,7 @@ namespace SquadSync.Data.Repositories
                 ?? throw new UserNotFoundException($"No user found with the email '{emailNormalized}'.");
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task CreateUserAsync(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
