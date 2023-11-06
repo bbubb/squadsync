@@ -4,11 +4,11 @@ namespace SquadSync.Data.Repositories.IRepositories
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<UserModel>> GetAllUsersAync();
-        Task<UserModel> GetUserByGuidAsync(Guid guid);
-        Task<UserModel> GetUserByEmailNormalizedAsync(string emailNormalized);
-        Task AddUserAsync(UserModel user);
-        Task UpdateUserAsync(UserModel user);
+        Task<IEnumerable<User>> GetAllUsersAync();
+        Task<User> GetUserByGuidAsync(Guid guid);
+        Task<User> GetUserByEmailNormalizedAsync(string emailNormalized);
+        Task AddUserAsync(User user);
+        Task UpdateUserAsync(User user);
         Task DeleteUserAsync(Guid guid);
     }
 }

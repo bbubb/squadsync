@@ -9,6 +9,6 @@ namespace SquadSync.Data
         {
         }
         //DbSets for tables
-        public DbSet<UserModel> Users { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

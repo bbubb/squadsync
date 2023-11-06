@@ -1,7 +1,5 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using SquadSync.DTOs;
-using SquadSync.DTOs.Validators;
 using SquadSync.Enums;
 
 

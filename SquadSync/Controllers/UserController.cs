@@ -1,15 +1,13 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.DTOs.Responses;
 using SquadSync.Services.IServices;
-using System.Threading.Tasks;
-using System;
 using SquadSync.DTOs;
 
 namespace SquadSync.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class UserController : ControllerBase
     {
         readonly IUserService _userService;
@@ -39,7 +37,7 @@ namespace SquadSync.Controllers
 
         // GET: api/users/email/{email}
         [HttpGet("email/{email}")]
-        public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
+        public async Task<ActionResult<UserResponseDto>> GetUserByEmail(string email)
         {
             var user = await _userService.GetUserDtoByEmailNormalizedAsync(email);
             if (user == null)

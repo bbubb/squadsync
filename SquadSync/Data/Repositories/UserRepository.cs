@@ -1,9 +1,5 @@
 ﻿using SquadSync.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using SquadSync.Exceptions;
 using SquadSync.Data.Repositories.IRepositories;
 
@@ -18,24 +14,24 @@ namespace SquadSync.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<UserModel>> GetAllUsersAync()
+        public async Task<IEnumerable<User>> GetAllUsersAync()
         {
             return await _dbContext.Users.ToListAsync();
         }
 
-        public async Task<UserModel> GetUserByGuidAsync(Guid guid)
+        public async Task<User> GetUserByGuidAsync(Guid guid)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Guid == guid)
                 ?? throw new UserNotFoundException($"No user found with the GUID '{guid}'.");
         }
 
-        public async Task<UserModel> GetUserByEmailNormalizedAsync(string emailNormalized)
+        public async Task<User> GetUserByEmailNormalizedAsync(string emailNormalized)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.EmailNormalized == emailNormalized)
                 ?? throw new UserNotFoundException($"No user found with the email '{emailNormalized}'.");
         }
 
-        public async Task AddUserAsync(UserModel user)
+        public async Task AddUserAsync(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
@@ -43,7 +39,7 @@ namespace SquadSync.Data.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(UserModel user)
+        public async Task UpdateUserAsync(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 

@@ -1,7 +1,4 @@
-﻿using SquadSync.Data.Models;
-using SquadSync.Enums;
-
-namespace SquadSync.DTOs
+﻿namespace SquadSync.DTOs
 {
     public class UserDto
     {
