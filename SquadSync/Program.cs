@@ -1,10 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using SquadSync.Data;
 using SquadSync.MappingProfiles;
 using SquadSync.Utilities;
 using SquadSync.Utilities.IUtilities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Debug()
+    .WriteTo.Seq("http://localhost:5341") // URL of Seq server
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddDbContext<SQLDbContext>(options =>
