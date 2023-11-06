@@ -8,7 +8,7 @@ namespace SquadSync.MappingProfiles
     {
         public UserMappingProfile() 
         {
-            CreateMap<UserModel, UserDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }

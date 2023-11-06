@@ -28,7 +28,14 @@ builder.Services.AddSwaggerGen();
 
 // Add MVC services
 builder.Services.AddControllers();
-
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0); // default version 1.0
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true; // adds the API versions in the response header
+    options.ApiVersionReader = new UrlSegmentApiVersionReader(); // uses URL segment for versioning
+});
+   
 // Registering the services
 builder.Services.AddTransient<IEmailNormalizationUtilityService, EmailNormalizationUtilityService>();
 builder.Services.AddTransient<IEmailValidationUtilityService, EmailValidationUtilityService>();

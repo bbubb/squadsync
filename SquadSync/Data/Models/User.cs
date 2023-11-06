@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SquadSync.Data.Models
 {
-    public class UserModel
+    public class User
     {
         public Guid Guid { get; set; }
         [Key]
@@ -19,6 +19,6 @@ namespace SquadSync.Data.Models
         public string PhoneNumber { get; set; }
         public UserStatusEnum UserStatus { get; set; }
         public long RoleId { get; set; }
-        public virtual RoleModel Role { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

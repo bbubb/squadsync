@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.DTOs;
+using SquadSync.DTOs.Responses;
 using SquadSync.Services.IServices;
 using SquadSync.Utilities.IUtilities;
 
@@ -25,13 +26,13 @@ namespace SquadSync.Services
             _emailNormalizationUtility = emailNormalizationUtility;
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllUserDtosAsync()
+        public async Task<IEnumerable<UserResponseDto>> GetAllUserDtosAsync()
         {
             var users = await _userRepository.GetAllUsersAync();
-            return _mapper.Map<IEnumerable<UserDto>>(users);
+            return _mapper.Map<IEnumerable<UserResponseDto>>(users);
         }
 
-        public async Task<UserDto> GetUserDtoByEmailNormalizedAsync(string email)
+        public async Task<UserResponseDto> GetUserDtoByEmailNormalizedAsync(string email)
         {
             // Validation
             if (string.IsNullOrWhiteSpace(email))
@@ -45,7 +46,7 @@ namespace SquadSync.Services
 
             // Query
             var user = await _userRepository.GetUserByEmailNormalizedAsync(normalizedEmail);
-            return _mapper.Map<UserDto>(user);
+            return _mapper.Map<UserResponseDto>(user);
         }
 
         public async Task<UserDto> GetUserDtoByGuidAsync(Guid guid)
