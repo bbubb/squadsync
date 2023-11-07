@@ -38,7 +38,10 @@ jobs:
         
     - name: Start SSH agent
       run: |
-        echo "SSH_AUTH_SOCK=$(ssh-agent -s)" | tee -a $GITHUB_ENV
+        SSH_AGENT_OUTPUT=$(ssh-agent -s)
+        echo "$SSH_AGENT_OUTPUT" | grep -o 'SSH_AUTH_SOCK=[^;]*' | tee -a $GITHUB_ENV
+        echo "$SSH_AGENT_OUTPUT" | grep -o 'SSH_AGENT_PID=[^;]*' | tee -a $GITHUB_ENV
+
 
     - name: Add SSH key to SSH agent   
       run: | 
