@@ -1,6 +1,7 @@
 name: .NET CI with SSH Tunnel
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
