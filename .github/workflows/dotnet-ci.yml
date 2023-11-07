@@ -35,13 +35,13 @@ jobs:
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
         ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_NETWORK_IP }} >> ~/.ssh/known_hosts
-      
+        
     - name: Start SSH agent
       run: |
-        echo "SSH_AUTH_SOCK=$(ssh-agent -s)" >> $GITHUB_ENV
+        echo "SSH_AUTH_SOCK=$(ssh-agent -s)" | tee -a $GITHUB_ENV
 
-    - name: Add SSH key to SSH agent
-      run: |
+    - name: Add SSH key to SSH agent   
+      run: | 
         ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
     - name: Create SSH tunnel for MySQL
