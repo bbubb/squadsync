@@ -45,10 +45,13 @@ jobs:
         DB_PORT2: ${{ secrets.DB_PORT2 }}
         DB_HOST: ${{ secrets.DB_HOST }}
         
-      run: | 
-        # Start SSH agent and add the private key
+    - name: Start SSH agent
+      run: |
         eval $(ssh-agent -s)
-        ssh-add <(echo "$SSH_PRIVATE_KEY")
+        
+    - name: Add SSH key to SSH agent   
+      run: | 
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
         # Create an SSH tunnel for MySQL
         ssh -f -N -L ${DB_PORT2}:${DB_HOST}:${DB_PORT} ${SSH_USERNAME}@${SSH_NETWORK_IP} -p ${SSH_PORT}
