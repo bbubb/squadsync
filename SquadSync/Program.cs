@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Asp.Versioning;
 using Serilog;
 using SquadSync.Data;
 using SquadSync.MappingProfiles;

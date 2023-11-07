@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="7.1.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.8.0" />
@@ -30,7 +31,6 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="DTOs\Responses\" />
-    <Folder Include="DTOs\Requests\" />
     <Folder Include="Extensions\" />
     <Folder Include="Middleware\" />
   </ItemGroup>

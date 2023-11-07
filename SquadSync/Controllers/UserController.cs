@@ -27,7 +27,7 @@ namespace SquadSync.Controllers
 
         // GET: api/users/{guid}
         [HttpGet("{guid}")]
-        public async Task<ActionResult<UserDto>> GetUserByGuid(Guid guid)
+        public async Task<ActionResult<UserResponseDto>> GetUserByGuid(Guid guid)
         {
             var user = await _userService.GetUserDtoByGuidAsync(guid);
             if (user == null)
