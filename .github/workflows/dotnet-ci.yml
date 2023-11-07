@@ -1,0 +1,65 @@
+name: .NET CI with SSH Tunnel
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - hotfix/*
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - hotfix/*
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up .NET 7
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Add SSH key to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        echo "$(ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_NETWORK_IP }})" >> ~/.ssh/known_hosts
+      
+    - name: SSH Tunnel
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        SSH_NETWORK_IP: ${{ secrets.SSH_NETWORK_IP }}
+        SSH_PORT: ${{ secrets.SSH_PORT }}
+      run: | 
+        # Start SSH agent and add the private key
+        eval $(ssh-agent -s)
+        ssh-add <(echo "$SSH_PRIVATE_KEY")
+
+        # Create an SSH tunnel for MySQL
+        ssh -f -N -L 3307:127.0.0.1:3306 $SSH_USERNAME@$SSH_NETWORK_IP -p $SSH_PORT
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+#    - name: Run tests
+#      env:
+#        DB_HOST: 127.0.0.1
+#        DB_PORT: 3307 # Local forwarded port
+#        # Add other required environment variables for the database connection string
+#      run: dotnet test --no-build --verbosity normal
+
+    # Any additional steps like migrations or deployment can be added here
