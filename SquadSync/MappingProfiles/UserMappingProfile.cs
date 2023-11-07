@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SquadSync.Data.Models;
-using SquadSync.DTOs;
+using SquadSync.DTOs.Responses;
+using SquadSync.DTOs.Requests;
 
 namespace SquadSync.MappingProfiles
 {
@@ -8,7 +9,8 @@ namespace SquadSync.MappingProfiles
     {
         public UserMappingProfile() 
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserResponseDto>();
+            CreateMap<User, UserCreateRequestDto>();
         }
     }
 }

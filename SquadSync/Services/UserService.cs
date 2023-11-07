@@ -49,10 +49,10 @@ namespace SquadSync.Services
             return _mapper.Map<UserResponseDto>(user);
         }
 
-        public async Task<UserDto> GetUserDtoByGuidAsync(Guid guid)
+        public async Task<UserResponseDto> GetUserDtoByGuidAsync(Guid guid)
         {
             var user = await _userRepository.GetUserByGuidAsync(guid);
-            return _mapper.Map<UserDto>(user);
+            return _mapper.Map<UserResponseDto>(user);
         }
     }
 }

@@ -13,12 +13,12 @@ namespace SquadSync.Data.Models
         [Required]
         public string Email { get; set; }
         public string EmailNormalized { get; set; } // Derived from Email
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string? PhoneNumber { get; set; }
         public UserStatusEnum UserStatus { get; set; }
-        public long RoleId { get; set; }
-        public virtual Role Role { get; set; }
+        //public long RoleId { get; set; }
+        //public virtual Role Role { get; set; }
     }
 }
