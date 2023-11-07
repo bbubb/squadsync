@@ -38,14 +38,15 @@ jobs:
       
     - name: Start SSH agent
       run: |
-        eval "$(ssh-agent -s)"
-        
+        echo "SSH_AUTH_SOCK=$(ssh-agent -s)" >> $GITHUB_ENV
+
     - name: Add SSH key to SSH agent
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh-add -
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
     - name: Create SSH tunnel for MySQL
       env:
+        SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         SSH_NETWORK_IP: ${{ secrets.SSH_NETWORK_IP }}
         SSH_PORT: ${{ secrets.SSH_PORT }}
