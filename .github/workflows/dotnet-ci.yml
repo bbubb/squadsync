@@ -51,7 +51,7 @@ jobs:
         ssh-add <(echo "$SSH_PRIVATE_KEY")
 
         # Create an SSH tunnel for MySQL
-        ssh -f -N -L {$DB_PORT2}:{$DB_HOST}:{$DB_PORT} {$SSH_USERNAME}@{$SSH_NETWORK_IP} -p {$SSH_PORT}
+        ssh -f -N -L ${DB_PORT2}:${DB_HOST}:${DB_PORT} ${SSH_USERNAME}@${SSH_NETWORK_IP} -p ${SSH_PORT}
 
     - name: Restore dependencies
       run: dotnet restore
