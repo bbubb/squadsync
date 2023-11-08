@@ -1,7 +1,4 @@
 using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Any;
 using Moq;
 using Serilog;
 using SquadSync.Data.Models;
@@ -10,21 +7,33 @@ using SquadSync.MappingProfiles;
 using SquadSync.Services;
 using SquadSync.Services.IServices;
 using SquadSync.Utilities.IUtilities;
+using Xunit;
+using Xunit.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace SquadSync.Test.ServicesTests
 {
     public class UserServiceTest
     {
         private readonly IMapper _mapper;
+        private readonly ILogger<UserService> _logger;
 
-        public UserServiceTest()
+        public UserServiceTest(ITestOutputHelper outputHelper)
         {
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<UserMappingProfile>();
-
             });
+
             _mapper = config.CreateMapper();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.TestOutput(outputHelper)
+                .CreateLogger();
+
+            var loggerFactory = new LoggerFactory().AddSerilog();
+            _logger = loggerFactory.CreateLogger<UserService>();
         }
 
         [Fact]
@@ -48,13 +57,13 @@ namespace SquadSync.Test.ServicesTests
                 _mapper,
                 mockEmailValidiationUtility.Object,
                 mockEmailNormalizationUtility.Object,
-                mockLogger.Object);
+                _logger);
 
             //Act
             var result = await userService.GetUserDtoByEmailNormalizedAsync("test@email.com");
 
             //Assert
-            mockLogger.Verify();
+            _logger.LogInformation(result.Email);
             Assert.NotNull(result);
             Assert.Equal("test@email.com", result.Email);
         }
