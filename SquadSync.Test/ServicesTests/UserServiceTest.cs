@@ -30,7 +30,7 @@ namespace SquadSync.Test.ServicesTests
             //Arrange
             var mockRepo = new Mock<IUserRepository>();
             mockRepo.Setup(repo => repo.GetUserByEmailNormalizedAsync("test@email.com"))
-                .ReturnsAsync(new UserModel { Email = "test@email.com" });
+                .ReturnsAsync(new User { Email = "test@email.com" });
 
             var mockEmailNormalizationUtility = new Mock<IEmailNormalizationUtilityService>();
             mockEmailNormalizationUtility.Setup(enu => enu.NormalizeEmail("test@email.com")).Returns("test@email.com");

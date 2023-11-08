@@ -1,6 +1,7 @@
 name: .NET CI with SSH Tunnel
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -33,21 +34,30 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-        echo "$(ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_NETWORK_IP }})" >> ~/.ssh/known_hosts
-      
-    - name: SSH Tunnel
+        ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_NETWORK_IP }} >> ~/.ssh/known_hosts
+        
+    - name: Start SSH agent
+      run: |
+        SSH_AGENT_OUTPUT=$(ssh-agent -s)
+        echo "$SSH_AGENT_OUTPUT" | grep -o 'SSH_AUTH_SOCK=[^;]*' | tee -a $GITHUB_ENV
+        echo "$SSH_AGENT_OUTPUT" | grep -o 'SSH_AGENT_PID=[^;]*' | tee -a $GITHUB_ENV
+
+
+    - name: Add SSH key to SSH agent   
+      run: | 
+        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+
+    - name: Create SSH tunnel for MySQL
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         SSH_NETWORK_IP: ${{ secrets.SSH_NETWORK_IP }}
         SSH_PORT: ${{ secrets.SSH_PORT }}
-      run: | 
-        # Start SSH agent and add the private key
-        eval $(ssh-agent -s)
-        ssh-add <(echo "$SSH_PRIVATE_KEY")
-
-        # Create an SSH tunnel for MySQL
-        ssh -f -N -L 3307:127.0.0.1:3306 $SSH_USERNAME@$SSH_NETWORK_IP -p $SSH_PORT
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_PORT2: ${{ secrets.DB_PORT2 }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+      run: |
+        ssh -f -N -L ${DB_PORT2}:${DB_HOST}:${DB_PORT} ${SSH_USERNAME}@${SSH_NETWORK_IP} -p ${SSH_PORT}
 
     - name: Restore dependencies
       run: dotnet restore
@@ -55,11 +65,12 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
 
-#    - name: Run tests
-#      env:
-#        DB_HOST: 127.0.0.1
-#        DB_PORT: 3307 # Local forwarded port
-#        # Add other required environment variables for the database connection string
-#      run: dotnet test --no-build --verbosity normal
+    # Uncomment the following lines to enable test execution
+    # - name: Run tests
+    #   env:
+    #     DB_HOST: 127.0.0.1
+    #     DB_PORT: ${{ secrets.DB_PORT2 }} # Local forwarded port
+    #     # Add other required environment variables for the database connection string here
+    #   run: dotnet test --no-build --verbosity normal
 
     # Any additional steps like migrations or deployment can be added here
