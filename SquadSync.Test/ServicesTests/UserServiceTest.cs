@@ -1,5 +1,9 @@
 using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Any;
 using Moq;
+using Serilog;
 using SquadSync.Data.Models;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.MappingProfiles;
@@ -20,14 +24,15 @@ namespace SquadSync.Test.ServicesTests
                 cfg.AddProfile<UserMappingProfile>();
 
             });
-
             _mapper = config.CreateMapper();
         }
 
         [Fact]
-        public async void GetUserByEmail_ReturnExpectedUser()
+        public async Task GetUserByEmail_ReturnExpectedUser()
         {
             //Arrange
+            var mockLogger = new Mock<ILogger<UserService>>();
+
             var mockRepo = new Mock<IUserRepository>();
             mockRepo.Setup(repo => repo.GetUserByEmailNormalizedAsync("test@email.com"))
                 .ReturnsAsync(new User { Email = "test@email.com" });
@@ -42,12 +47,14 @@ namespace SquadSync.Test.ServicesTests
                 mockRepo.Object,
                 _mapper,
                 mockEmailValidiationUtility.Object,
-                mockEmailNormalizationUtility.Object);
+                mockEmailNormalizationUtility.Object,
+                mockLogger.Object);
 
             //Act
             var result = await userService.GetUserDtoByEmailNormalizedAsync("test@email.com");
 
             //Assert
+            mockLogger.Verify();
             Assert.NotNull(result);
             Assert.Equal("test@email.com", result.Email);
         }
