@@ -10,7 +10,9 @@ namespace SquadSync.Data.Repositories
         private readonly SQLDbContext _dbContext;
         private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(SQLDbContext dbContext, ILogger<UserRepository> logger)
+        public UserRepository(
+            SQLDbContext dbContext,
+            ILogger<UserRepository> logger)
         {
             _dbContext = dbContext;
             _logger = logger;

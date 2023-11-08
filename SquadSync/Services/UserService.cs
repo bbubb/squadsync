@@ -13,14 +13,14 @@ namespace SquadSync.Services
         private readonly IMapper _mapper;
         private readonly IEmailValidationUtilityService _emailValidationUtility;
         private readonly IEmailNormalizationUtilityService _emailNormalizationUtility;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(
             IUserRepository userRepository,
             IMapper mapper,
             IEmailValidationUtilityService emailValidationUtility,
             IEmailNormalizationUtilityService emailNormalizationUtility,
-            ILogger logger)
+            ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
