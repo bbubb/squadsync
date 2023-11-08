@@ -1,33 +1,47 @@
 using AutoMapper;
 using Moq;
+using Serilog;
 using SquadSync.Data.Models;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.MappingProfiles;
 using SquadSync.Services;
 using SquadSync.Services.IServices;
 using SquadSync.Utilities.IUtilities;
+using Xunit;
+using Xunit.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace SquadSync.Test.ServicesTests
 {
     public class UserServiceTest
     {
         private readonly IMapper _mapper;
+        private readonly ILogger<UserService> _logger;
 
-        public UserServiceTest()
+        public UserServiceTest(ITestOutputHelper outputHelper)
         {
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<UserMappingProfile>();
-
             });
 
             _mapper = config.CreateMapper();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.TestOutput(outputHelper)
+                .CreateLogger();
+
+            var loggerFactory = new LoggerFactory().AddSerilog();
+            _logger = loggerFactory.CreateLogger<UserService>();
         }
 
         [Fact]
-        public async void GetUserByEmail_ReturnExpectedUser()
+        public async Task GetUserByEmail_ReturnExpectedUser()
         {
             //Arrange
+            var mockLogger = new Mock<ILogger<UserService>>();
+
             var mockRepo = new Mock<IUserRepository>();
             mockRepo.Setup(repo => repo.GetUserByEmailNormalizedAsync("test@email.com"))
                 .ReturnsAsync(new User { Email = "test@email.com" });
@@ -42,12 +56,14 @@ namespace SquadSync.Test.ServicesTests
                 mockRepo.Object,
                 _mapper,
                 mockEmailValidiationUtility.Object,
-                mockEmailNormalizationUtility.Object);
+                mockEmailNormalizationUtility.Object,
+                _logger);
 
             //Act
             var result = await userService.GetUserDtoByEmailNormalizedAsync("test@email.com");
 
             //Assert
+            _logger.LogInformation(result.Email);
             Assert.NotNull(result);
             Assert.Equal("test@email.com", result.Email);
         }
