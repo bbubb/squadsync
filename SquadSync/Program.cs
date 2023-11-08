@@ -5,22 +5,32 @@ using SquadSync.Data;
 using SquadSync.MappingProfiles;
 using SquadSync.Utilities;
 using SquadSync.Utilities.IUtilities;
+using SquadSync.Middleware;
+using System.Diagnostics;
+using SquadSync.Services.IServices;
+using SquadSync.Services;
+using SquadSync.Data.Repositories.IRepositories;
+using SquadSync.Data.Repositories;
+using Pomelo.EntityFrameworkCore.MySql.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.Debug()
-    .WriteTo.Seq("http://localhost:5341") // URL of Seq server
+    .WriteTo.Seq("http://localhost:5318") // URL of Seq server
     .CreateLogger();
 
 builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddDbContext<SQLDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"),
-        new MySqlServerVersion(new Version(8, 0, 34))));
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("SQLDbConnection"),
+        new MySqlServerVersion(new Version(8, 0, 34)),
+        MySqlOptions => MySqlOptions.EnableRetryOnFailure()));
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(typeof(UserMappingProfile).Assembly);
 builder.Services.AddAuthentication();
@@ -38,6 +48,8 @@ builder.Services.AddApiVersioning(options =>
 });
    
 // Registering the services
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IEmailNormalizationUtilityService, EmailNormalizationUtilityService>();
 builder.Services.AddTransient<IEmailValidationUtilityService, EmailValidationUtilityService>();
 
@@ -50,10 +62,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+Log.Information("Program: Starting up the application");
 app.Run();
