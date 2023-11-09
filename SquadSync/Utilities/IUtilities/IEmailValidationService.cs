@@ -1,6 +1,6 @@
 ﻿namespace SquadSync.Utilities.IUtilities
 {
-    public interface IEmailValidationUtilityService
+    public interface IEmailValidationService
     {
         bool IsValidEmail(string email);
     }

@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace SquadSync.Utilities
 {
-    public class EmailValidationUtilityService : IEmailValidationUtilityService
+    public class EmailValidationService : IEmailValidationService
     {
         public bool IsValidEmail(string email)
         {
