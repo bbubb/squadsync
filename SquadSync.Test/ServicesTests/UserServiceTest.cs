@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Serilog;
 using SquadSync.Data.Models;
@@ -7,9 +8,7 @@ using SquadSync.MappingProfiles;
 using SquadSync.Services;
 using SquadSync.Services.IServices;
 using SquadSync.Utilities.IUtilities;
-using Xunit;
 using Xunit.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace SquadSync.Test.ServicesTests
 {
@@ -40,17 +39,19 @@ namespace SquadSync.Test.ServicesTests
         public async Task GetUserByEmail_ReturnExpectedUser()
         {
             //Arrange
+            var expectedEmail = "test@email.com";
+
             var mockLogger = new Mock<ILogger<UserService>>();
 
             var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(repo => repo.GetUserByEmailNormalizedAsync("test@email.com"))
-                .ReturnsAsync(new User { Email = "test@email.com" });
+            mockRepo.Setup(repo => repo.GetUserByEmailNormalizedAsync(expectedEmail))
+                .ReturnsAsync(new User { Email = expectedEmail });
 
-            var mockEmailNormalizationUtility = new Mock<IEmailNormalizationUtilityService>();
-            mockEmailNormalizationUtility.Setup(enu => enu.NormalizeEmail("test@email.com")).Returns("test@email.com");
+            var mockEmailNormalizationUtility = new Mock<IEmailNormalizationService>();
+            mockEmailNormalizationUtility.Setup(enu => enu.NormalizeEmail(expectedEmail)).Returns(expectedEmail);
 
-            var mockEmailValidiationUtility = new Mock<IEmailValidationUtilityService>();
-            mockEmailValidiationUtility.Setup(evu => evu.IsValidEmail("test@email.com")).Returns(true);
+            var mockEmailValidiationUtility = new Mock<IEmailValidationService>();
+            mockEmailValidiationUtility.Setup(evu => evu.IsValidEmail(expectedEmail)).Returns(true);
 
             IUserService userService = new UserService(
                 mockRepo.Object,
@@ -60,12 +61,16 @@ namespace SquadSync.Test.ServicesTests
                 _logger);
 
             //Act
-            var result = await userService.GetUserDtoByEmailNormalizedAsync("test@email.com");
+            var serviceResult = await userService.GetUserDtoByEmailNormalizedAsync(expectedEmail);
 
             //Assert
-            _logger.LogInformation(result.Email);
-            Assert.NotNull(result);
-            Assert.Equal("test@email.com", result.Email);
+            Assert.True(serviceResult.Success);
+            Assert.NotNull(serviceResult.Data);
+
+            var result = serviceResult.Data;
+
+            Assert.Equal(expectedEmail, result.Email);
+            _logger.LogInformation($"{expectedEmail} | {result.Email}");
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using SquadSync.DTOs.Responses;
 using SquadSync.DTOs;
+using SquadSync.Utilities;
 
 namespace SquadSync.Services.IServices
 {
     public interface IUserService
     {
         Task<IEnumerable<UserResponseDto>> GetAllUserDtosAsync();
-        Task<UserResponseDto> GetUserDtoByGuidAsync(Guid guid);
-        Task<UserResponseDto> GetUserDtoByEmailNormalizedAsync(string email);
+        Task<ServiceResult<UserResponseDto>> GetUserDtoByGuidAsync(Guid guid);
+        Task<ServiceResult<UserResponseDto>> GetUserDtoByEmailNormalizedAsync(string email);
     }
 }

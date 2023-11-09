@@ -50,8 +50,8 @@ builder.Services.AddApiVersioning(options =>
 // Registering the services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddTransient<IEmailNormalizationUtilityService, EmailNormalizationUtilityService>();
-builder.Services.AddTransient<IEmailValidationUtilityService, EmailValidationUtilityService>();
+builder.Services.AddTransient<IEmailNormalizationService, EmailNormalizationService>();
+builder.Services.AddTransient<IEmailValidationService, EmailValidationService>();
 
 var app = builder.Build();
 
@@ -63,11 +63,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<CorrelationIdMiddleware>();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
-
+app.UseRouting();
 app.UseAuthorization();
-
 app.MapControllers();
 
 Log.Information("Program: Starting up the application");

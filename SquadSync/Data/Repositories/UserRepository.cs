@@ -14,8 +14,8 @@ namespace SquadSync.Data.Repositories
             SQLDbContext dbContext,
             ILogger<UserRepository> logger)
         {
-            _dbContext = dbContext;
-            _logger = logger;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()

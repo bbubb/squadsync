@@ -3,6 +3,7 @@ using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.DTOs;
 using SquadSync.DTOs.Responses;
 using SquadSync.Services.IServices;
+using SquadSync.Utilities;
 using SquadSync.Utilities.IUtilities;
 
 namespace SquadSync.Services
@@ -11,22 +12,22 @@ namespace SquadSync.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IEmailValidationUtilityService _emailValidationUtility;
-        private readonly IEmailNormalizationUtilityService _emailNormalizationUtility;
+        private readonly IEmailValidationService _emailValidationUtility;
+        private readonly IEmailNormalizationService _emailNormalizationUtility;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
             IUserRepository userRepository,
             IMapper mapper,
-            IEmailValidationUtilityService emailValidationUtility,
-            IEmailNormalizationUtilityService emailNormalizationUtility,
+            IEmailValidationService emailValidationUtility,
+            IEmailNormalizationService emailNormalizationUtility,
             ILogger<UserService> logger)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
-            _emailValidationUtility = emailValidationUtility;
-            _emailNormalizationUtility = emailNormalizationUtility;
-            _logger = logger;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _emailValidationUtility = emailValidationUtility ?? throw new ArgumentNullException(nameof(emailValidationUtility));
+            _emailNormalizationUtility = emailNormalizationUtility ?? throw new ArgumentNullException(nameof(emailNormalizationUtility));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<UserResponseDto>> GetAllUserDtosAsync()
@@ -36,7 +37,7 @@ namespace SquadSync.Services
             return _mapper.Map<IEnumerable<UserResponseDto>>(users);
         }
 
-        public async Task<UserResponseDto> GetUserDtoByEmailNormalizedAsync(string email)
+        public async Task<ServiceResult<UserResponseDto>> GetUserDtoByEmailNormalizedAsync(string email)
         {
             _logger.LogInformation("UserService: Validating and normalizing email: {Email}", email);
 
@@ -44,29 +45,42 @@ namespace SquadSync.Services
             if (string.IsNullOrWhiteSpace(email))
             {
                 _logger.LogError("UserService: Email cannot be empty.");
-                throw new ArgumentException("Email cannot be empty.");
+                return ServiceResult<UserResponseDto>.Failure("Email cannot be empty.");
             }
 
             if (!_emailValidationUtility.IsValidEmail(email))
             {
                 _logger.LogError("UserService: Invalid email format for email: {Email}", email);
-                throw new ArgumentException("Invalid email format.");
+                return ServiceResult<UserResponseDto>.Failure("Invalid email format.");
             }
 
             // Normalization
             var normalizedEmail = _emailNormalizationUtility.NormalizeEmail(email);
+            _logger.LogInformation("UserService: Retrieving user by normalized email: {NormalizedEmail}", normalizedEmail);
 
             // Query
-            _logger.LogInformation("UserService: Retrieving user by normalized email: {NormalizedEmail}", normalizedEmail);
             var user = await _userRepository.GetUserByEmailNormalizedAsync(normalizedEmail);
-            return _mapper.Map<UserResponseDto>(user);
+            if (user == null)
+            {
+                _logger.LogWarning("UserService: User with email {Email} not found.", email);
+                return ServiceResult<UserResponseDto>.Failure($"User with email {email} not found.");
+            }
+
+            return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
         }
 
-        public async Task<UserResponseDto> GetUserDtoByGuidAsync(Guid guid)
+        public async Task<ServiceResult<UserResponseDto>> GetUserDtoByGuidAsync(Guid guid)
         {
             _logger.LogInformation("UserService: Retrieving user by GUID: {Guid}", guid);
+
             var user = await _userRepository.GetUserByGuidAsync(guid);
-            return _mapper.Map<UserResponseDto>(user);
+            if (user == null)
+            {
+                _logger.LogWarning("UserService: User with GUID {Guid} not found.", guid);
+                return ServiceResult<UserResponseDto>.Failure($"User with GUID {guid} not found.");
+            }
+
+            return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
         }
     }
 }

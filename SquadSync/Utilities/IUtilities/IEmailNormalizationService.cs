@@ -1,6 +1,6 @@
 ﻿namespace SquadSync.Utilities.IUtilities
 {
-    public interface IEmailNormalizationUtilityService
+    public interface IEmailNormalizationService
     {
         string NormalizeEmail(string email);
     }

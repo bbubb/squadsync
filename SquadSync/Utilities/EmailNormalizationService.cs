@@ -2,7 +2,7 @@
 
 namespace SquadSync.Utilities
 {
-    public class EmailNormalizationUtilityService : IEmailNormalizationUtilityService
+    public class EmailNormalizationService : IEmailNormalizationService
     {
         public string NormalizeEmail(string email)
         {
