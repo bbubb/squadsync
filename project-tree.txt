@@ -1,0 +1,40 @@
+﻿+---SquadSync
+|   +---Controllers
+|   |   +---UserController.cs
+|   |
+|   +---Data
+|   |   +---Models
+|   |   |   +---User.cs
+|   |   +---Repositories
+|   |   |   +---UserRepository.cs
+|   |   +---Migrations
+|   |   |   +---20231108183330_InitialCreate.cs
+|   |   |   +---SQLDbContextModelSnapshot.cs
+|   |   +---SQLDbContext.cs
+|   |
+|   +---DTOs
+|   |   +---Requests
+|   |   |   +---UserCreateRequestDto.cs
+|   |   +---Responses
+|   |   |   +---UserResponseDto.cs
+|   |   |   +---UsersAllResponseDto.cs
+|   |
+|   +---Middleware
+|   |   +---CorrelationIdMiddleware.cs
+|   |   +---ExceptionHandlingMiddleware.cs
+|   |
+|   +---Services
+|   |   +---Interfaces
+|   |   |   +---IUserService.cs
+|   |   +---UserService.cs
+|   |
+|   +---Utilities
+|   |   +---UserMappingProfile.cs
+|   |
+|   +---appsettings.json
+|   +---launchSettings.json
+|   +---Program.cs
+|
++---SquadSync.Test
+    +---ServicesTests
+    |   +---UserServiceTest.cs
