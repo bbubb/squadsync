@@ -42,7 +42,7 @@ Discord Server: [SquadSync](https://discord.gg/XeAHspcV)
 
 ## License
 Copyright - All Rights Reserved.  
-See the [LICENSE](LICENSE) file for full terms and conditions.
+See the [LICENSE](LICENSE.txt) file for full terms and conditions.
 
 ### Contact
 For support or inquiries, reach out via GitHub Issues or the contact methods in our Wiki.
