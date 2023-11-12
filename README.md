@@ -40,11 +40,9 @@ npm start
 ## Community Engagement
 Discord Server: [SquadSync](https://discord.gg/XeAHspcV)
 
-### License
-Copyright © [2023] [Brandon Bunch]
-All rights reserved.
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+Copyright - All Rights Reserved.  
+See the [LICENSE](LICENSE) file for full terms and conditions.
 
 ### Contact
 For support or inquiries, reach out via GitHub Issues or the contact methods in our Wiki.
