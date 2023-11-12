@@ -35,7 +35,7 @@ npm start
 
 
 ## Contribution Guidelines
-[Wiki - Collaboration and Community] (https://github.com/bbubb/squadsync/wiki/wiki/Collaboration-and-Community#collaboration-and-community)
+[Wiki - Collaboration and Community](https://github.com/bbubb/squadsync/wiki/wiki/Collaboration-and-Community#collaboration-and-community)
 
 ## Community Engagement
 Discord Server: [SquadSync](https://discord.gg/XeAHspcV)
