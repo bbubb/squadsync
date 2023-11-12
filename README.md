@@ -35,10 +35,10 @@ npm start
 
 
 ## Contribution Guidelines
-[https://github.com/bbubb/squadsync/wiki/wiki/Collaboration-and-Community#collaboration-and-community]
+[Wiki - Collaboration and Community] (https://github.com/bbubb/squadsync/wiki/wiki/Collaboration-and-Community#collaboration-and-community)
 
 ## Community Engagement
-Discord [https://discord.gg/XeAHspcV]
+Discord Server: [SquadSync](https://discord.gg/XeAHspcV)
 
 ### License
 Copyright © [2023] [Brandon Bunch]
