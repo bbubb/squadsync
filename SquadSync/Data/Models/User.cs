@@ -18,7 +18,10 @@ namespace SquadSync.Data.Models
         public DateTime? DateOfBirth { get; set; }
         public string? PhoneNumber { get; set; }
         public UserStatusEnum UserStatus { get; set; }
-        //public long RoleId { get; set; }
-        //public virtual Role Role { get; set; }
+        public IList<Role>? Roles { get; set; }
+        public IList<RoleRequest>? RoleRequests { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime? ArchivedOn { get; set; }
     }
 }

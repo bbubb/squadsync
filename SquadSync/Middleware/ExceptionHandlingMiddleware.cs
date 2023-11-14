@@ -35,7 +35,7 @@ namespace SquadSync.Middleware
         {
             var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
-            if (exception is UserNotFoundException) code = HttpStatusCode.NotFound;
+            if (exception is EntityNotFoundException) code = HttpStatusCode.NotFound;
             else if (exception is ArgumentException) code = HttpStatusCode.BadRequest;
             // More exception types can be added here
 
