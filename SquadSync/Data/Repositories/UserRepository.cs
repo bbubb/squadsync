@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using SquadSync.Exceptions;
 using SquadSync.Data.Repositories.IRepositories;
+using SquadSync.Enums;
+using SquadSync.DTOs.Requests;
 
 namespace SquadSync.Data.Repositories
 {
@@ -24,6 +26,14 @@ namespace SquadSync.Data.Repositories
             return await _dbContext.Users.ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetAllActiveUsersAsync()
+        {
+            _logger.LogDebug("UserRepository: Retrieving all active users from the database.");
+            return await _dbContext.Users
+                .Where(u => u.UserStatus != UserStatusEnum.RegisteredInactive && u.UserStatus != UserStatusEnum.RegisteredArchived)
+                .ToListAsync();
+        }
+
         public async Task<User> GetUserByGuidAsync(Guid guid)
         {
             _logger.LogDebug("UserRepository: Retrieving user by GUID: {Guid}", guid);
@@ -31,7 +41,7 @@ namespace SquadSync.Data.Repositories
             if (user == null)
             {
                 _logger.LogWarning("UserRepository: No user found with GUID: {Guid}", guid);
-                throw new UserNotFoundException($"No user found with the GUID '{guid}'.");
+                throw new EntityNotFoundException("User", guid);
             }
             return user;
         }
@@ -43,7 +53,7 @@ namespace SquadSync.Data.Repositories
             if (user == null)
             {
                 _logger.LogWarning("UserRepository: No user found with the normalized email: {EmailNormalized}", emailNormalized);
-                throw new UserNotFoundException($"No user found with the email '{emailNormalized}'.");
+                throw new EntityNotFoundException("User", emailNormalized);
             }
             return user;
         }
@@ -61,14 +71,11 @@ namespace SquadSync.Data.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(Guid guid)
+        public async Task UpdateUserAsync(Guid userGuid, UserUpdateRequestDto userUpdateRequestDto)
         {
-            var user = await GetUserByGuidAsync(guid);
-            if (user == null)
-            {
-                _logger.LogWarning("UserRepository: Attempted to update a user with a null entity.");
-                throw new ArgumentNullException(nameof(user));
-            }
+            var user = await GetUserByGuidAsync(userGuid);
+            
+            // Implement UserUpdateRequestDto Logic Here
 
             _logger.LogInformation("UserRepository: Updating user with GUID: {Guid}", user.Guid);
             _dbContext.Users.Update(user);
@@ -78,11 +85,6 @@ namespace SquadSync.Data.Repositories
         public async Task DeleteUserAsync(Guid guid)
         {
             var user = await GetUserByGuidAsync(guid);
-            if (user == null)
-            {
-                _logger.LogWarning("UserRepository: Attempted to delete a user that does not exist with GUID: {Guid}", guid);
-                throw new UserNotFoundException($"No user found with the GUID '{guid}'.");
-            }
 
             _logger.LogDebug("UserRepository: Deleting user with GUID: {Guid}", guid);
             _dbContext.Users.Remove(user);

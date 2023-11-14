@@ -11,6 +11,7 @@ namespace SquadSync.MappingProfiles
         {
             CreateMap<User, UserResponseDto>();
             CreateMap<User, UserCreateRequestDto>();
+            CreateMap<User, UserUpdateRequestDto>();
         }
     }
 }

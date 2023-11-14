@@ -2,7 +2,10 @@
 {
     public enum UserStatusEnum
     {
-        GUEST,
-        REGISTERED
+        Guest,
+        RegisteredActive,
+        RegisteredPending,
+        RegisteredInactive,
+        RegisteredArchived,
     }
 }
