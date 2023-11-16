@@ -21,7 +21,7 @@ namespace SquadSync.Data.Models
         public IList<Role>? Roles { get; set; }
         public IList<RoleRequest>? RoleRequests { get; set; }
         public DateTime CreatedOn { get; set; }
-        public DateTime? ModifiedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
         public DateTime? ArchivedOn { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace SquadSync.Data.Repositories
             if (user == null)
             {
                 _logger.LogWarning("UserRepository: No user found with GUID: {Guid}", guid);
-                throw new EntityNotFoundException("User", guid);
+                throw new EntityNotFoundException("UserRepository", nameof(User), guid);
             }
             return user;
         }
@@ -49,11 +49,12 @@ namespace SquadSync.Data.Repositories
         public async Task<User> GetUserByEmailNormalizedAsync(string emailNormalized)
         {
             _logger.LogDebug("UserRepository: Retrieving user by normalized email: {EmailNormalized}", emailNormalized);
+
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.EmailNormalized == emailNormalized);
             if (user == null)
             {
                 _logger.LogWarning("UserRepository: No user found with the normalized email: {EmailNormalized}", emailNormalized);
-                throw new EntityNotFoundException("User", emailNormalized);
+                throw new EntityNotFoundException("UserRepository", nameof(User), emailNormalized);
             }
             return user;
         }
@@ -62,8 +63,7 @@ namespace SquadSync.Data.Repositories
         {
             if (user == null)
             {
-                _logger.LogWarning("UserRepository: Attempted to create a user with a null entity.");
-                throw new ArgumentNullException(nameof(user));
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
 
             _logger.LogInformation("UserRepository: Creating a new user with email: {Email}", user.Email);
@@ -71,24 +71,49 @@ namespace SquadSync.Data.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(Guid userGuid, UserUpdateRequestDto userUpdateRequestDto)
+        public async Task UpdateUserAsync(User user)
         {
-            var user = await GetUserByGuidAsync(userGuid);
-            
-            // Implement UserUpdateRequestDto Logic Here
+            _logger.LogDebug("UserRepository: Start updating user with GUID: {Guid}", user.Guid);
 
-            _logger.LogInformation("UserRepository: Updating user with GUID: {Guid}", user.Guid);
+            if(user == null)
+            {
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished updating user with GUID: {Guid}", user.Guid);
         }
 
-        public async Task DeleteUserAsync(Guid guid)
+        public async Task ArchiveUserAsync(User user)
         {
-            var user = await GetUserByGuidAsync(guid);
+            _logger.LogDebug("UserRepository: Start archiving user with GUID: {Guid}", user.Guid);
 
-            _logger.LogDebug("UserRepository: Deleting user with GUID: {Guid}", guid);
+            if (user == null)
+            {
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished archiving user with GUID: {Guid}", user.Guid);
+        }   
+
+        public async Task DeleteUserAsync(User user)
+        {
+            _logger.LogDebug("UserRepository: Start deleting user with GUID: {Guid}", user.Guid);
+
+            if (user == null)
+            {
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+                        
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished deleting user with GUID: {Guid}", user.Guid);
         }
     }
 }
