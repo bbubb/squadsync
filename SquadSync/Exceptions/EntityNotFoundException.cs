@@ -13,7 +13,6 @@ namespace SquadSync.Exceptions
         public string Context { get; }
         public string EntityType { get; }
         public object EntityKey { get; }
-        public string Context { get; }
 
         // EntityNotFoundException("UserRepository", nameof(User), user.Guid); 
         // Includes EntityKey
