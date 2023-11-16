@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace SquadSync.Exceptions
+﻿namespace SquadSync.Exceptions
 {
-    [Serializable]
     public class CustomArgumentNullException : ArgumentNullException
     {
         public string Context { get; }
@@ -21,20 +18,5 @@ namespace SquadSync.Exceptions
             Context = context;
             ParameterName = paramName;
         }
-
-        protected CustomArgumentNullException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Context = info.GetString("Context");
-            ParameterName = info.GetString("ParameterName");
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("Context", Context);
-            info.AddValue("ParameterName", ParameterName);
-        }
     }
-
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace SquadSync.Exceptions
 {
@@ -7,7 +6,6 @@ namespace SquadSync.Exceptions
     // Example usage: throw new EntityNotFoundException("UserRepository", nameof(User), user.Guid);
     // Results in the following exception message: "[UserRepository] Entity of type 'User' with key '00000000-0000-0000-0000-000000000000' was not found."
 
-    [Serializable]
     public class EntityNotFoundException : Exception
     {
         public string Context { get; }
@@ -50,22 +48,6 @@ namespace SquadSync.Exceptions
         {
             Context = context;
             EntityType = entityType;
-        }
-
-        protected EntityNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Context = info.GetString("Context");
-            EntityType = info.GetString("EntityType");
-            EntityKey = info.GetValue("EntityKey", typeof(object));
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("Context", Context);
-            info.AddValue("EntityType", EntityType);
-            info.AddValue("EntityKey", EntityKey);
         }
     }
 }
