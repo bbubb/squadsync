@@ -42,10 +42,11 @@ builder.Services.AddControllers();
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0); // default version 1.0
-    options.AssumeDefaultVersionWhenUnspecified = true;
+    //options.AssumeDefaultVersionWhenUnspecified = true; // disabling: recommended to enable for legacy only
     options.ReportApiVersions = true; // adds the API versions in the response header
     options.ApiVersionReader = new UrlSegmentApiVersionReader(); // uses URL segment for versioning
-});
+})
+    .AddMvc();
    
 // Registering the services
 builder.Services.AddScoped<IUserRepository, UserRepository>();

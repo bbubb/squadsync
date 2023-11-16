@@ -1,3 +1,5 @@
+
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.DTOs.Responses;
 using SquadSync.Services.IServices;
