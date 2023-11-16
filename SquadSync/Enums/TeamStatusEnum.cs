@@ -2,12 +2,12 @@
 {
     public enum TeamStatusEnum
     {
-        UnregisteredActive,
-        UnregisteredInactive,
-        UnregisteredArchived,
-        RegisteredPending,
         RegisteredActive,
-        RegisteredInactive,
         RegisteredArchived,
+        RegisteredInactive,
+        RegisteredPending,
+        UnregisteredActive,
+        UnregisteredArchived,
+        UnregisteredInactive,
     }
 }
