@@ -27,8 +27,7 @@ namespace SquadSync.Data.Repositories
             var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Guid == roleGuid);
             if (role == null)
             {
-                _logger.LogWarning("RoleRepository: No role found with GUID: {Guid}", roleGuid);
-                throw new EntityNotFoundException("Role", roleGuid);
+                throw new EntityNotFoundException("RoleRepository", nameof(role), roleGuid);
             }
             return role;
         }
@@ -104,7 +103,7 @@ namespace SquadSync.Data.Repositories
             if (users == null)
             {
                 _logger.LogWarning("RoleRepository: No users found with role: {Role}", role);
-                throw new EntityNotFoundException("User", role);
+                throw new EntityNotFoundException("RoleRepository", nameof(users), role);
             }
             return users;
         }
@@ -117,7 +116,7 @@ namespace SquadSync.Data.Repositories
             if (users == null)
             {
                 _logger.LogWarning("RoleRepository: No users found with roles: {Roles}", roles);
-                throw new EntityNotFoundException("Users", roles);
+                throw new EntityNotFoundException("RoleRepository", nameof(users), roles);
             }
             return users;
         }
@@ -133,7 +132,7 @@ namespace SquadSync.Data.Repositories
 
             if (role == null)
             {
-                throw new EntityNotFoundException("Role", roleGuid);
+                throw new EntityNotFoundException("RoleRepository", nameof(role), roleGuid);
             }
 
             // Soft delete (archive) the role
