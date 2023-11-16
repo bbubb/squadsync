@@ -89,50 +89,84 @@ namespace SquadSync.Services
         public async Task<ServiceResult<UserResponseDto>> UpdateUserByGuidAsync(Guid guid, UserUpdateRequestDto dto)
         {
             _logger.LogInformation("UserService: Updating user with GUID: {Guid}", guid);
-
-            var user = await _userRepository.GetUserByGuidAsync(guid);
-
-            // Apply changes from dto to user
-            user.FirstName = dto.FirstName ?? user.FirstName;
-            user.LastName = dto.LastName ?? user.LastName;
-            if (dto.Email != null)
+            try
             {
-                if (!_emailValidationUtility.IsValidEmail(dto.Email))
+
+                var user = await _userRepository.GetUserByGuidAsync(guid);
+
+                // Apply changes from dto to user
+                user.FirstName = dto.FirstName ?? user.FirstName;
+                user.LastName = dto.LastName ?? user.LastName;
+                if (dto.Email != null)
                 {
-                    _logger.LogError("UserService: Invalid email format for email: {Email}", dto.Email);
-                    return ServiceResult<UserResponseDto>.Failure("Invalid email format.");
+                    if (!_emailValidationUtility.IsValidEmail(dto.Email))
+                    {
+                        _logger.LogError("UserService: Invalid email format for email: {Email}", dto.Email);
+                        return ServiceResult<UserResponseDto>.Failure("Invalid email format.");
+                    }
+                    user.Email = dto.Email ?? user.Email;
+                    user.EmailNormalized = _emailNormalizationUtility.NormalizeEmail(dto.Email);
                 }
-                user.Email = dto.Email ?? user.Email;
-                user.EmailNormalized = _emailNormalizationUtility.NormalizeEmail(dto.Email);
+                user.DateOfBirth = dto.DateOfBirth ?? user.DateOfBirth;
+                user.PhoneNumber = dto.PhoneNumber ?? user.PhoneNumber;
+                user.UserStatus = user.UserStatus;
+                user.CreatedOn = user.CreatedOn;
+                // Insert UpdatedOn current DateTime
+                user.UpdatedOn = DateTime.UtcNow;
+                user.ArchivedOn = user.ArchivedOn;
+
+                await _userRepository.UpdateUserAsync(user);
+
+                // Return updated user dto
+                _logger.LogInformation("UserService: Finished updating user with GUID: {Guid}", guid);
+                return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
             }
-            user.DateOfBirth = dto.DateOfBirth ?? user.DateOfBirth;
-            user.PhoneNumber = dto.PhoneNumber ?? user.PhoneNumber;
-            user.UserStatus = user.UserStatus;
-            user.CreatedOn = user.CreatedOn;
-            // Insert UpdatedOn current DateTime
-            user.UpdatedOn = DateTime.UtcNow;
-            user.ArchivedOn = user.ArchivedOn;
+            catch (Exception ex)
+            {
+                _logger.LogError("UserService: An error occurred while processing your request: {Message}", ex.Message);
+                return ServiceResult<UserResponseDto>.Failure("An error occurred while processing your request.");
+            }
 
-            await _userRepository.UpdateUserAsync(user);
-
-            // Return updated user dto
-            _logger.LogInformation("UserService: Finished updating user with GUID: {Guid}", guid);
-            return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
         }
+            
 
         public async Task<ServiceResult<UserResponseDto>> ArchiveUserByGuidAsync(Guid guid)
         {
             _logger.LogInformation("UserService: Start archiving user with GUID: {Guid}", guid);
+            try
+            {
 
-            var user = await _userRepository.GetUserByGuidAsync(guid);
+                var user = await _userRepository.GetUserByGuidAsync(guid);
 
-            user.ArchivedOn = DateTime.UtcNow;
-            user.UserStatus = UserStatusEnum.RegisteredArchived;
+                if (user == null)
+                {
+                    _logger.LogWarning("UserService: User with GUID {Guid} not found.", guid);
+                    return ServiceResult<UserResponseDto>.Failure($"User with GUID {guid} not found.");
+                }
+                if (user.UserStatus == UserStatusEnum.RegisteredArchived)
+                {
+                    _logger.LogWarning("UserService: User with GUID {Guid} is already archived.", guid);
+                    return ServiceResult<UserResponseDto>.Failure($"User with GUID {guid} is already archived.");
+                }
+                if (user.ArchivedOn != null)
+                {
+                    _logger.LogWarning("UserService: User with GUID {Guid} is already archived.", guid);
+                    return ServiceResult<UserResponseDto>.Failure($"User with GUID {guid} is already archived.");
+                }
 
-            await _userRepository.UpdateUserAsync(user);
+                user.ArchivedOn = DateTime.UtcNow;
+                user.UserStatus = UserStatusEnum.RegisteredArchived;
 
-            _logger.LogInformation("UserService: Finished archiving user with GUID: {Guid}", guid);
-            return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
+                await _userRepository.UpdateUserAsync(user);
+
+                _logger.LogInformation("UserService: Finished archiving user with GUID: {Guid}", guid);
+                return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserService: An error occurred while processing your request: {Message}", ex.Message);
+                return ServiceResult<UserResponseDto>.Failure("An error occurred while processing your request.");
+            }
         }
 
         public async Task<ServiceResult<UserResponseDto>> CreateUserAsync(UserCreateRequestDto dto)
@@ -170,14 +204,17 @@ namespace SquadSync.Services
 
         public async Task<ServiceResult> DeleteUserByGuidAsync(Guid guid)
         {
+            _logger.LogInformation("UserService: Start deleting user with GUID: {Guid}", guid);
             try
             {
                 var user = await _userRepository.GetUserByGuidAsync(guid);
                 if (user == null)
                 {
+                    _logger.LogWarning("UserService: User not found.");
                     return ServiceResult.Failure("User not found.");
                 }
 
+                _logger.LogInformation("UserService: Finish deleting user with GUID: {Guid}", guid);
                 await _userRepository.DeleteUserAsync(user);
                 return ServiceResult.SuccessResult();
             }

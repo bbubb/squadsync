@@ -6,11 +6,8 @@ namespace SquadSync.Data.Models
     public class User
     {
         public Guid Guid { get; set; }
-        [Key]
         public long UserId { get; set; }
-        [Required]
         public string UserName { get; set; }
-        [Required]
         public string Email { get; set; }
         public string EmailNormalized { get; set; } // Derived from Email
         public string? FirstName { get; set; }

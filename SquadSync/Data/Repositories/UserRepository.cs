@@ -63,6 +63,7 @@ namespace SquadSync.Data.Repositories
         {
             if (user == null)
             {
+                _logger.LogWarning("UserRepository: User is null.");
                 throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
 
@@ -77,6 +78,7 @@ namespace SquadSync.Data.Repositories
 
             if(user == null)
             {
+                _logger.LogWarning("UserRepository: User is null.");
                 throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
 
@@ -92,6 +94,7 @@ namespace SquadSync.Data.Repositories
 
             if (user == null)
             {
+                _logger.LogWarning("UserRepository: User is null.");
                 throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
 
@@ -107,6 +110,7 @@ namespace SquadSync.Data.Repositories
 
             if (user == null)
             {
+                _logger.LogWarning("UserRepository: User is null.");
                 throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
                         
