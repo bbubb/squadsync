@@ -10,10 +10,12 @@ namespace SquadSync.Exceptions
     [Serializable]
     public class EntityNotFoundException : Exception
     {
+        public string Context { get; }
         public string EntityType { get; }
         public object EntityKey { get; }
-        public string Context { get; }
 
+        // EntityNotFoundException("UserRepository", nameof(User), user.Guid); 
+        // Includes EntityKey
         public EntityNotFoundException(string context, string entityType, object entityKey)
             : base($"[{context}] Entity of type '{entityType}' with key '{entityKey}' was not found.")
         {
@@ -22,12 +24,32 @@ namespace SquadSync.Exceptions
             EntityKey = entityKey;
         }
 
+        // EntityNotFoundException("UserRepository", nameof(User));
+        // Does not include EntityKey, which could be sensitive information
+        public EntityNotFoundException(string context, string entityType)
+            : base($"[{context}] Entity of type '{entityType}' was not found.")
+        {
+            Context = context;
+            EntityType = entityType;
+        }
+
+        // EntityNotFoundException("UserRepository", nameof(User), user.Guid, innerException);
+        // Includes EntityKey and innerException
         public EntityNotFoundException(string context, string entityType, object entityKey, Exception innerException)
             : base($"[{context}] Entity of type '{entityType}' with key '{entityKey}' was not found.", innerException)
         {
             Context = context;
             EntityType = entityType;
             EntityKey = entityKey;
+        }
+
+        // EntityNotFoundException("UserRepository", nameof(User), innerException);
+        // Does not include EntityKey, which could be sensitive information
+        public EntityNotFoundException(string context, string entityType, Exception innerException)
+            : base($"[{context}] Entity of type '{entityType}' was not found.", innerException)
+        {
+            Context = context;
+            EntityType = entityType;
         }
 
         protected EntityNotFoundException(SerializationInfo info, StreamingContext context)
