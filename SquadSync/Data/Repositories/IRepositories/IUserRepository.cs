@@ -1,5 +1,4 @@
 ﻿using SquadSync.Data.Models;
-using SquadSync.DTOs.Requests;
 
 namespace SquadSync.Data.Repositories.IRepositories
 {

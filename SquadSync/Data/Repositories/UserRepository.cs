@@ -1,9 +1,8 @@
-﻿using SquadSync.Data.Models;
-using Microsoft.EntityFrameworkCore;
-using SquadSync.Exceptions;
+﻿using Microsoft.EntityFrameworkCore;
+using SquadSync.Data.Models;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.Enums;
-using SquadSync.DTOs.Requests;
+using SquadSync.Exceptions;
 
 namespace SquadSync.Data.Repositories
 {
@@ -20,10 +19,53 @@ namespace SquadSync.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task ArchiveUserAsync(User user)
         {
-            _logger.LogDebug("UserRepository: Retrieving all users from the database.");
-            return await _dbContext.Users.ToListAsync();
+            _logger.LogDebug("UserRepository: Start archiving user with GUID: {Guid}", user.Guid);
+
+            if (user == null)
+            {
+                _logger.LogWarning("UserRepository: User is null.");
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished archiving user with GUID: {Guid}", user.Guid);
+        }
+
+        public async Task CreateUserAsync(User user)
+        {
+            _logger.LogDebug("UserRepository: Start creating a new user with email: {Email}", user.Email);
+
+            if (user == null)
+            {
+                _logger.LogWarning("UserRepository: User is null.");
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+
+            // Should we check if the user already exists? // email is unique
+            _dbContext.Users.Add(user);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished creating a new user with email: {Email}", user.Email);
+        }
+
+        public async Task DeleteUserAsync(User user)
+        {
+            _logger.LogDebug("UserRepository: Start deleting user with GUID: {Guid}", user.Guid);
+
+            if (user == null)
+            {
+                _logger.LogWarning("UserRepository: User is null.");
+                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+            }
+
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("UserRepository: Finished deleting user with GUID: {Guid}", user.Guid);
         }
 
         public async Task<IEnumerable<User>> GetAllActiveUsersAsync()
@@ -34,16 +76,10 @@ namespace SquadSync.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<User> GetUserByGuidAsync(Guid guid)
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            _logger.LogDebug("UserRepository: Retrieving user by GUID: {Guid}", guid);
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Guid == guid);
-            if (user == null)
-            {
-                _logger.LogWarning("UserRepository: No user found with GUID: {Guid}", guid);
-                throw new EntityNotFoundException("UserRepository", nameof(User), guid);
-            }
-            return user;
+            _logger.LogDebug("UserRepository: Retrieving all users from the database.");
+            return await _dbContext.Users.ToListAsync();
         }
 
         public async Task<User> GetUserByEmailNormalizedAsync(string emailNormalized)
@@ -59,18 +95,16 @@ namespace SquadSync.Data.Repositories
             return user;
         }
 
-        public async Task CreateUserAsync(User user)
+        public async Task<User> GetUserByGuidAsync(Guid guid)
         {
+            _logger.LogDebug("UserRepository: Retrieving user by GUID: {Guid}", guid);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Guid == guid);
             if (user == null)
             {
-                _logger.LogWarning("UserRepository: User is null.");
-                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
+                _logger.LogWarning("UserRepository: No user found with GUID: {Guid}", guid);
+                throw new EntityNotFoundException("UserRepository", nameof(User), guid);
             }
-
-            // Should we check if the user already exists? // email is unique
-            _logger.LogInformation("UserRepository: Creating a new user with email: {Email}", user.Email);
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            return user;
         }
 
         public async Task UpdateUserAsync(User user)
@@ -87,38 +121,6 @@ namespace SquadSync.Data.Repositories
             await _dbContext.SaveChangesAsync();
 
             _logger.LogDebug("UserRepository: Finished updating user with GUID: {Guid}", user.Guid);
-        }
-
-        public async Task ArchiveUserAsync(User user)
-        {
-            _logger.LogDebug("UserRepository: Start archiving user with GUID: {Guid}", user.Guid);
-
-            if (user == null)
-            {
-                _logger.LogWarning("UserRepository: User is null.");
-                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
-            }
-
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-
-            _logger.LogDebug("UserRepository: Finished archiving user with GUID: {Guid}", user.Guid);
-        }   
-
-        public async Task DeleteUserAsync(User user)
-        {
-            _logger.LogDebug("UserRepository: Start deleting user with GUID: {Guid}", user.Guid);
-
-            if (user == null)
-            {
-                _logger.LogWarning("UserRepository: User is null.");
-                throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
-            }
-                        
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
-
-            _logger.LogDebug("UserRepository: Finished deleting user with GUID: {Guid}", user.Guid);
         }
     }
 }
