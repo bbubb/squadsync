@@ -67,6 +67,7 @@ namespace SquadSync.Data.Repositories
                 throw new CustomArgumentNullException("UserRepository", nameof(user.Guid));
             }
 
+            // Should we check if the user already exists? // email is unique
             _logger.LogInformation("UserRepository: Creating a new user with email: {Email}", user.Email);
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();

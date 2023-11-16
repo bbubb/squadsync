@@ -21,88 +21,93 @@ namespace SquadSync.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public async Task ArchiveRoleAsync(Role role)
+        {
+            _logger.LogDebug("RoleRepository: Start archiving role with GUID: {Guid}", role.Guid);
+
+            if (role == null)
+            {
+                _logger.LogWarning("RoleRepository: Role is null");
+                throw new CustomArgumentNullException("RoleRepository, ", nameof(role));
+            }   
+
+            _dbContext.Roles.Update(role);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("RoleRepository: Finished archiving role with GUID: {Guid}", role.Guid);
+        }
+
+        public async Task CreateRoleAsync(Role role)
+        {
+            _logger.LogDebug("RoleRepository: Start creating role with GUID: {Guid}", role.Guid);
+
+            if (role == null)
+            {
+                _logger.LogWarning("RoleRepository: Role is null");
+                throw new CustomArgumentNullException("RoleRepository, ", nameof(role));
+            }
+
+            _logger.LogDebug("RoleRepository: Creating role with GUID: {Guid}", role.Guid);
+            _dbContext.Roles.Add(role);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRoleAsync(Role role)
+        {
+            _logger.LogDebug("RoleRepository: Start deleting role with GUID: {Guid}", role.Guid);
+
+            if (role == null)
+            {
+                _logger.LogWarning("RoleRepository: Role is null");
+                throw new CustomArgumentNullException("RoleRepository, ", nameof(role));
+            }
+
+            _dbContext.Roles.Remove(role);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug("RoleRepository: Finished deleting role with GUID: {Guid}", role.Guid);
+        }
+
+        public async Task<IEnumerable<Role>> GetAllRolesAsync()
+        {
+            _logger.LogDebug("RoleRepository: Retrieving all roles");
+            return await _dbContext.Roles.ToListAsync();
+        }
+
         public async Task<Role> GetRoleByGuidAsync (Guid roleGuid)
         {
             _logger.LogDebug("RoleRepository: Retrieving role by GUID: {Guid}", roleGuid);
+            
             var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Guid == roleGuid);
             if (role == null)
             {
+                _logger.LogWarning("RoleRepository: Role with GUID {Guid} not found", roleGuid);
                 throw new EntityNotFoundException("RoleRepository", nameof(role), roleGuid);
             }
             return role;
         }
-        public async Task AssignRoleToUserAsync(Guid userGuid, RoleCreateRequestDto roleCreateRequestDto)
-        {
-            _logger.LogDebug("RoleRepository: Start assigning role to user with GUID: {userGuid}", userGuid);
-
-            // Get the User and Team from the database
-            var user = await _userRepository.GetUserByGuidAsync(userGuid);
-            var team = await _dbContext.Teams.FirstOrDefaultAsync(t => t.Guid == roleCreateRequestDto.TeamGuid);
-            // convert to a get team by guid method in team repo or add null check here
-
-            // Create a new Role instance
-            var role = new Role
-            {
-                RoleName = Enum.Parse<RoleNameEnum>(roleCreateRequestDto.RoleName),
-                UserId = user.UserId,
-                User = user,
-                TeamId = team.TeamId,
-                Team = team,
-                RoleStatus = RoleStatusEnum.Pending,
-                CreatedOn = DateTime.UtcNow
-            };
-
-            // Add Roll to DbContext
-            _dbContext.Roles.Add(role);
-
-
-            // Create a new RoleRequest instance for this role
-            var roleRequest = new RoleRequest
-            {
-                RoleId = role.RoleId,
-                Role = role,
-                UserId = user.UserId,
-                User = user,
-                TeamId = team.TeamId,
-                Team = team,
-                Status = RoleRequestStatusEnum.Pending,
-                RequestedOn = DateTime.UtcNow
-            };
-
-            // Add RoleRequest to DbContext
-            _dbContext.RoleRequests.Add(roleRequest);
-
-            // Update the RoleRequest property on the Role instance
-            role.RoleRequestId = roleRequest.RoleRequestId;
-            role.RoleRequest = roleRequest;
-            
-            _logger.LogDebug("RoleRepository: Saving assigned role to the database.");
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<Role>> GetAllRolesAsync()
-        {  
-            _logger.LogDebug("RoleRepository: Retrieving all roles from the database.");
-            return await _dbContext.Roles.ToListAsync();
-        }
 
         public async Task<IEnumerable<Role>> GetRolesByUserGuidAsync(Guid userGuid)
         {
-            var user = await _userRepository.GetUserByGuidAsync(userGuid);
+            _logger.LogDebug("RoleRepository: Retrieving roles by user GUID: {Guid}", userGuid);
 
-            _logger.LogDebug("RoleRepository: Retrieving role by user GUID: {Guid}", userGuid);
-            return user.Roles;
+            var roles = await _dbContext.Users.Where(u => u.Guid == userGuid).Select(u => u.Roles).FirstOrDefaultAsync();
+            if (roles == null)
+            {
+                _logger.LogWarning("RoleRepository: Roles for user with GUID {Guid} not found", userGuid);
+                throw new EntityNotFoundException("RoleRepository", nameof(roles), userGuid);
+            }
+            return roles;
         }
 
         public async Task<IEnumerable<User>> GetUsersByRoleAsync(RoleNameEnum role)
         {
-            _logger.LogDebug("RoleRepository: Retrieving users by role: {Role}", role);
+            _logger.LogDebug("RoleRepository: Retrieving users by role type: {RoleNameEnum}", role);
 
-            var users = await _dbContext.Users.Include(u => u.Roles).Where(u => u.Roles.Any(r => r.RoleName == role)).ToListAsync();
+            var users = await _dbContext.Users.Where(u => u.Roles.Any(r => r.RoleName == role)).ToListAsync();
             if (users == null)
             {
-                _logger.LogWarning("RoleRepository: No users found with role: {Role}", role);
+                _logger.LogWarning("RoleRepository: Users with role type {RoleNameEnum} not found", role);
                 throw new EntityNotFoundException("RoleRepository", nameof(users), role);
             }
             return users;
@@ -110,46 +115,31 @@ namespace SquadSync.Data.Repositories
 
         public async Task<IEnumerable<User>> GetUserWithMultipleRolesAsync(RoleNameEnum[] roles)
         {
-            _logger.LogDebug("RoleRepository: Retrieving users with multiple roles: {Roles}", roles);
+            _logger.LogDebug("RoleRepository: Retrieving users with multiple roles");
 
-            var users = await _dbContext.Users.Include(u => u.Roles).Where(u => u.Roles.Any(r => roles.Contains(r.RoleName))).ToListAsync();
+            var users = await _dbContext.Users.Where(u => u.Roles.Any(r => roles.Contains(r.RoleName))).ToListAsync();
             if (users == null)
             {
-                _logger.LogWarning("RoleRepository: No users found with roles: {Roles}", roles);
+                _logger.LogWarning("RoleRepository: Users with multiple roles not found");
                 throw new EntityNotFoundException("RoleRepository", nameof(users), roles);
             }
             return users;
         }
 
-        public async Task RemoveRoleFromUserAsync(Guid userGuid, Guid roleGuid)
+        public async Task UpdateRoleAsync(Role role)
         {
-            _logger.LogDebug("RoleRepository: Start removing role with GUID: {roleGuid} from user with GUID: {userGuid}", roleGuid, userGuid);
-
-            // Get the Role from the database
-            var role = await _dbContext.Roles
-                                       .Include(r => r.RoleRequest) // Include the RoleRequest in the query
-                                       .FirstOrDefaultAsync(r => r.Guid == roleGuid && r.User.Guid == userGuid);
+            _logger.LogDebug("RoleRepository: Start updating role with GUID: {Guid}", role.Guid);
 
             if (role == null)
             {
-                throw new EntityNotFoundException("RoleRepository", nameof(role), roleGuid);
+                _logger.LogWarning("RoleRepository: Role is null");
+                throw new CustomArgumentNullException("RoleRepository, ", nameof(role));
             }
 
-            // Soft delete (archive) the role
-            role.ArchivedOn = DateTime.UtcNow;
-            role.RoleStatus = RoleStatusEnum.Cancelled;
-
-            // Soft delete (archive) the associated RoleRequest if it exists
-            if (role.RoleRequest != null)
-            {
-                role.RoleRequest.ArchivedOn = DateTime.UtcNow;
-                role.RoleRequest.Status = RoleRequestStatusEnum.Cancelled;
-            }
-
-            // Save changes to the database
-            _logger.LogDebug("RoleRepository: Finish removing role with GUID: {roleGuid} from user with GUID: {userGuid}", roleGuid, userGuid);
+            _dbContext.Roles.Update(role);
             await _dbContext.SaveChangesAsync();
-        }
 
+            _logger.LogDebug("RoleRepository: Finished updating role with GUID: {Guid}", role.Guid);
+        }
     }
 }

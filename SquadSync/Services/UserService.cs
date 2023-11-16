@@ -111,8 +111,8 @@ namespace SquadSync.Services
                 user.PhoneNumber = dto.PhoneNumber ?? user.PhoneNumber;
                 user.UserStatus = user.UserStatus;
                 user.CreatedOn = user.CreatedOn;
-                // Insert UpdatedOn current DateTime
-                user.UpdatedOn = DateTime.UtcNow;
+                // Insert ModifiedOn current DateTime
+                user.ModifiedOn = DateTime.UtcNow;
                 user.ArchivedOn = user.ArchivedOn;
 
                 await _userRepository.UpdateUserAsync(user);
@@ -192,7 +192,7 @@ namespace SquadSync.Services
                 PhoneNumber = dto.PhoneNumber ?? null,
                 UserStatus = UserStatusEnum.RegisteredPending,  // Should this be handled differently?
                 CreatedOn = DateTime.UtcNow,
-                UpdatedOn = null,
+                ModifiedOn = null,
                 ArchivedOn = null
             };
 
