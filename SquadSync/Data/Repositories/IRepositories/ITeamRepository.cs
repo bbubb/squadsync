@@ -7,7 +7,7 @@ namespace SquadSync.Data.Repositories.IRepositories
         Task<IEnumerable<Team>> GetAllTeamsAsync();
         Task<IEnumerable<Team>> GetAllActiveTeamsAsync();
         Task<Team> GetTeamByGuidAsync(Guid guid);
-        Task<Team> GetTeamsByNameAsync(string name);
+        Task<IEnumerable<Team>> GetTeamsByNameAsync(string name);
         Task CreateTeamAsync(Team team);
         Task UpdateTeamAsync(Team team);
         Task ArchiveTeamAsync(Team team);
