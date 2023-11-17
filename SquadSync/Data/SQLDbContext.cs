@@ -9,6 +9,7 @@ namespace SquadSync.Data
         { }
 
         //DbSets for tables
+        public DbSet<OrgUnit> OrgUnits { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
