@@ -86,13 +86,13 @@ namespace SquadSync.Services
             return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
         }
 
-        public async Task<ServiceResult<UserResponseDto>> UpdateUserByGuidAsync(Guid guid, UserUpdateRequestDto dto)
+        public async Task<ServiceResult<UserResponseDto>> UpdateUserByGuidAsync(UserUpdateRequestDto dto)
         {
-            _logger.LogInformation("UserService: Updating user with GUID: {Guid}", guid);
+            _logger.LogInformation("UserService: Updating user with GUID: {Guid}", dto.UserGuid);
             try
             {
 
-                var user = await _userRepository.GetUserByGuidAsync(guid);
+                var user = await _userRepository.GetUserByGuidAsync(dto.UserGuid);
 
                 // Apply changes from dto to user
                 user.FirstName = dto.FirstName ?? user.FirstName;
@@ -118,7 +118,7 @@ namespace SquadSync.Services
                 await _userRepository.UpdateUserAsync(user);
 
                 // Return updated user dto
-                _logger.LogInformation("UserService: Finished updating user with GUID: {Guid}", guid);
+                _logger.LogInformation("UserService: Finished updating user with GUID: {Guid}", dto.UserGuid);
                 return ServiceResult<UserResponseDto>.SuccessResult(_mapper.Map<UserResponseDto>(user));
             }
             catch (Exception ex)
