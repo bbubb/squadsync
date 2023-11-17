@@ -11,7 +11,7 @@ namespace SquadSync.Services.IServices
         Task<ServiceResult<UserResponseDto>> GetUserDtoByGuidAsync(Guid guid);
         Task<ServiceResult<UserResponseDto>> GetUserDtoByEmailNormalizedAsync(string email);
         Task<ServiceResult<UserResponseDto>> CreateUserAsync(UserCreateRequestDto dto);
-        Task<ServiceResult<UserResponseDto>> UpdateUserByGuidAsync(Guid guid, UserUpdateRequestDto dto);
+        Task<ServiceResult<UserResponseDto>> UpdateUserByGuidAsync(UserUpdateRequestDto dto);
         Task<ServiceResult<UserResponseDto>> ArchiveUserByGuidAsync(Guid guid);
         Task<ServiceResult> DeleteUserByGuidAsync(Guid guid);
 
