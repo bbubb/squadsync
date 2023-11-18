@@ -30,6 +30,7 @@ namespace SquadSync.DTOs.Validators
 
             RuleFor(user => user.DateOfBirth)
                 .Must(dob => dob == null || dob.Value <= DateTime.Today)
+                .Must(dob => typeof(DateTime).IsAssignableFrom(dob.GetType()))
                 .WithMessage("Date of birth must not be a future date.");
 
             RuleFor(user => user.PhoneNumber)
