@@ -2,10 +2,11 @@
 {
     public enum RoleNameEnum
     {
-        Player,
         Coach,
+        Director,
+        Guardian,
         Manager,
-        Guardian
+        Player          
     }
 
     public static class RoleNameEnumExtensions
@@ -14,14 +15,17 @@
         {
             switch (roleName)
             {
+
+                case RoleNameEnum.Coach:
+                    return "Controls team strategies and player development.";
+                case RoleNameEnum.Director:
+                    return "Owns the organization.";
+                case RoleNameEnum.Guardian:
+                    return "Management and oversight of a specific player.";
+                case RoleNameEnum.Manager:
+                    return "Manages administrative duties.";
                 case RoleNameEnum.Player:
                     return "Participates in games and team activities.";
-                case RoleNameEnum.Coach:
-                    return "Manages team strategies and player development.";
-                case RoleNameEnum.Manager:
-                    return "Handles team administrative duties.";
-                case RoleNameEnum.Guardian:
-                    return "Manages player's account and team participation.";
                 default:
                     return String.Empty;
             }

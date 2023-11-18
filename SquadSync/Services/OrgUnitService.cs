@@ -13,16 +13,22 @@ namespace SquadSync.Services
     public class OrgUnitService : IOrgUnitService
     {
         readonly IOrgUnitRepository _orgUnitRepository;
+        readonly IUserRepository _userRepository;
+        readonly IRoleRepository _roleRepository;
         readonly IMapper _mapper;
         readonly ILogger<OrgUnitService> _logger;
 
 
         public OrgUnitService(
             IOrgUnitRepository orgUnitRepository,
+            IUserRepository userRepistory,
+            IRoleRepository roleRepository,
             IMapper mapper,
             ILogger<OrgUnitService> logger)
         {
             _orgUnitRepository = orgUnitRepository ?? throw new ArgumentException(nameof(orgUnitRepository));
+            _userRepository = userRepistory ?? throw new ArgumentNullException(nameof(userRepistory));
+            _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -72,11 +78,22 @@ namespace SquadSync.Services
             _logger.LogInformation("OrgUnitService: Creating OrgUnit with Name: {orgUnitName}", dto.OrgUnitName);
             try
             {
+                // Validate Owner
+                var owner = await _userRepository.GetUserByGuidAsync(dto.OwnerUserGuid);
+                if (owner == null)
+                {
+                    _logger.LogWarning("OrgUnitService: Invalid owner user with Guid: {OwnerUserGuid}", dto.OwnerUserGuid);
+                    return ServiceResult<OrgUnitDto>.Failure("Invalid owner user.");
+                }
+
                 var orgUnit = _mapper.Map<OrgUnit>(dto);
 
                 orgUnit.Guid = Guid.NewGuid();
                 orgUnit.CreatedOn = DateTime.UtcNow;
                 orgUnit.OrgUnitStatus = OrgUnitStatusEnum.RegisteredPending;
+                orgUnit.Owner = owner;
+                orgUnit.Users = new List<User> { owner };
+                // orgUnit.Roles = new List<Role>(_roleRepository.CreateRoleAsync); // Consider how to handle Roles and RoleRequest
 
                 await _orgUnitRepository.CreateAsync(orgUnit);
 
