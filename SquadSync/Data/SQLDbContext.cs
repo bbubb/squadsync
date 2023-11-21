@@ -13,6 +13,7 @@ namespace SquadSync.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
         public DbSet<Team> Teams { get; set; }
 
 
