@@ -13,6 +13,7 @@ namespace SquadSync.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
         public DbSet<Team> Teams { get; set; }
 
 
@@ -93,6 +94,27 @@ namespace SquadSync.Data
                       .WithMany(t => t.RoleRequests)
                       .HasForeignKey(rr => rr.TeamId)
                       .IsRequired();
+            });
+        }
+
+
+        private void ConfigureOrgUnitEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrgUnit>(entity =>
+            {
+                entity.HasKey(ou => ou.OrgUnitId);
+                entity.Property(ou => ou.OrgUnitName).IsRequired();
+
+                // OrgU to Role is Many-to-One
+                entity.HasMany(t => t.Roles)
+                      .WithOne(r => r.Team)
+                      .HasForeignKey(r => r.TeamId)
+                      .IsRequired();
+
+                // Team to RoleRequest is Many-to-One
+                entity.HasMany(t => t.RoleRequests)
+                      .WithOne(rr => rr.Team)
+                      .HasForeignKey(rr => rr.TeamId);
             });
         }
 

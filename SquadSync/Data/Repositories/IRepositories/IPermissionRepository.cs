@@ -10,7 +10,6 @@ namespace SquadSync.Data.Repositories.IRepositories
         Task<Permission> GetPermissionByGuidAsync(Guid permissionGuid);
         Task<IEnumerable<Permission>> GetPermissionsAsync();
         Task<IEnumerable<Permission>> GetPermissionsByRoleGuidAsync(Guid roleGuid);
-        Task<IEnumerable<Permission>> GetPermissionsByRoleNameAsync(string roleName);
         Task UpdatePermissionAsync(Permission permission);
     }
 }
