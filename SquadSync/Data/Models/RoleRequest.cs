@@ -13,8 +13,8 @@ namespace SquadSync.Data.Models
         public virtual Role Role { get; set; }
         public long UserId { get; set; }
         public virtual User User { get; set; }
-        public long TeamId { get; set; }
-        public virtual Team Team { get; set; }
+        public long OrgUnitId { get; set; }
+        public virtual OrgUnit OrgUnit { get; set; }
         public RoleRequestStatusEnum Status { get; set; }
         public string? Reason { get; set; }
         public DateTime RequestedOn { get; set; }

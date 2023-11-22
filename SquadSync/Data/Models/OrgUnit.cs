@@ -2,15 +2,15 @@
 
 namespace SquadSync.Data.Models
 {
-    public interface OrgUnit
+    public interface OrgUnit : IRoleBearer
     {
         public Guid Guid { get; set; }
         public long OrgUnitId { get; set; }
         public string OrgUnitName { get; set; }
         public string? OrgUnitDescription { get; set; }
-        public IList<User> Users { get; set; }
-        public IList<Role> Roles { get; set; }
-        public IList<RoleRequest>? RoleRequests { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<Role> Roles { get; set; }
+        public ICollection<RoleRequest>? RoleRequests { get; set; }
         public OrgUnitStatusEnum OrgUnitStatus { get; set; }
         public User Owner { get; set; }
         public DateTime CreatedOn { get; set; }
