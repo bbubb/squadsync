@@ -8,9 +8,9 @@ namespace SquadSync.Data.Repositories.IRepositories
     public interface IRoleRepository
     {
         Task<IEnumerable<Role>> GetAllRolesAsync();
-        Task<IEnumerable<User>> GetUsersByRoleAsync(RoleNameEnum role);
-        Task<IEnumerable<User>> GetUserWithMultipleRolesAsync(RoleNameEnum[] roles);
-        Task<IEnumerable<Role>> GetRolesByUserGuidAsync (Guid guid);
+        Task<IEnumerable<IRoleBearer>> GetBearersByOURoleAsync(Role ouRole);
+        Task<IEnumerable<IRoleBearer>> GetBearersWithMultipleOURolesAsync(Role[] ouRoles);
+        Task<IEnumerable<Role>> GetRolesByBearerGuidAsync (Guid roleBearerguid);
         Task<Role> GetRoleByGuidAsync(Guid guid);
         Task CreateRoleAsync(Role role);
         Task UpdateRoleAsync(Role role);

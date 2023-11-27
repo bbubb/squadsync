@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.ObjectModel;
+using AutoMapper;
 using SquadSync.Data.Models;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.DTOs.Requests;
@@ -92,7 +93,15 @@ namespace SquadSync.Services
                 orgUnit.CreatedOn = DateTime.UtcNow;
                 orgUnit.OrgUnitStatus = OrgUnitStatusEnum.RegisteredPending;
                 orgUnit.Owner = owner;
-                orgUnit.Users = new List<User> { owner };
+                orgUnit.OUMembers = new Collection<IRoleBearer> { owner };
+                orgUnit.OURoles = new Collection<Role> 
+                { 
+                    await _roleRepository.CreateRoleAsync(new RoleCreateRequestDto 
+                    {
+                         RoleName = "Owner",
+                          RoleDescription = "Owner of the OrgUnit",
+                            = dto.OwnerUserGuid 
+                           }) };
                 // orgUnit.Roles = new List<Role>(_roleRepository.CreateRoleAsync); // Consider how to handle Roles and RoleRequest
 
                 await _orgUnitRepository.CreateAsync(orgUnit);
