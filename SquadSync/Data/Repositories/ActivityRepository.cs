@@ -66,7 +66,7 @@ namespace SquadSync.Data.Repositories
             _logger.LogDebug("ActivityRepository: Finished deleting activity with GUID: {Guid}", activity.ActivityGuid);
         }
 
-        public async Task<ICollection<Activity>> GetAllActivitiesAsync()
+        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync()
         {
             _logger.LogDebug("ActivityRepository: Start getting all activities.");
 
@@ -98,7 +98,7 @@ namespace SquadSync.Data.Repositories
             return activity;
         }
 
-        public async Task<ICollection<Activity>> GetActivitiesByOrganizer(IRoleBearer organizer)
+        public async Task<IEnumerable<Activity>> GetActivitiesByOrganizer(IRoleBearer organizer)
         {
             _logger.LogDebug("ActivityRepository: Start getting activities by organizer with GUID: {Guid}", organizer.RoleBearerGuid);
 
@@ -115,7 +115,7 @@ namespace SquadSync.Data.Repositories
         }
 
         // Get activities by all participants
-        public async Task<ICollection<Activity>> GetActivitieByParticipants(ICollection<IRoleBearer> participants)
+        public async Task<IEnumerable<Activity>> GetActivitieByParticipants(IEnumerable<IRoleBearer> participants)
         {
             _logger.LogDebug("ActivityRepository: Start getting activities by participants.");
 

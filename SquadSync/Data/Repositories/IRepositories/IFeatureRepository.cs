@@ -8,7 +8,7 @@ public interface IFeatureRepository
     Task ArchiveFeatureAsync(Feature feature);
     Task DeleteFeatureAsync(Feature feature);
     Task<Feature> GetFeatureByGuidAsync(Guid guid);
-    Task<ICollection<Feature>> GetAllFeaturesAsync();
+    Task<IEnumerable<Feature>> GetAllFeaturesAsync();
     Task ToggleFeatureStatusAsync(Guid featureGuid, bool isActiveFeature);
     Task UpdateFeatureAsync(Feature feature);
 }

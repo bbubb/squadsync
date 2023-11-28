@@ -8,8 +8,8 @@ namespace SquadSync.Data.Repositories.IRepositories
         Task ArchiveActivityAsync(Activity activity);
         Task DeleteActivityAsync(Activity activity);
         Task<Activity> GetActivityByGuidAsync(Guid activityGuid);
-        Task<ICollection<Activity>> GetAllActivitiesAsync();
-        Task<ICollection<Activity>> GetActivitieByParticipants(ICollection<IRoleBearer> participants);
-        Task<ICollection<Activity>> GetActivitiesByOrganizer(IRoleBearer organizer);
+        Task<IEnumerable<Activity>> GetAllActivitiesAsync();
+        Task<IEnumerable<Activity>> GetActivitieByParticipants(IEnumerable<IRoleBearer> participants);
+        Task<IEnumerable<Activity>> GetActivitiesByOrganizer(IRoleBearer organizer);
     }
 }
