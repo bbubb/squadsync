@@ -66,7 +66,7 @@ public class FeatureRepository : IFeatureRepository
         _logger.LogDebug("FeatureRepository: Finished deleting feature with GUID: {Guid}", feature.FeatureGuid);
     }
 
-    public async Task<ICollection<Feature>> GetAllFeaturesAsync()
+    public async Task<IEnumerable<Feature>> GetAllFeaturesAsync()
     {
         _logger.LogDebug("FeatureRepository: Start getting all features.");
 

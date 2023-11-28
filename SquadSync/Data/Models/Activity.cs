@@ -11,8 +11,8 @@ namespace SquadSync.Data.Models
         public string? ActivityDescription { get; set; }
         public DateTime ActivityStart { get; set; }
         public DateTime ActivityEnd { get; set; }
-        public string Location { get; set; } // Address, GPS, name of place, etc. // Will probably need to be an object
-        public string Site { get; set; } // Ex: Field 13B // Will probably need to be an object
+        public Location Location { get; set; } 
+        public Site? Site { get; set; } 
         public ActivityTypeEnum ActivityType { get; set; }
         public ActivityStatusEnum ActivityStatus { get; set; }
         public IRoleBearer Organizer { get; set; }
