@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SquadSync.Data.Models
 {
-    public class User
+    public class User : IRoleBearer
     {
         public Guid Guid { get; set; }
         public long UserId { get; set; }
@@ -15,8 +15,19 @@ namespace SquadSync.Data.Models
         public DateTime? DateOfBirth { get; set; }
         public string? PhoneNumber { get; set; }
         public UserStatusEnum UserStatus { get; set; }
-        public IList<Role>? Roles { get; set; }
-        public IList<RoleRequest>? RoleRequests { get; set; }
+        public Guid RoleBearerGuid
+        {
+            get { return Guid; }
+            set { Guid = value; }
+        }
+        public long RoleBearerId
+        {
+            get { return UserId; }
+            set { UserId = value; }
+        }
+        public ICollection<Role>? Roles { get; set; }
+        public ICollection<RoleRequest>? RoleRequests { get; set; }
+        public ICollection<OrgUnit>? OwnedOrgUnits { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime? ArchivedOn { get; set; }

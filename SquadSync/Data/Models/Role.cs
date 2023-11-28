@@ -6,13 +6,16 @@ namespace SquadSync.Data.Models
     {
         public Guid Guid { get; set; }
         public long RoleId { get; set; }
-        public RoleNameEnum RoleName { get; set; }
-        public long UserId { get; set; }
-        public virtual User User { get; set; }
-        public long TeamId { get; set; }
-        public virtual Team Team { get; set; }
+        public string RoleName { get; set; }
+        public string? RoleDescription { get; set; }
+        public long RoleBearerId { get; set; }
+        public virtual IRoleBearer RoleBearer { get; set; }
+        public long OrgUnitId { get; set; }
+        public virtual OrgUnit OrgUnit { get; set; }
         public long RoleRequestId { get; set; }
         public virtual RoleRequest RoleRequest { get; set; }
+        public ICollection<Permission> Permissions { get; set; }
+        public ICollection<RolePermission> RolePermissions { get; set; }
         public RoleStatusEnum RoleStatus { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }

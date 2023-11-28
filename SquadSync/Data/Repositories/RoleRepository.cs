@@ -11,13 +11,16 @@ namespace SquadSync.Data.Repositories
     public class RoleRepository : IRoleRepository
     {
         SQLDbContext _dbContext;
-        UserRepository _userRepository;
+        // UserRepository _userRepository;
         ILogger<RoleRepository> _logger;
 
-        public RoleRepository(SQLDbContext dbContext, UserRepository userRepository,ILogger<RoleRepository> logger)
+        public RoleRepository(
+            SQLDbContext dbContext,
+            // UserRepository userRepository,
+            ILogger<RoleRepository> logger)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            // _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -29,7 +32,7 @@ namespace SquadSync.Data.Repositories
             {
                 _logger.LogWarning("RoleRepository: Role is null");
                 throw new CustomArgumentNullException("RoleRepository, ", nameof(role));
-            }   
+            }
 
             _dbContext.Roles.Update(role);
             await _dbContext.SaveChangesAsync();
@@ -74,10 +77,10 @@ namespace SquadSync.Data.Repositories
             return await _dbContext.Roles.ToListAsync();
         }
 
-        public async Task<Role> GetRoleByGuidAsync (Guid roleGuid)
+        public async Task<Role> GetRoleByGuidAsync(Guid roleGuid)
         {
             _logger.LogDebug("RoleRepository: Retrieving role by GUID: {Guid}", roleGuid);
-            
+
             var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Guid == roleGuid);
             if (role == null)
             {
@@ -87,43 +90,58 @@ namespace SquadSync.Data.Repositories
             return role;
         }
 
-        public async Task<IEnumerable<Role>> GetRolesByUserGuidAsync(Guid userGuid)
+        public async Task<IEnumerable<Role>> GetRolesByBearerGuidAsync(Guid roleBearerGuid)
         {
-            _logger.LogDebug("RoleRepository: Retrieving roles by user GUID: {Guid}", userGuid);
+            _logger.LogDebug("RoleRepository: Retrieving roles by bearer GUID: {Guid}", roleBearerGuid);
 
-            var roles = await _dbContext.Users.Where(u => u.Guid == userGuid).Select(u => u.Roles).FirstOrDefaultAsync();
+            var roles = await _dbContext.Roles
+                                        .Where(r => r.RoleBearer.RoleBearerGuid == roleBearerGuid)
+                                        .ToListAsync();
+
             if (roles == null)
             {
-                _logger.LogWarning("RoleRepository: Roles for user with GUID {Guid} not found", userGuid);
-                throw new EntityNotFoundException("RoleRepository", nameof(roles), userGuid);
+                _logger.LogWarning("RoleRepository: Roles for bearer with GUID {Guid} not found", roleBearerGuid);
+                throw new EntityNotFoundException("RoleRepository", nameof(roles), roleBearerGuid);
             }
             return roles;
         }
 
-        public async Task<IEnumerable<User>> GetUsersByRoleAsync(RoleNameEnum role)
+        public async Task<IEnumerable<IRoleBearer>> GetBearersByOURoleAsync(Role ouRole)
         {
-            _logger.LogDebug("RoleRepository: Retrieving users by role type: {RoleNameEnum}", role);
+            _logger.LogDebug("RoleRepository: Retrieving role bearers by role type: {RoleName}", ouRole.RoleName);
 
-            var users = await _dbContext.Users.Where(u => u.Roles.Any(r => r.RoleName == role)).ToListAsync();
-            if (users == null)
+            var bearers = await _dbContext.Roles
+                                          .Where(r => r.RoleName == ouRole.RoleName && r.RoleBearer != null)
+                                          .Select(r => r.RoleBearer)
+                                          .Distinct()
+                                          .ToListAsync();
+
+            if (!bearers.Any())
             {
-                _logger.LogWarning("RoleRepository: Users with role type {RoleNameEnum} not found", role);
-                throw new EntityNotFoundException("RoleRepository", nameof(users), role);
+                _logger.LogWarning("RoleRepository: Role bearers with role type {RoleName} not found", ouRole.RoleName);
+                throw new EntityNotFoundException("RoleRepository", "Role bearers", ouRole.RoleName);
             }
-            return users;
+
+            return bearers;
         }
 
-        public async Task<IEnumerable<User>> GetUserWithMultipleRolesAsync(RoleNameEnum[] roles)
+        public async Task<IEnumerable<IRoleBearer>> GetBearersWithMultipleOURolesAsync(Role[] ouRoles)
         {
-            _logger.LogDebug("RoleRepository: Retrieving users with multiple roles");
+            _logger.LogDebug("RoleRepository: Retrieving bearers with multiple OU roles");
 
-            var users = await _dbContext.Users.Where(u => u.Roles.Any(r => roles.Contains(r.RoleName))).ToListAsync();
-            if (users == null)
+            // Group roles by bearer and select only those bearers that have multiple roles
+            var bearersWithMultipleRoles = ouRoles.GroupBy(r => r.RoleBearer)
+                                                           .Where(group => group.Count() > 1)
+                                                           .Select(group => group.Key)
+                                                           .ToList();
+
+            if (!bearersWithMultipleRoles.Any())
             {
-                _logger.LogWarning("RoleRepository: Users with multiple roles not found");
-                throw new EntityNotFoundException("RoleRepository", nameof(users), roles);
+                _logger.LogWarning("RoleRepository: No bearers found with multiple roles in specified OU roles");
+                throw new EntityNotFoundException("RoleRepository", "Bearers with multiple roles in specified OU roles");
             }
-            return users;
+
+            return bearersWithMultipleRoles;
         }
 
         public async Task UpdateRoleAsync(Role role)

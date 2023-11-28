@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.ObjectModel;
+using AutoMapper;
 using SquadSync.Data.Models;
 using SquadSync.Data.Repositories.IRepositories;
 using SquadSync.DTOs.Requests;
@@ -92,9 +93,24 @@ namespace SquadSync.Services
                 orgUnit.CreatedOn = DateTime.UtcNow;
                 orgUnit.OrgUnitStatus = OrgUnitStatusEnum.RegisteredPending;
                 orgUnit.Owner = owner;
-                orgUnit.Users = new List<User> { owner };
-                // orgUnit.Roles = new List<Role>(_roleRepository.CreateRoleAsync); // Consider how to handle Roles and RoleRequest
-
+                orgUnit.OUMembers = new Collection<IRoleBearer> {owner };
+                orgUnit.OURoles = new Collection<Role> { };
+                orgUnit.OURoleRequests = new Collection<RoleRequest> { };
+                orgUnit.Roles = new Collection<Role> { };
+                orgUnit.RoleRequests = new Collection<RoleRequest> { };
+                var ownerRole = new Role
+                {
+                    RoleName = "Owner",
+                    RoleDescription = "Owner of the OrgUnit",
+                    RoleBearerId = owner.RoleBearerId,
+                    OrgUnitId = orgUnit.OrgUnitId,
+                    // Populate permissions
+                    RolePermissions = new List<RolePermission>
+                           {
+                               new RolePermission { PermissionId = 1 }
+                           }
+                };
+                orgUnit.OURoles.Add(ownerRole);
                 await _orgUnitRepository.CreateAsync(orgUnit);
 
                 _logger.LogInformation("OrgUnitService: Finished creating OrgUnit with Name: {orgUnitName}", dto.OrgUnitName);
@@ -210,7 +226,7 @@ namespace SquadSync.Services
                     return ServiceResult<OrgUnitDto>.Failure($"OrgUnit with Guid: {dto.Guid} not found");
                 }
 
-                // Can I user AutoMapper here?
+                
                 // Consider which User/Role can modify which properties
                 //  **Maybe only the owner for now** Might need special method to transfer ownership
                 if (orgUnit.Owner.Guid != requestUserGuid)
@@ -222,9 +238,11 @@ namespace SquadSync.Services
                 orgUnit.OrgUnitDescription = dto.OrgUnitDescription ?? orgUnit.OrgUnitDescription;
                 orgUnit.OrgUnitStatus = Enum.Parse<OrgUnitStatusEnum>(dto.OrgUnitStatus ?? orgUnit.OrgUnitStatus.ToString());
                 orgUnit.Owner = _mapper.Map<User>(dto.Owner) ?? orgUnit.Owner;
-                orgUnit.Users = _mapper.Map<IList<User>>(dto.Users) ?? orgUnit.Users;
-                orgUnit.Roles = _mapper.Map<IList<Role>>(dto.Roles) ?? orgUnit.Roles;
-                orgUnit.RoleRequests = _mapper.Map<IList<RoleRequest>>(dto.RoleRequests) ?? orgUnit.RoleRequests;
+                orgUnit.OUMembers = _mapper.Map<ICollection<IRoleBearer>>(dto.OUMembers) ?? orgUnit.OUMembers;
+                orgUnit.OURoles = _mapper.Map<ICollection<Role>>(dto.OURoles) ?? orgUnit.OURoles;
+                orgUnit.OURoleRequests = _mapper.Map<ICollection<RoleRequest>>(dto.OURoleRequests) ?? orgUnit.OURoleRequests;
+                orgUnit.Roles = _mapper.Map<ICollection<Role>>(dto.Roles) ?? orgUnit.Roles;
+                orgUnit.RoleRequests = _mapper.Map<ICollection<RoleRequest>>(dto.RoleRequests) ?? orgUnit.RoleRequests;
                 orgUnit.Modified = DateTime.UtcNow;
 
                 await _orgUnitRepository.UpdateAsync(orgUnit);

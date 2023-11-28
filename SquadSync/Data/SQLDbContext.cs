@@ -11,18 +11,18 @@ namespace SquadSync.Data
         //DbSets for tables
         public DbSet<OrgUnit> OrgUnits { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Feature> Features { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
         public DbSet<Permission> Permissions { get; set; }
-        public DbSet<Team> Teams { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ConfigureUserEntity(modelBuilder);
             ConfigureRoleEntity(modelBuilder);
             ConfigureRoleRequestEntity(modelBuilder);
-            ConfigureTeamEntity(modelBuilder);
+            ConfigureOrgUnitEntity(modelBuilder);
+            ConfigurePermissionEntity(modelBuilder);
         }
 
         // User
@@ -33,34 +33,40 @@ namespace SquadSync.Data
                 entity.HasKey(u => u.UserId);
                 entity.Property(u => u.UserName).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
+                entity.Property(u => u.RoleBearerGuid).IsRequired();
+                entity.Property(u => u.RoleBearerId).IsRequired();
 
-                // User to Role is Many-to-One
-                entity.HasMany(u => u.Roles)
-                    .WithOne(r => r.User);
-
-                // User to RoleRequest is Many-to-One
-                entity.HasMany(u => u.RoleRequests)
-                    .WithOne(rr => rr.User);
+                // User to OrgUnit is Many-to-One
+                entity.HasMany(u => u.OwnedOrgUnits)
+                      .WithOne(ou => ou.Owner)
+                      .HasForeignKey(ou => ou.OwnerId);
             });
         }
 
-        //Role
+        // Feature
+        private void ConfigureFeatureEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Feature>(entity =>
+            {
+                entity.HasKey(f => f.FeatureId);
+                entity.Property(f => f.FeatureName).IsRequired();
+                entity.Property(f => f.IsActiveFeature).IsRequired();
+                entity.Property(f => f.CreatedOn).IsRequired();
+                entity.Property(f => f.ArchivedOn).IsRequired();
+            });
+        }
+
+        // Role
         private void ConfigureRoleEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasKey(r => r.RoleId);
 
-                // Role to Team is One-to-Many
-                entity.HasOne(r => r.Team)
-                      .WithMany(t => t.Roles)
-                      .HasForeignKey(r => r.TeamId)
-                      .IsRequired();
-
-                // Role to User is One-to-Many
-                entity.HasOne(r => r.User)
-                      .WithMany(u => u.Roles)
-                      .HasForeignKey(r => r.UserId)
+                // Role to RoleBearer is One-to-Many
+                entity.HasOne(r => r.RoleBearer)
+                      .WithMany(rb => rb.Roles)
+                      .HasForeignKey(r => r.RoleBearerId)
                       .IsRequired();
 
                 // Role to RoleRequest is One-to-One
@@ -68,52 +74,67 @@ namespace SquadSync.Data
                       .WithOne(rr => rr.Role)
                       .HasForeignKey<RoleRequest>(rr => rr.RoleId)
                       .IsRequired();
+
+                // Role to Permission is Many-to-One
+                entity.HasMany(r => r.Permissions)
+                      .WithOne(p => p.Role)
+                      .HasForeignKey(p => p.RoleId)
+                      .IsRequired();
             });
         }
 
+        //RoleRequest
         private void ConfigureRoleRequestEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoleRequest>(entity =>
             {
                 entity.HasKey(rr => rr.RoleRequestId);
 
-                // One-to-One relationship between Role and RoleRequest
+                // RoleRequest to Role is One-to-One
                 entity.HasOne(rr => rr.Role)
                       .WithOne(r => r.RoleRequest)
                       .HasPrincipalKey<RoleRequest>(rr => rr.RoleId)
                       .IsRequired();
 
-                // One-to-Many relationship between User and RoleRequest
-                entity.HasOne(rr => rr.User)
-                      .WithMany (u => u.RoleRequests)
-                      .HasForeignKey(rr => rr.UserId)
-                      .IsRequired();
-
-                // One-to-Many relationship between Team and RoleRequest
-                entity.HasOne(rr => rr.Team)
-                      .WithMany(t => t.RoleRequests)
-                      .HasForeignKey(rr => rr.TeamId)
+                // RoleRequest to RoleBearer is One-to-Many
+                entity.HasOne(rr => rr.RoleBearer)
+                      .WithMany (rb => rb.RoleRequests)
+                      .HasForeignKey(rr => rr.RoleBearerId)
                       .IsRequired();
             });
         }
 
-        private void ConfigureTeamEntity(ModelBuilder modelBuilder)
+        //OrgUnit
+        private void ConfigureOrgUnitEntity(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Team>(entity =>
+            modelBuilder.Entity<OrgUnit>(entity =>
             {
-                entity.HasKey(t => t.TeamId);
-                entity.Property(t => t.TeamName).IsRequired();
-
-                // Team to Role is Many-to-One
-                entity.HasMany(t => t.Roles)
-                      .WithOne(r => r.Team)
-                      .HasForeignKey(r => r.TeamId)
+                entity.HasKey(ou => ou.OrgUnitId);
+                entity.Property(ou => ou.OrgUnitName).IsRequired();
+                entity.Property(ou => ou.OrgUnitStatus).IsRequired();
+                
+                // OrgUnit to user Owner is One-to-Many
+                entity.HasOne(ou => ou.Owner)
+                      .WithMany(u => u.OwnedOrgUnits)
+                      .HasForeignKey(ou => ou.OwnerId)
                       .IsRequired();
+            });
+        }
 
-                // Team to RoleRequest is Many-to-One
-                entity.HasMany(t => t.RoleRequests)
-                      .WithOne(rr => rr.Team)
-                      .HasForeignKey(rr => rr.TeamId);
+        //Permission
+        private void ConfigurePermissionEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.HasKey(p => p.PermissionId);
+                entity.Property(p => p.PermissionName).IsRequired();
+                entity.Property(p => p.IsActive).IsRequired();
+                
+                // Permission to Role is One-to-Many
+                entity.HasOne(p => p.Role)
+                      .WithMany(r => r.Permissions)
+                      .HasForeignKey(p => p.RoleId)
+                      .IsRequired();
             });
         }
     }
