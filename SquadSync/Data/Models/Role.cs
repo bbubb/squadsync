@@ -15,6 +15,7 @@ namespace SquadSync.Data.Models
         public long RoleRequestId { get; set; }
         public virtual RoleRequest RoleRequest { get; set; }
         public ICollection<Permission> Permissions { get; set; }
+        public ICollection<RolePermission> RolePermissions { get; set; }
         public RoleStatusEnum RoleStatus { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }

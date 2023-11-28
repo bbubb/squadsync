@@ -4,7 +4,7 @@
 // {
 //     public class TeamDto
 //     {
-//         Guid TeamGuid { get; set; }
+//         Guid OrgUnitGuid { get; set; }
 //         string TeamName { get; set; }
 //         string TeamDescription { get; set; }
 //         IList<UserResponseDto> Users { get; set; }
