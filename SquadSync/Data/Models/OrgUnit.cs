@@ -9,8 +9,7 @@ namespace SquadSync.Data.Models
         public string OrgUnitName { get; set; }
         public string? OrgUnitDescription { get; set; }
         public OrgUnitStatusEnum OrgUnitStatus { get; set; }
-        // public ICollection<User> Users { get; set; } // Might not need this
-        public ICollection<IRoleBearer> OUMembers { get; set; }  // probably replaces Users
+        public ICollection<IRoleBearer> OUMembers { get; set; }
         public ICollection<Role> OURoles { get; set; }
         public ICollection<RoleRequest>? OURoleRequests { get; set; }
         // Implement IRoleBearer
