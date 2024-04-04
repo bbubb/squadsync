@@ -2,18 +2,13 @@
 
 namespace SquadSync.Data.Models
 {
-    public class Team
+    public class Team : OrgUnit
     {
-        public Guid Guid { get; set; }
-        public long TeamId { get; set; }
-        public string TeamName { get; set; }
-        public string TeamDescription { get; set; }
-        public IList<User> Users { get; set; }
-        public IList<Role> Roles { get; set; }
-        public IList<RoleRequest> RoleRequests { get; set; }
-        public TeamStatusEnum TeamStatus { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? Modified { get; set; }
-        public DateTime? ArchivedOn { get; set; }
+        //// Future feature for custom kits
+        //public string TeamHomeKit { get; set; }
+        //public string TeamAwayKit { get; set; }
+        //public string TeamAlternateKit { get; set; }
+        public ICollection<Player> PlayerRoster { get; set; }
+        //public ICollection<TeamStat> TeamStats { get; set; } // Future feature for stats
     }
 }

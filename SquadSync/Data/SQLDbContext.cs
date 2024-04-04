@@ -14,10 +14,12 @@ namespace SquadSync.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<OrgUnit> OrgUnits { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Player> Players { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
         public DbSet<Site> Sites { get; set; }
+        public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
