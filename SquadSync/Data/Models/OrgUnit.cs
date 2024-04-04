@@ -27,6 +27,16 @@ namespace SquadSync.Data.Models
         public ICollection<RoleRequest>? RoleRequests { get; set; }
         public User Owner { get; set; }
         public long OwnerId { get; set; }
+        public string? OrgUnitLogo { get; set; }
+        public string? OrgUnitBanner { get; set; }
+        public string? OrgUnitMotto { get; set; }
+        public string? OrgUnitWebsite { get; set; }
+        public string? OrgUnitEmail { get; set; }
+        public string? OrgUnitPhone { get; set; }
+        public string? OrgUnitAddress { get; set; }
+        public string? OrgUnitColorPrimary { get; set; }
+        public string? OrgUnitColorSecondary { get; set; }
+        public string? OrgUnitColorTertiary { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? Modified { get; set; }
         public DateTime? ArchivedOn { get; set; }
