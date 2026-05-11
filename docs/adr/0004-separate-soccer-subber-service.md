@@ -6,30 +6,33 @@ Accepted for Sprint 0 foundation.
 
 ## Context
 
-SquadSync needs a path to demonstrate microservice integration, cloud/serverless readiness, and future lineup optimization behavior. The owner also wants to keep proprietary optimization details outside the public platform repository.
+SquadSync needs a clear service boundary for future lineup assistance. The core platform should own team, roster, match, availability, and lineup data. A separate service can later evaluate that data and return lineup suggestions.
 
-A separate `soccer-subber` service can provide this boundary. SquadSync can define a public-safe request/response contract while the actual algorithm remains outside the core platform.
+Keeping lineup assistance behind a service boundary also creates a useful learning path for API integration, cloud deployment, serverless patterns, and failure handling.
 
 ## Decision
 
-The public SquadSync monorepo will not contain the proprietary lineup optimization implementation.
+SquadSync will treat `soccer-subber` as a separate service.
 
-Instead:
+The core platform will:
 
-- SquadSync will define a public-safe service boundary for lineup suggestions.
-- The separate `soccer-subber` service will eventually implement the optimization behavior.
-- Early SquadSync development may use a mock lineup suggestion adapter.
-- Future integration can use HTTP, events, or AWS service patterns depending on the deployment phase.
+- Define request/response contracts for lineup suggestions
+- Provide a mock or adapter boundary during early development
+- Store team, roster, match, availability, and lineup data
+- Handle service failures gracefully
+- Keep manual lineup planning useful even when the external service is unavailable
+
+The `soccer-subber` service will eventually own lineup suggestion behavior.
 
 ## Consequences
 
 ### Benefits
 
-- Protects private algorithm/IP details.
 - Demonstrates service-boundary thinking.
 - Creates a natural AWS/serverless learning path.
 - Keeps the core platform simpler.
-- Allows the optimization service to evolve independently.
+- Allows the lineup assistance service to evolve independently.
+- Supports graceful degradation when the service is unavailable.
 
 ### Trade-offs
 
@@ -38,34 +41,28 @@ Instead:
 - Local development may need mocks or service emulation.
 - More moving parts when deployed.
 
-## Public Contract Direction
+## Contract Direction
 
-The public contract may include concepts such as:
+The contract may include concepts such as:
 
 - Team identifier
 - Match identifier
 - Formation
 - Available players
 - Player preferred positions
-- Simple planning constraints
+- Planning constraints
 - Suggested lineup assignments
-- Public-safe summary text
-
-The public contract should not include proprietary scoring methods, ranking formulas, or detailed optimization heuristics.
+- Planning summary text
 
 ## Alternatives Considered
 
-### Embed Optimization in SquadSync
+### Embed Lineup Assistance in SquadSync
 
-Rejected. This would simplify local development but would expose private logic and reduce the architecture value of a separate service boundary.
-
-### Keep Optimization Entirely Undocumented
-
-Rejected. The public platform should still show that it is designed for integration and cloud-native expansion.
+Rejected for the initial architecture. That would simplify local development but reduce the value of demonstrating a separate service boundary.
 
 ### Build Soccer-Subber First
 
-Rejected for now. The core platform needs enough roster/match/lineup data before the optimization service can be meaningfully integrated.
+Rejected for now. The core platform needs enough roster, match, and lineup data before the service can be meaningfully integrated.
 
 ## Review Trigger
 
