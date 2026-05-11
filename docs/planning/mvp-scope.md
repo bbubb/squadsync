@@ -74,12 +74,8 @@ The following areas are outside the first MVP and should be introduced only thro
 - Separate `soccer-subber` microservice deployment
 - AI-generated lineup explanation summaries
 - Auth provider integration
-- Advanced player development analytics
 - Mobile-first player/parent experience
 - Multi-team organization management
-- Tournament management
-- Advanced statistics engine
-- Billing or subscription behavior
 
 ## Success Criteria for the MVP
 
