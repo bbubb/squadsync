@@ -16,7 +16,7 @@ SquadSync will model team participation through a `TeamMembership` relationship.
 
 Core relationship:
 
-```text
+```
 User -> TeamMembership -> Team
 TeamMembership -> Role
 ```
@@ -36,7 +36,7 @@ A user may have multiple memberships across teams. Each membership describes the
 ### Trade-offs
 
 - Broader organization modeling is deferred.
-- Future expansion may add additional relationships around clubs, leagues, or organizations.
+- Future expansion may add additional relationships around clubs.
 - Authorization should remain simple until product behavior requires more detail.
 
 ## Alternatives Considered
@@ -51,4 +51,4 @@ Rejected. That would be simple initially but would make multi-team participation
 
 ## Review Trigger
 
-Revisit this ADR if SquadSync needs to model clubs, leagues, organizations, or nested team structures.
+Revisit this ADR if SquadSync needs to model clubs structures.
