@@ -1,13 +1,13 @@
 # Copilot Instructions
 
-SquadSync is a public, soccer-focused MVP used to demonstrate production-minded full-stack architecture. Keep generated suggestions aligned with the documented scope and ADRs.
+SquadSync is a soccer-focused MVP used to demonstrate production-minded full-stack architecture. Keep generated suggestions aligned with the documented scope and ADRs.
 
 ## Global Guidance
 
 - Prefer clear, explicit, maintainable code over clever abstractions.
-- Keep the implementation soccer-focused and portfolio-safe.
-- Do not introduce generalized competition-platform concepts unless a future ADR approves them.
-- Do not expose proprietary lineup/substitution algorithm details.
+- Keep the implementation soccer-focused.
+- Do not introduce broad new product areas unless a future ADR approves them.
+- Do not implement lineup optimization logic in the core platform unless explicitly requested by an approved issue.
 - Keep changes small and reviewable.
 - When architecture changes, update or propose an ADR.
 - When behavior changes, update tests and documentation.
@@ -19,7 +19,7 @@ SquadSync is a public, soccer-focused MVP used to demonstrate production-minded 
 - Use Entity Framework Core for persistence.
 - Use FluentValidation for request/use-case validation where appropriate.
 - Use Serilog for structured logging.
-- Prefer explicit membership modeling over polymorphic role-bearing abstractions.
+- Prefer explicit team membership modeling.
 
 ## Frontend Defaults
 
@@ -34,4 +34,4 @@ SquadSync is a public, soccer-focused MVP used to demonstrate production-minded 
 - Keep docs accurate and decision-oriented.
 - Avoid hype.
 - Explain trade-offs plainly.
-- Keep public docs strong but not strategically revealing.
+- Keep docs focused on current product scope and approved architecture.
