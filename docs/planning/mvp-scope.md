@@ -6,11 +6,11 @@ Draft for Sprint 0 review.
 
 ## Purpose
 
-This document defines the public MVP boundary for SquadSync. It keeps the project narrow enough to ship while still demonstrating meaningful architecture, domain modeling, full-stack delivery, and future cloud/service integration.
+This document defines the first shippable product slice for SquadSync. It keeps the project narrow enough to build while still demonstrating meaningful architecture, domain modeling, full-stack delivery, and future cloud/service integration.
 
 ## Product Statement
 
-SquadSync is a soccer-focused team management and match-planning platform for coaches. The MVP helps a coach organize a team roster, track player profiles and availability, plan matches, build lineups, and prepare for future integration with a separate lineup optimization service.
+SquadSync is a soccer-focused team management and match-planning platform for coaches. The MVP helps a coach organize a team roster, track player profiles and availability, plan matches, build lineups, and prepare for future integration with a separate lineup assistance service.
 
 ## Primary User
 
@@ -22,7 +22,7 @@ The primary MVP user is a soccer coach or team manager responsible for:
 - Tracking availability
 - Communicating lineup-related changes later through notification workflows
 
-Players and parents may become future user types, but the first public MVP should center on the coach workflow.
+Players and parents may become future user types, but the first MVP centers on the coach workflow.
 
 ## Included in MVP
 
@@ -35,8 +35,8 @@ Players and parents may become future user types, but the first public MVP shoul
 
 ### Membership and Roles
 
-- Represent team participation through explicit `TeamMembership` records
-- Assign membership roles such as Coach, AssistantCoach, Manager, Player, or Guardian/Viewer later if needed
+- Represent team participation through `TeamMembership` records
+- Assign membership roles such as Coach, AssistantCoach, Manager, Player, or Viewer
 - Keep authorization simple for the MVP
 
 ### Match Planning
@@ -55,9 +55,9 @@ Players and parents may become future user types, but the first public MVP shoul
 
 ### Soccer-Subber Integration Contract
 
-- Define a public-safe request/response contract for an external lineup suggestion service
+- Define a request/response contract for an external lineup suggestion service
 - Provide a mock or adapter boundary inside SquadSync
-- Keep actual optimization internals outside the public platform repository
+- Keep the core platform responsible for team, roster, match, and lineup data
 
 ### Event and Notification Readiness
 
@@ -65,24 +65,9 @@ Players and parents may become future user types, but the first public MVP shoul
 - Document future AWS eventing/notification architecture
 - Avoid implementing complex cloud infrastructure before the core product slice is functional
 
-## Excluded from MVP
+## Deferred Until Later
 
-The public MVP must not include:
-
-- Generalized competition-platform modeling
-- Universal sport/competition configuration
-- Dynamic role-bearing abstractions such as the archived `IRoleBearer` pattern
-- Proprietary substitution or optimization algorithm internals
-- Private business strategy
-- Multi-tenant billing/subscription behavior
-- Full parent/player communication portal
-- Tournament management
-- Advanced statistics engine
-- AI-generated coaching analysis beyond a future public-safe summary placeholder
-
-## Future but Not Now
-
-These are valid future directions but should not drive early implementation:
+The following areas are outside the first MVP and should be introduced only through future issues and ADRs:
 
 - Cloud-hosted production deployment
 - AWS EventBridge/SNS/SQS/Lambda notification pipelines
@@ -92,8 +77,11 @@ These are valid future directions but should not drive early implementation:
 - Advanced player development analytics
 - Mobile-first player/parent experience
 - Multi-team organization management
+- Tournament management
+- Advanced statistics engine
+- Billing or subscription behavior
 
-## Success Criteria for the Public MVP
+## Success Criteria for the MVP
 
 The MVP is successful when a reviewer can see that the project has:
 
@@ -109,4 +97,4 @@ The MVP is successful when a reviewer can see that the project has:
 
 ## Scope Principle
 
-When in doubt, choose the smallest soccer-specific implementation that demonstrates the architectural idea without revealing broader platform IP.
+When in doubt, choose the smallest soccer-specific implementation that proves the architectural idea and supports the coach workflow.
