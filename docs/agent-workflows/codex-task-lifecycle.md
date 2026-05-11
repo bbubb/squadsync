@@ -6,7 +6,7 @@ Draft for Sprint 0 review.
 
 ## Purpose
 
-This document defines how AI-assisted implementation work should flow in SquadSync. The goal is to make Codex, Copilot, and ChatGPT useful without allowing them to create architectural drift or expose private IP.
+This document defines how AI-assisted implementation work should flow in SquadSync. The goal is to make Codex, Copilot, and ChatGPT useful while keeping changes small, reviewable, and aligned with the documented architecture.
 
 ## Workflow Summary
 
@@ -62,9 +62,9 @@ Every agent-ready task should include:
 Before implementation, verify:
 
 - task fits the MVP scope
-- task does not expose private IP
 - architecture is already documented or an ADR exists
 - task is small enough for one PR
+- service responsibilities are clear
 
 ### 3. Generate or Assign the Task
 
@@ -112,7 +112,7 @@ Review for:
 - readability
 - maintainability
 - test coverage
-- public-safety/IP risk
+- service-boundary clarity
 - hiring-facing clarity
 
 ### 8. Merge or Iterate
@@ -180,11 +180,11 @@ Symptom: new folders, libraries, or patterns appear without explanation.
 
 Prevention: require ADRs for architecture changes.
 
-### Public IP Leakage
+### Service Boundary Drift
 
-Symptom: docs or code describe hidden platform strategy or optimization details.
+Symptom: a task embeds behavior that belongs behind a separate integration boundary.
 
-Prevention: keep soccer-specific public MVP language and review docs carefully.
+Prevention: keep external service responsibilities behind documented ports/interfaces.
 
 ### Framework-Centered Code
 
@@ -207,5 +207,5 @@ A PR is mergeable when it is:
 - reasonably tested
 - readable
 - documented where needed
-- free of private IP leakage
+- clear about service responsibilities
 - understandable to a future reviewer

@@ -11,7 +11,7 @@ Read first:
 - docs/planning/mvp-scope.md
 - docs/architecture/system-overview.md
 - docs/architecture/domain-model.md
-- docs/adr/0001-public-safe-scope.md
+- docs/adr/0001-initial-soccer-mvp-scope.md
 - docs/adr/0002-use-aspnet-core.md
 - docs/adr/0003-use-explicit-membership-model.md
 - .github/instructions/backend.instructions.md
@@ -44,8 +44,8 @@ Non-goals:
 - Do not implement domain entities yet.
 - Do not implement authentication yet.
 - Do not implement soccer-subber integration yet.
-- Do not expose proprietary algorithm details.
-- Do not introduce generalized competition-platform abstractions.
+- Do not implement lineup suggestion behavior yet.
+- Do not introduce broad product areas outside the MVP scope.
 
 Acceptance criteria:
 - Solution builds.
