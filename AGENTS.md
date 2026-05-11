@@ -4,7 +4,7 @@ This repository is developed with AI assistance, but the architecture is human-o
 
 ## Project Mission
 
-SquadSync is a soccer-focused team management and match-planning platform. The public repository is a portfolio-safe vertical slice that demonstrates full-stack architecture, service boundaries, cloud-readiness, and disciplined engineering practice.
+SquadSync is a soccer-focused team management and match-planning platform. The repository demonstrates full-stack architecture, service boundaries, cloud-readiness, and disciplined engineering practice through a focused MVP.
 
 ## Source of Truth
 
@@ -17,19 +17,17 @@ Before making changes, read the relevant documents:
 - `docs/adr/` for accepted architectural decisions
 - `docs/agent-workflows/codex-task-lifecycle.md` for AI task workflow
 
-## Hard Boundaries
+## Working Boundaries
 
-Do not add or expose:
-
-- Proprietary substitution algorithm internals
-- Generalized competition-platform abstractions beyond the approved soccer MVP
-- Private business strategy or unreleased IP
-- Large unrequested framework changes
-- New architectural patterns without an ADR
+- Keep changes aligned with the documented soccer MVP.
+- Do not add unrequested product areas or broad framework changes.
+- Do not implement lineup optimization logic inside the core platform unless a future issue and ADR explicitly approve that direction.
+- Do not add new architectural patterns without an ADR.
+- Keep service responsibilities clear and documented.
 
 ## Preferred Engineering Style
 
-Use explicit, readable, production-minded code. Prefer simple domain language and boring architecture over clever abstractions.
+Use explicit, readable, production-minded code. Prefer simple domain language and straightforward architecture over clever abstractions.
 
 Backend changes should preserve a modular ASP.NET Core structure:
 
@@ -55,7 +53,7 @@ Before finishing a task, verify:
 
 - The change stays inside MVP scope.
 - The change follows existing docs and ADRs.
-- No proprietary algorithm or private platform concept was exposed.
+- The change does not introduce unapproved service responsibilities or algorithm behavior.
 - The code builds locally or the limitation is documented.
 - Tests were added or the absence of tests is justified.
 - Naming is clear to a future reviewer or hiring manager.

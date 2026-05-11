@@ -6,20 +6,20 @@ Draft for Sprint 0 review.
 
 ## Purpose
 
-This document defines the public MVP domain model for SquadSync. The model is intentionally soccer-specific and avoids exposing broader private platform abstractions.
+This document defines the initial SquadSync domain model. The model is intentionally soccer-specific so the first implementation remains understandable, testable, and useful for the coach workflow.
 
 ## Modeling Strategy
 
-The public rebuild uses explicit domain relationships instead of highly generic role-bearing abstractions.
+The MVP uses explicit domain relationships.
 
-The most important modeling choice is:
+The central modeling choice is:
 
 ```text
 A User participates in a Team through a TeamMembership.
 The TeamMembership carries the user's team role.
 ```
 
-This is simpler and more readable than allowing many entity types to act as role bearers. It is also easier to explain, test, authorize, and evolve.
+This keeps team participation, roster state, and authorization context easy to reason about.
 
 ## Core Concepts
 
@@ -35,7 +35,7 @@ Examples:
 - Player
 - Parent/guardian later
 
-A `User` may have one or more profiles depending on their role in the soccer context.
+A `User` may have one or more soccer-related profiles depending on their role in the team context.
 
 ### Team
 
@@ -55,7 +55,7 @@ A membership can represent:
 - Coach membership
 - Assistant coach membership
 - Manager membership
-- Viewer/guardian membership later
+- Viewer membership later
 
 ### Role
 
@@ -70,7 +70,7 @@ Initial role examples:
 - Player
 - Viewer
 
-Authorization should be simple at first. Avoid building a full permission engine until the MVP behavior requires it.
+Authorization should stay simple at first. Add more granular permissions only when product behavior requires them.
 
 ### PlayerProfile
 
@@ -190,7 +190,7 @@ Lineup
 LineupSlot
 ```
 
-## Public-Safe Soccer Position Modeling
+## Soccer Position Modeling
 
 The MVP can begin with a simple position enum or value object.
 
@@ -222,31 +222,18 @@ Example:
 
 A person can be a player on one team and an assistant coach on another. That should be represented as two memberships, not two different users.
 
-## Avoided Abstractions
-
-The public MVP intentionally avoids:
-
-- `IRoleBearer`
-- Generic `OrgUnit` inheritance trees
-- Dynamic competition catalogs
-- Multi-sport configuration frameworks
-- Universal stat schemas
-- Generalized role engines
-
-These concepts may have long-term value, but they create unnecessary complexity and reveal too much private platform direction for the public MVP.
-
 ## Integration Boundary Concepts
 
 ### LineupSuggestionRequest
 
-A public-safe contract that packages enough match, roster, formation, and constraints data for an external service to suggest a lineup.
+A contract that packages enough match, roster, formation, and constraint data for an external service to suggest a lineup.
 
 ### LineupSuggestionResponse
 
-A public-safe response containing suggested player-slot assignments and a high-level summary.
+A response containing suggested player-slot assignments and a high-level planning summary.
 
-The request and response may exist in the public platform. The algorithm that generates the response should remain in the separate `soccer-subber` service.
+The request and response belong to the platform integration boundary. The algorithm/service implementation belongs to the separate lineup assistance service.
 
 ## Design Principle
 
-The model should be understandable to a soccer coach, a software engineer, and a hiring reviewer. If a concept requires a long explanation, it probably does not belong in the first public MVP.
+The model should be understandable to a soccer coach, a software engineer, and a hiring reviewer. If a concept requires a long explanation, it probably does not belong in the first MVP.

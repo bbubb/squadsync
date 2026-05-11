@@ -33,14 +33,13 @@ Domain should not depend on API, Infrastructure, EF Core, ASP.NET Core, or exter
 
 - Use explicit entities and relationships.
 - Model team participation through `TeamMembership`.
-- Do not reintroduce `IRoleBearer` or similar generalized role-bearing abstractions in the public MVP.
 - Keep soccer terminology clear and concrete.
-- Avoid generic competition-platform modeling unless an ADR approves it.
+- Avoid broad product modeling unless an ADR approves it.
 
 ## Implementation Defaults
 
 - Use EF Core for persistence.
-- Use PostgreSQL as the public target database.
+- Use PostgreSQL as the target database.
 - Use DTOs at API boundaries.
 - Use FluentValidation for request validation.
 - Use structured logs; avoid noisy debug logs in normal paths.
@@ -53,6 +52,6 @@ Domain should not depend on API, Infrastructure, EF Core, ASP.NET Core, or exter
 - Add integration tests for persistence/API behavior when infrastructure exists.
 - Avoid tests that only verify framework behavior.
 
-## Safety
+## Service Boundaries
 
-Do not expose proprietary soccer-subber optimization internals. The core platform may define an integration contract, but not the private algorithm.
+The core backend may define interfaces and contracts for external lineup assistance, but it should not implement the lineup suggestion algorithm unless a future approved issue requires that work.

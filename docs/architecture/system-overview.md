@@ -6,13 +6,13 @@ Draft for Sprint 0 review.
 
 ## Purpose
 
-This document describes the intended public architecture for SquadSync. It gives future contributors and AI coding agents a stable map before application code is generated.
+This document describes the intended architecture for SquadSync. It gives future contributors and AI coding agents a stable map before application code is generated.
 
 ## Architecture Summary
 
 SquadSync will be built as a modular monorepo containing a backend API, frontend dashboard, infrastructure artifacts, and project documentation.
 
-The core platform is a modular monolith. External capabilities, such as lineup optimization and cloud notifications, are integrated through explicit service boundaries rather than embedded directly into the platform core.
+The core platform is a modular monolith. External capabilities, such as lineup suggestions and cloud notifications, are integrated through explicit service boundaries rather than embedded directly into the platform core.
 
 ```mermaid
 flowchart LR
@@ -147,11 +147,11 @@ Frontend principles:
 - Use TanStack Query for API data fetching/mutations
 - Use local state for local UI concerns
 - Avoid premature global state frameworks
-- Keep UI copy public-safe and soccer-specific
+- Keep UI copy soccer-specific and user-centered
 
 ## Data Architecture
 
-PostgreSQL is the public target database. The first local version may run through Docker Compose and later connect to a private hosted local server or cloud-managed database.
+PostgreSQL is the target database. The first local version may run through Docker Compose and later connect to a private hosted local server or cloud-managed database.
 
 The initial persistence model should support:
 
@@ -171,17 +171,15 @@ The initial persistence model should support:
 
 ### Soccer-Subber Boundary
 
-The core platform should define an interface/port for lineup suggestions. The separate `soccer-subber` service can later implement the real optimization behavior.
+The core platform should define an interface/port for lineup suggestions. The separate `soccer-subber` service can later implement lineup assistance behavior.
 
-The public SquadSync repository may contain:
+The SquadSync repository may contain:
 
 - DTOs for request/response contracts
 - Mock implementation
 - HTTP client adapter later
 - Failure handling rules
-- Public-safe explanation summary placeholder
-
-The public SquadSync repository must not contain the proprietary optimization internals.
+- Planning summary placeholder
 
 ### Event Notification Boundary
 
@@ -220,8 +218,8 @@ Potential path:
 4. Add event outbox pattern
 5. Add AWS notification pipeline
 6. Integrate soccer-subber as a serverless/containerized service
-7. Add AI-generated public-safe summary capability
+7. Add AI-generated planning summary capability
 
 ## Architectural Principle
 
-Build the public MVP as a clear, soccer-specific product. Keep extension points visible, but do not expose the broader private platform strategy.
+Build the MVP as a clear, soccer-specific product. Keep extension points visible, but let the first implementation prioritize the core coach workflow.
