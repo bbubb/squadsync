@@ -16,7 +16,7 @@ Read first:
 Review goals:
 - Confirm the PR stays inside MVP scope.
 - Confirm architecture boundaries are respected.
-- Confirm no private IP or proprietary algorithm details are exposed.
+- Confirm service responsibilities remain clear.
 - Confirm naming is clear and soccer-specific.
 - Confirm tests/build/docs were updated where appropriate.
 - Identify unnecessary complexity or premature abstraction.
