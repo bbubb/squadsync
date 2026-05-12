@@ -124,6 +124,8 @@ When a sprint or issue is ready for execution, the main thread should produce a 
 
 A branch-thread handoff should happen only after the sprint/issue scope is confirmed.
 
+By default, generate a sprint-level branch-thread prompt. Generate an issue-level branch-thread prompt only when the task needs isolated execution, review, or debugging.
+
 ## Sprint Closeout
 
 When a branch thread completes a sprint or issue, bring a closeout summary back to the main thread. The main thread should then decide whether to:
