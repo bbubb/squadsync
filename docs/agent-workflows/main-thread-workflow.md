@@ -25,18 +25,33 @@ When starting a new main planning discussion, use a durable prompt that referenc
 
 The main thread should inspect repository docs and GitHub Issues/PRs to determine current state.
 
+## Required Startup Behavior
+
+On startup or re-orientation, the main thread should not jump directly into a branch-thread prompt unless an active sprint and issue have already been confirmed.
+
+The main thread should first determine:
+
+- current phase
+- current sprint, if one is already active
+- open issues and PRs
+- completed setup or workflow tasks
+- whether the next action is sprint planning, issue execution, PR review, or closeout
+
+If the next phase/sprint has not been explicitly confirmed, the recommended next action should be to generate or confirm the sprint plan.
+
 ## Main Thread Operating Loop
 
 ```text
 1. Inspect repo/docs/issues/PRs as needed.
 2. Summarize current project state.
-3. Identify the next recommended phase/sprint/issue.
-4. Ask for human confirmation when the next step changes scope or starts a new sprint.
-5. Generate or update GitHub Issues as needed.
-6. Provide a focused branch-thread prompt for execution.
-7. After branch work completes, review the closeout summary.
-8. Update roadmap/issues/docs if needed.
-9. Repeat.
+3. Identify whether the next step is phase planning, sprint planning, issue execution, PR review, or closeout.
+4. If a new sprint is next, generate a sprint plan and ask for confirmation before branch execution.
+5. If the sprint is already confirmed, identify the next issue or PR to execute/review.
+6. Generate or update GitHub Issues as needed after human approval.
+7. Provide a focused branch-thread prompt for execution only after sprint/issue scope is confirmed.
+8. After branch work completes, review the closeout summary.
+9. Update roadmap/issues/docs if needed.
+10. Repeat.
 ```
 
 ## Startup Response Pattern
@@ -54,14 +69,25 @@ When the main thread starts or is asked to re-orient, respond with:
 
 ## Recommended Next Step
 
-Recommended task:
+Recommended next planning action:
 Reason:
 Relevant docs:
 Expected output:
 
+## Sprint Planning Gate
+
+If a new sprint is next, summarize the proposed sprint scope before generating any branch-thread prompt:
+
+- Sprint name:
+- Sprint goal:
+- Included issue(s):
+- Non-goals:
+- Validation expectations:
+- Project board field suggestions:
+
 ## Confirmation Needed
 
-Confirm whether to proceed with this next step. If confirmed, I will generate the sprint/issue plan and branch-thread prompt.
+Confirm whether to proceed with this sprint plan. If confirmed, I will create/refine needed issues and generate the branch-thread prompt for the first issue.
 ```
 
 ## Sprint Planning in the Main Thread
@@ -81,7 +107,7 @@ For each sprint, the main thread should define:
 - validation expectations
 - project board field suggestions
 
-The main thread may create GitHub Issues directly when the scope is clear.
+The main thread may create GitHub Issues directly when the scope is clear and the human owner has approved the sprint plan or issue creation.
 
 ## Branch Thread Handoff
 
@@ -95,6 +121,8 @@ When a sprint or issue is ready for execution, the main thread should produce a 
 - acceptance criteria
 - validation steps
 - instructions to inspect the issue/docs first
+
+A branch-thread handoff should happen only after the sprint/issue scope is confirmed.
 
 ## Sprint Closeout
 
