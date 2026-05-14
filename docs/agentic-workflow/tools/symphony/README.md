@@ -4,7 +4,7 @@
 
 This profile reserves a place for future Symphony-oriented workflow documentation.
 
-Symphony is not implemented in SquadSync during Sprint 0.1.
+Symphony is not implemented during current Phase 0 hardening.
 
 ## Current Status
 
@@ -34,7 +34,7 @@ A future Symphony profile could document:
 
 ## Non-Goals
 
-Sprint 0.1 does not:
+Current Phase 0 hardening does not:
 
 - install Symphony
 - configure Symphony
