@@ -4,9 +4,9 @@ SquadSync is a soccer team management and match-planning platform for coaches. T
 
 ## Current Status
 
-Sprint 0 establishes the project foundation: architecture docs, agent workflow guidance, architectural decision records, and repository instructions for AI-assisted development.
+Phase 0 establishes the project foundation: architecture docs, agentic workflow guidance, architectural decision records, and repository instructions for AI-assisted development.
 
-Application code will be added after the foundation documents are reviewed and accepted.
+Application code will be added after the foundation documents and Codex CLI operational workflow are reviewed and accepted.
 
 ## Product Scope
 
@@ -26,7 +26,7 @@ The MVP focuses on:
 frontend/      Next.js + TypeScript dashboard
 backend/       ASP.NET Core modular monolith
 infra/         Local Docker and future AWS infrastructure artifacts
-docs/          Architecture, planning, ADRs, diagrams, and agent workflows
+docs/          Architecture, planning, ADRs, diagrams, and agentic workflow docs
 .github/       CI, issue templates, and AI coding assistant instructions
 ```
 
@@ -53,7 +53,8 @@ Start here:
 - [MVP Scope](docs/planning/mvp-scope.md)
 - [System Overview](docs/architecture/system-overview.md)
 - [Domain Model](docs/architecture/domain-model.md)
-- [Codex Task Lifecycle](docs/agent-workflows/codex-task-lifecycle.md)
+- [Agentic Workflow Architecture](docs/agentic-workflow/README.md)
+- [Codex CLI Tool Profile](docs/agentic-workflow/tools/codex-cli/README.md)
 - [Architectural Decisions](docs/adr/)
 
 AI coding agents and assistants should read [AGENTS.md](AGENTS.md) before modifying the repository.
