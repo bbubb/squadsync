@@ -46,21 +46,17 @@ Phase 0 is not complete until the repository contains both:
 - Domain model
 - ADRs for core decisions
 - Agent instructions
-- Codex task lifecycle
 - Agentic workflow architecture under `docs/agentic-workflow/`
 - Generic policy, workflow, and task specification docs
 - Codex CLI operational profile
-- GitHub Copilot / GHCP support profile
 - Symphony future/reference profile
 - Agent-ready issue template
 - Pull request review template
 - Project roadmap
 
-### Sprint 0.1: Agentic Workflow Architecture and Codex CLI Profile
+### Operational Harness Outcomes
 
-Current hardening sprint.
-
-Primary outcomes:
+The current Phase 0 hardening work adds:
 
 - layered `docs/agentic-workflow/` structure
 - generic policy/workflow/spec layers
@@ -393,6 +389,6 @@ This keeps each branch focused while preserving context from the main planning t
 
 ## Current Next Step
 
-Complete Phase 0 / Sprint 0.1: Agentic Workflow Architecture and Codex CLI Profile.
+Complete Phase 0 operational harness hardening.
 
 Phase 1 begins only after the agentic workflow architecture and Codex CLI operational profile are merged.
