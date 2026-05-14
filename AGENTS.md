@@ -32,14 +32,15 @@ Before making changes, read the relevant documents:
 - Do not implement lineup optimization logic inside the core platform unless a future issue and ADR explicitly approve that direction.
 - Do not add new architectural patterns without an ADR.
 - Keep service responsibilities clear and documented.
-- Do not begin Phase 1 application code before Phase 0 / Sprint 0.1 workflow hardening is merged.
+- Do not begin Phase 1 application code before Phase 0 operational harness hardening is merged.
 
 ## Tool Roles
 
 - ChatGPT + human owner: architecture, planning, issue generation, ADR drafting, and PR review support.
 - GitHub: canonical source of truth for docs, issues, PRs, ADRs, and workflow state.
 - Codex CLI: primary implementation agent for scoped `agent-ready` issues.
-- GitHub Copilot / GHCP: optional local/editor assistance only; not required for the formal workflow.
+
+Local editor assistants may be used by a human contributor, but they are not part of the canonical workflow and must not replace issue scope, validation gates, or human review.
 
 ## Preferred Engineering Style
 
