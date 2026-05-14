@@ -95,7 +95,7 @@ Use only the relevant lines for the task.
 
 ## When Validation Cannot Be Run
 
-If validation cannot be run, the agent must document:
+If validation cannot be run, the implementation agent must document:
 
 - which validation was expected
 - why it could not be run
@@ -106,6 +106,8 @@ Do not mark validation as complete when it was not performed.
 
 ## Validation Ownership
 
-Codex CLI should run available validation gates before opening or finalizing a PR.
+The active implementation tool should run available validation gates before opening or finalizing a PR.
+
+The current active implementation profile is `docs/agentic-workflow/tools/codex-cli/`.
 
 The human owner decides whether the validation evidence is sufficient to merge.
