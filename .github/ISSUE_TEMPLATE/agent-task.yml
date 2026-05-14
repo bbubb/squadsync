@@ -1,0 +1,97 @@
+name: Agent-ready task
+description: Define a focused task that Codex CLI or another implementation agent can execute.
+title: "[Agent Task]: "
+labels:
+  - agent-ready
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for scoped work that should be executable from repository-owned context.
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What should this task accomplish?
+      placeholder: Create a clear, concise outcome statement.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why does this task exist? Include relevant background.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What files, folders, behavior, or docs may change?
+    validations:
+      required: true
+
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: What should not be changed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevant-docs
+    attributes:
+      label: Relevant docs / ADRs
+      description: List canonical docs, ADRs, issues, or PRs the agent should read.
+      placeholder: |
+        - AGENTS.md
+        - docs/agentic-workflow/README.md
+        - docs/architecture/system-overview.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: What observable outcomes must be true for this task to be complete?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      description: What checks, commands, or docs-only validation should be performed?
+      placeholder: |
+        - Docs-only validation
+        - dotnet build
+        - dotnet test
+    validations:
+      required: true
+
+  - type: textarea
+    id: stop-conditions
+    attributes:
+      label: Stop conditions
+      description: When should the agent pause instead of guessing?
+      placeholder: |
+        - Stop if scope requires an unapproved ADR.
+        - Stop if validation cannot be determined.
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes-for-agent
+    attributes:
+      label: Notes for agent
+      description: Additional implementation guidance, constraints, or warnings.
+    validations:
+      required: false
