@@ -42,7 +42,7 @@ Agents must not:
 - implement lineup optimization inside the SquadSync core platform
 - add unapproved service responsibilities
 - add new architectural patterns without an ADR
-- begin Phase 1 implementation before Phase 0 workflow hardening is complete
+- begin Phase 1 implementation before Phase 0 operational harness hardening is complete
 
 ## Tool Boundaries
 
@@ -51,9 +51,10 @@ Formal workflow roles:
 - ChatGPT + human owner: planning, architecture, issue creation, PR review support.
 - GitHub: canonical workflow and project record.
 - Codex CLI: primary implementation agent for scoped issues.
-- GitHub Copilot / GHCP: optional local/editor assistance only.
 
-Additional tools may be added later under `docs/agentic-workflow/tools/`.
+Local editor assistants may be used by a human contributor, but they are not part of the canonical workflow and must not replace issue scope, validation gates, or human review.
+
+Additional formal tools may be added later under `docs/agentic-workflow/tools/` when they have a defined operational role.
 
 ## Review Standard
 
