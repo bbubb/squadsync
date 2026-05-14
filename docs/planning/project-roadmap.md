@@ -24,13 +24,19 @@ Sprint context defines immediate goals.
 GitHub issues define executable work.
 Branches/PRs contain implementation.
 Docs/ADRs preserve decisions.
+Agentic workflow docs define how tools execute work.
 ```
 
-## Phase 0: Agent-Ready Project Foundation
+## Phase 0: Agent-Ready Project Foundation + Operational Harness
 
 ### Goal
 
 Create a professional foundation for architecture, planning, and AI-assisted development before application code is generated.
+
+Phase 0 is not complete until the repository contains both:
+
+- strategic project documentation
+- a repo-owned agentic workflow architecture with a usable Codex CLI operational profile
 
 ### Deliverables
 
@@ -40,10 +46,25 @@ Create a professional foundation for architecture, planning, and AI-assisted dev
 - Domain model
 - ADRs for core decisions
 - Agent instructions
-- Copilot/path-specific instructions
-- Codex task lifecycle
-- Prompt library
+- Agentic workflow architecture under `docs/agentic-workflow/`
+- Generic policy, workflow, and task specification docs
+- Codex CLI operational profile
+- Symphony future/reference profile
+- Agent-ready issue template
+- Pull request review template
 - Project roadmap
+
+### Operational Harness Outcomes
+
+The current Phase 0 hardening work adds:
+
+- layered `docs/agentic-workflow/` structure
+- generic policy/workflow/spec layers
+- Codex CLI tool profile
+- validation gates and stop conditions
+- agent-ready issue template
+- PR template alignment
+- future harness friction log
 
 ### Completion Criteria
 
@@ -52,7 +73,11 @@ Create a professional foundation for architecture, planning, and AI-assisted dev
 - Architecture direction is documented.
 - Domain model is documented.
 - AI-assisted workflow is documented.
-- Sprint 1 can begin without re-litigating foundational scope.
+- GitHub issues can act as executable task records.
+- Codex CLI can load repository-owned context before implementation.
+- Validation gates and stop conditions are documented.
+- Tool-specific behavior is nested under `docs/agentic-workflow/tools/`.
+- Phase 1 can begin without relying on hidden ChatGPT session context.
 
 ## Phase 1: Backend Foundation
 
@@ -345,6 +370,7 @@ Reference docs:
 - docs/architecture/system-overview.md
 - docs/architecture/domain-model.md
 - AGENTS.md
+- docs/agentic-workflow/README.md
 
 Current phase:
 [phase name]
@@ -363,4 +389,6 @@ This keeps each branch focused while preserving context from the main planning t
 
 ## Current Next Step
 
-Begin Phase 1 with Sprint 1: Backend Scaffold.
+Complete Phase 0 operational harness hardening.
+
+Phase 1 begins only after the agentic workflow architecture and Codex CLI operational profile are merged.
