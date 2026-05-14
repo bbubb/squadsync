@@ -64,25 +64,32 @@ Expected checks may include:
 
 ## PR Reporting Format
 
-Every PR should include:
+Every PR should include a validation section with these elements:
 
-```markdown
+- validation performed
+- commands run
+- checks not run, with reasons
+- known limitations
+
+Example:
+
+````markdown
 ## Validation
 
-- [ ] Docs-only validation completed
-- [ ] Build completed
-- [ ] Tests completed
-- [ ] Not applicable because: ...
+Validation performed:
+- Docs-only validation completed.
 
 Commands run:
-
 ```bash
 # command output summary
 ```
 
+Not run:
+- Backend tests because the backend scaffold does not exist yet.
+
 Known limitations:
-- ...
-```
+- None.
+````
 
 Use only the relevant lines for the task.
 
