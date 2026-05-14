@@ -4,13 +4,13 @@
 
 This document lists candidate automation hooks for future SquadSync harness improvements.
 
-These are not implemented yet. They should be added only after real Codex CLI usage reveals repeated friction.
+These hooks are not implemented yet. Add them only after real Codex CLI usage reveals repeated friction.
 
 ## Why Hooks Are Deferred
 
-Sprint 0.1 defines the workflow and Codex CLI operational profile.
+Phase 0 defines the workflow architecture and Codex CLI operational profile.
 
-Executable hooks and scripts should wait until we know which manual steps are actually repetitive, error-prone, or valuable to automate.
+Executable hooks and scripts should wait until we know which manual steps are repetitive, error-prone, or valuable to automate.
 
 ## Candidate Hooks
 
