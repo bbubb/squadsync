@@ -57,4 +57,5 @@ Before making repository changes, read:
 
 ## Related Docs
 
-- `branch-thread-workflow.md` — how to structure ChatGPT project threads, branch discussions, and closeouts.
+- `main-thread-workflow.md` — how to use the main ChatGPT planning thread as the project control room.
+- `branch-thread-workflow.md` — how to structure focused sprint, issue, PR, debugging, and closeout discussions.

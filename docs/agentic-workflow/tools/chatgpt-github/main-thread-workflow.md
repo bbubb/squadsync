@@ -13,17 +13,17 @@ Use the main thread for:
 - roadmap and phase decisions
 - sprint planning
 - deciding what issue should be worked next
-- creating or refining GitHub Issues
+- creating or refining GitHub issues
 - reviewing sprint closeout summaries
 - deciding whether follow-up issues or ADRs are needed
 - checking whether a phase is complete enough to proceed
-- keeping GitHub Issues, Projects, docs, and PRs aligned
+- keeping GitHub issues, GitHub Projects, docs, and PRs aligned
 
 ## Standard Main Thread Startup
 
 When starting a new main planning discussion, use a durable prompt that references the repository and stable docs, but does not hard-code current sprint state.
 
-The main thread should inspect repository docs and GitHub Issues/PRs to determine current state.
+The main thread should inspect repository docs and GitHub issues/PRs to determine current state.
 
 ## Required Startup Behavior
 
@@ -47,7 +47,7 @@ If the next phase/sprint has not been explicitly confirmed, the recommended next
 3. Identify whether the next step is phase planning, sprint planning, issue execution, PR review, or closeout.
 4. If a new sprint is next, generate a sprint plan and ask for confirmation before branch execution.
 5. If the sprint is already confirmed, identify the next issue or PR to execute/review.
-6. Generate or update GitHub Issues as needed after human approval.
+6. Generate or update GitHub issues as needed after human approval.
 7. Provide a focused branch-thread prompt for execution only after sprint/issue scope is confirmed.
 8. After branch work completes, review the closeout summary.
 9. Update roadmap/issues/docs if needed.
@@ -107,7 +107,7 @@ For each sprint, the main thread should define:
 - validation expectations
 - project board field suggestions
 
-The main thread may create GitHub Issues directly when the scope is clear and the human owner has approved the sprint plan or issue creation.
+The main thread may create GitHub issues directly when the scope is clear and the human owner has approved the sprint plan or issue creation.
 
 ## Branch Thread Handoff
 
