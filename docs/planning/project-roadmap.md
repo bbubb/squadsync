@@ -59,6 +59,7 @@ Phase 0 is not complete until the repository contains both:
 - Agent-ready issue template
 - Pull request review template
 - Project roadmap
+- Placeholder project areas for `apps/api`, `apps/web`, `infra`, and integrations
 
 ### Operational Harness Outcomes
 
@@ -74,6 +75,7 @@ The current Phase 0 hardening work adds:
 - agent-ready issue template
 - PR template alignment
 - future harness friction log
+- professional root README and project-area pathing
 
 ### Completion Criteria
 
@@ -88,17 +90,18 @@ The current Phase 0 hardening work adds:
 - Codex CLI has stable rules, skills, hooks, and subagent placeholder structure.
 - Branching, testing, coding, validation, and stop-condition standards are documented.
 - Tool-specific behavior is nested under `docs/agentic-workflow/tools/`.
+- App pathing is stabilized around `apps/api` and `apps/web`.
 - Phase 1 can begin without relying on hidden ChatGPT session context.
 
-## Phase 1: Backend Foundation
+## Phase 1: API Foundation
 
 ### Goal
 
-Create the backend solution scaffold and local development baseline.
+Create the API solution scaffold and local development baseline.
 
 ### Primary Outcomes
 
-- ASP.NET Core solution under `backend/`
+- ASP.NET Core solution under `apps/api/`
 - Modular projects: API, Application, Domain, Infrastructure
 - Unit and integration test projects
 - Health endpoint
@@ -110,13 +113,13 @@ Create the backend solution scaffold and local development baseline.
 
 ### Example Sprints
 
-- Sprint 1: backend scaffold
+- Sprint 1: API scaffold
 - Sprint 2: local database and infrastructure baseline
 - Sprint 3: CI/build/test hardening
 
 ### Completion Criteria
 
-- Backend builds locally.
+- API builds locally.
 - Health endpoint works.
 - Swagger is available in development.
 - Project references enforce intended dependency direction.
@@ -159,7 +162,7 @@ Implement the MVP domain model and persistence layer.
 
 ### Goal
 
-Expose usable backend behavior for team and roster management.
+Expose usable API behavior for team and roster management.
 
 ### Primary Outcomes
 
@@ -184,15 +187,15 @@ Expose usable backend behavior for team and roster management.
 - Player profile data can be created and updated.
 - API behavior is validated by tests.
 
-## Phase 4: Frontend Foundation
+## Phase 4: Web Foundation
 
 ### Goal
 
-Create the frontend application shell and connect it to backend APIs.
+Create the web application shell and connect it to APIs.
 
 ### Primary Outcomes
 
-- Next.js + TypeScript app under `frontend/`
+- Next.js + TypeScript app under `apps/web/`
 - Feature-oriented structure
 - Tailwind setup
 - API service layer
@@ -202,14 +205,14 @@ Create the frontend application shell and connect it to backend APIs.
 
 ### Example Sprints
 
-- Sprint 10: frontend scaffold and app shell
+- Sprint 10: web scaffold and app shell
 - Sprint 11: team dashboard
 - Sprint 12: roster management UI
 
 ### Completion Criteria
 
-- Frontend runs locally.
-- Frontend can call backend APIs.
+- Web app runs locally.
+- Web app can call backend APIs.
 - A reviewer can navigate the basic team/roster workflow.
 
 ## Phase 5: Match and Manual Lineup Planning
@@ -238,7 +241,7 @@ Implement the first soccer-specific planning workflow.
 - A coach can create a match.
 - A coach can track availability.
 - A coach can build and save a manual lineup.
-- The workflow is visible in the frontend.
+- The workflow is visible in the web app.
 
 ## Phase 6: Soccer-Subber Integration Boundary
 
@@ -303,8 +306,8 @@ Deploy a credible cloud-ready version and improve portfolio presentation.
 
 ### Primary Outcomes
 
-- Containerized backend
-- Hosted frontend
+- Containerized API if appropriate
+- Hosted web app
 - Managed or hosted database path
 - Deployment documentation
 - CI/CD improvements
@@ -315,7 +318,7 @@ Deploy a credible cloud-ready version and improve portfolio presentation.
 ### Example Sprints
 
 - Sprint 22: containerization and deployment prep
-- Sprint 23: cloud-hosted backend/frontend
+- Sprint 23: cloud-hosted API/web
 - Sprint 24: portfolio demo polish
 
 ### Completion Criteria
@@ -365,7 +368,7 @@ Each sprint should avoid:
 
 - broad product expansion
 - unapproved architecture changes
-- mixing backend, frontend, infra, and cloud work unless the sprint is explicitly integration-focused
+- mixing API, web, infra, and cloud work unless the sprint is explicitly integration-focused
 - implementation without a reviewable branch/PR
 
 ## Branched Conversation Strategy
@@ -402,6 +405,6 @@ This keeps each branch focused while preserving context from the main planning t
 
 ## Current Next Step
 
-Complete Phase 0 operational harness hardening.
+Complete Phase 0 documentation polish and project-area pathing.
 
-Phase 1 begins only after the agentic workflow architecture, engineering workflow standards, and ChatGPT GitHub/Codex CLI operational profiles are merged.
+Phase 1 begins with the API foundation under `apps/api/`.
