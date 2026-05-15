@@ -36,7 +36,7 @@ Create a professional foundation for architecture, planning, and AI-assisted dev
 Phase 0 is not complete until the repository contains both:
 
 - strategic project documentation
-- a repo-owned agentic workflow architecture with a usable Codex CLI operational profile
+- a repo-owned agentic workflow architecture with usable ChatGPT GitHub and Codex CLI tool profiles
 
 ### Deliverables
 
@@ -48,6 +48,7 @@ Phase 0 is not complete until the repository contains both:
 - Agent instructions
 - Agentic workflow architecture under `docs/agentic-workflow/`
 - Generic policy, workflow, and task specification docs
+- ChatGPT GitHub tool profile
 - Codex CLI operational profile
 - Symphony future/reference profile
 - Agent-ready issue template
@@ -60,6 +61,7 @@ The current Phase 0 hardening work adds:
 
 - layered `docs/agentic-workflow/` structure
 - generic policy/workflow/spec layers
+- ChatGPT GitHub tool profile
 - Codex CLI tool profile
 - validation gates and stop conditions
 - agent-ready issue template
@@ -74,6 +76,7 @@ The current Phase 0 hardening work adds:
 - Domain model is documented.
 - AI-assisted workflow is documented.
 - GitHub issues can act as executable task records.
+- ChatGPT GitHub can support planning, issue/PR creation, review, and closeout from repository-owned context.
 - Codex CLI can load repository-owned context before implementation.
 - Validation gates and stop conditions are documented.
 - Tool-specific behavior is nested under `docs/agentic-workflow/tools/`.
@@ -359,18 +362,20 @@ Each sprint should avoid:
 
 ## Branched Conversation Strategy
 
-For each new ChatGPT thread, start with:
+For each new ChatGPT thread, start from the ChatGPT GitHub profile:
 
 ```text
 We are working on SquadSync.
 Reference docs:
 - README.md
+- AGENTS.md
 - docs/planning/project-roadmap.md
 - docs/planning/mvp-scope.md
 - docs/architecture/system-overview.md
 - docs/architecture/domain-model.md
-- AGENTS.md
 - docs/agentic-workflow/README.md
+- docs/agentic-workflow/tools/chatgpt-github/README.md
+- docs/agentic-workflow/tools/chatgpt-github/branch-thread-workflow.md
 
 Current phase:
 [phase name]
@@ -391,4 +396,4 @@ This keeps each branch focused while preserving context from the main planning t
 
 Complete Phase 0 operational harness hardening.
 
-Phase 1 begins only after the agentic workflow architecture and Codex CLI operational profile are merged.
+Phase 1 begins only after the agentic workflow architecture and ChatGPT GitHub/Codex CLI operational profiles are merged.
