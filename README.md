@@ -14,7 +14,7 @@ Canonical planning state and active work are tracked in:
 
 - [Project Roadmap](docs/planning/project-roadmap.md)
 - [GitHub Issues](https://github.com/bbubb/squadsync/issues)
-- GitHub Project board
+- [GitHub Project board](https://github.com/bbubb/squadsync/projects)
 
 ## Tech Stack
 
