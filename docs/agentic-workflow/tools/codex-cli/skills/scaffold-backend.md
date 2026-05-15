@@ -1,12 +1,12 @@
-# Skill: Scaffold Backend
+# Skill: Scaffold API
 
 ## Purpose
 
-Use this skill for the Phase 1 backend scaffold task.
+Use this skill for the Phase 1 API scaffold task.
 
 ## Expected Outcome
 
-Create a minimal ASP.NET Core backend foundation that supports future domain, application, infrastructure, API, and test work.
+Create a minimal ASP.NET Core API foundation under `apps/api/` that supports future domain, application, infrastructure, API, and test work.
 
 ## Required Context
 
@@ -19,14 +19,15 @@ Before work begins, read:
 - `docs/architecture/domain-model.md`
 - `docs/agentic-workflow/workflow/testing-strategy.md`
 - `docs/agentic-workflow/workflow/coding-standards.md`
+- `apps/api/README.md`
 - Codex rules under `rules/`
 
 ## Expected Shape
 
-The backend scaffold should follow the planned modular structure:
+The API scaffold should follow the planned modular structure:
 
 ```text
-backend/
+apps/api/
   src/
     SquadSync.Api/
     SquadSync.Application/
