@@ -23,6 +23,7 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/workflow/stop-conditions.md` for when agents should pause
 - `docs/agentic-workflow/specs/agent-task-spec.md` for agent-ready issue structure
 - `docs/agentic-workflow/specs/pull-request-spec.md` for PR expectations
+- `docs/agentic-workflow/tools/chatgpt-github/README.md` for ChatGPT GitHub Connector workflow
 - `docs/agentic-workflow/tools/codex-cli/README.md` for Codex CLI implementation workflow
 
 ## Working Boundaries
@@ -36,7 +37,7 @@ Before making changes, read the relevant documents:
 
 ## Tool Roles
 
-- ChatGPT + human owner: architecture, planning, issue generation, ADR drafting, and PR review support.
+- ChatGPT GitHub: planning, issue generation, documentation edits, PR setup, PR review support, and closeout summaries.
 - GitHub: canonical source of truth for docs, issues, PRs, ADRs, and workflow state.
 - Codex CLI: primary implementation agent for scoped `agent-ready` issues.
 
