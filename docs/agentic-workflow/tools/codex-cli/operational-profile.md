@@ -2,15 +2,22 @@
 
 ## Purpose
 
-This profile defines how Codex CLI should operate in SquadSync.
+This profile defines how Codex CLI operates in SquadSync.
 
-It translates the generic agentic workflow architecture into concrete Codex CLI behavior.
+It maps SquadSync's generic agentic workflow architecture into Codex-native concepts: rules, skills, hooks, subagents, and AGENTS.md.
+
+## Operating Model
+
+```text
+Generic workflow layer -> Codex CLI profile -> issue-scoped implementation -> validation -> PR review
+```
 
 ## Operating Rules
 
 Codex CLI must:
 
 - work from GitHub issues and repository docs
+- read `AGENTS.md` before making changes
 - keep each task scoped to one focused change
 - preserve documented architecture boundaries
 - update docs when behavior, architecture, or workflow changes
@@ -27,35 +34,46 @@ Codex CLI must not:
 - invent new architecture without approval
 - auto-merge its own work
 
-## Generic Concept Mapping
+## Generic-to-Codex Mapping
 
 | Generic concept | Codex CLI expression |
 |---|---|
-| Project policy | `AGENTS.md` and `docs/agentic-workflow/policy/` |
+| Root operating map | `AGENTS.md` |
+| Project policy | `docs/agentic-workflow/policy/` and `rules/` |
 | Task specification | GitHub issue and `docs/agentic-workflow/specs/agent-task-spec.md` |
-| Workflow lifecycle | `docs/agentic-workflow/workflow/lifecycle.md` |
-| Rules | This profile plus `AGENTS.md` and policy docs |
-| Task playbooks / skills | `task-prompt.md` and issue-specific instructions |
-| Hooks | Validation gates now; executable scripts later if needed |
+| Workflow lifecycle | `docs/agentic-workflow/workflow/lifecycle.md` and `rules/workflow-rules.md` |
+| Rules | `rules/` |
+| Skills / task playbooks | `skills/` |
+| Hooks / lifecycle automation points | `hooks/` |
+| Subagents / specialized roles | `subagents/` |
 | Stop conditions | `docs/agentic-workflow/workflow/stop-conditions.md` |
 | PR contract | `pr-reporting.md` and `.github/PULL_REQUEST_TEMPLATE.md` |
 
 ## Branching
+
+Follow `docs/agentic-workflow/workflow/branching-strategy.md`.
 
 Use focused branch names such as:
 
 ```text
 feature/backend-scaffold
 fix/lineup-slot-validation
-docs/phase-0-agentic-workflow-harness
+docs/finalize-phase-0-standards
 ```
+
+## Testing
+
+Follow `docs/agentic-workflow/workflow/testing-strategy.md`.
+
+Behavior changes should normally define or update tests before or alongside implementation.
 
 ## Completion Standard
 
 A Codex CLI task is complete when:
 
-- the issue acceptance criteria are addressed
+- issue acceptance criteria are addressed
 - relevant validation has been run or limitations documented
+- tests are added/updated when behavior changes
 - docs/ADRs are updated if needed
 - scope drift has been avoided
 - a PR summary can be written from repo-visible facts
