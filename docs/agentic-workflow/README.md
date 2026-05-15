@@ -11,7 +11,7 @@ The goal is to make AI-assisted development durable, reviewable, and repeatable 
 ```text
 docs/agentic-workflow/
   policy/      Durable project rules and boundaries
-  workflow/    Work lifecycle, validation gates, and stop conditions
+  workflow/    Work lifecycle, engineering standards, validation gates, and stop conditions
   specs/       Standard issue and pull request contracts
   tools/       Tool-specific operational profiles
   evolution/   Harness friction, lessons learned, and future improvements
@@ -35,6 +35,11 @@ Local editor assistants may be used by a human contributor, but they are not par
 
 ## Phase 0 Standard
 
-Phase 0 is complete only when future work can be driven from repository-owned policy, workflow, specs, validation gates, and tool profiles.
+Phase 0 is complete only when future work can be driven from repository-owned policy, workflow, specs, validation gates, engineering standards, and tool profiles.
 
-Phase 1 application code should not begin until the ChatGPT GitHub and Codex CLI profiles are usable for their scoped roles.
+Phase 1 application code should not begin until:
+
+- ChatGPT GitHub and Codex CLI profiles are usable for their scoped roles
+- Codex CLI has rules, skills, hooks, and subagent placeholders in its tool profile
+- branching, testing, and coding standards are documented
+- Phase 1 issues can be executed from repository-owned context without relying on hidden chat state
