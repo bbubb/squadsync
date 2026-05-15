@@ -23,11 +23,11 @@ The policy, workflow, and spec layers are modular and mostly tool-agnostic.
 
 Tool-specific behavior belongs under `tools/`.
 
-This lets SquadSync keep stable project rules while supporting Codex CLI today and future orchestrators such as Symphony later.
+This lets SquadSync keep stable project rules while supporting ChatGPT GitHub for planning/workflow tasks, Codex CLI for implementation tasks, and future orchestrators such as Symphony later.
 
 ## Current Tool Roles
 
-- ChatGPT + human owner: architecture, planning, issue creation, ADR drafting, PR review support, and workflow refinement.
+- ChatGPT GitHub: planning, issue generation, documentation edits, PR setup, PR review support, and closeout summaries.
 - GitHub: canonical source of truth for docs, issues, pull requests, ADRs, and workflow state.
 - Codex CLI: primary implementation agent for scoped `agent-ready` issues.
 
@@ -35,6 +35,6 @@ Local editor assistants may be used by a human contributor, but they are not par
 
 ## Phase 0 Standard
 
-Phase 0 is complete only when future implementation work can be driven from repository-owned policy, workflow, specs, validation gates, and the Codex CLI operational profile.
+Phase 0 is complete only when future work can be driven from repository-owned policy, workflow, specs, validation gates, and tool profiles.
 
-Phase 1 application code should not begin until the Codex CLI profile is usable for a scoped implementation task.
+Phase 1 application code should not begin until the ChatGPT GitHub and Codex CLI profiles are usable for their scoped roles.
