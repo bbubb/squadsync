@@ -59,11 +59,10 @@ squadsync/
     planning/
     adr/
     diagrams/
-    agent-workflows/
-    prompt-library/
+    agentic-workflow/
   .github/
     workflows/
-    instructions/
+    ISSUE_TEMPLATE/
 ```
 
 ## Backend Architecture
