@@ -8,19 +8,25 @@ Codex CLI is the first supported implementation tool for the agentic workflow ar
 
 ## Role
 
-Codex CLI should implement scoped, `agent-ready` GitHub issues by reading the repository-owned policy, workflow, specs, and relevant architecture docs.
+Codex CLI should implement scoped, `agent-ready` GitHub issues by reading repository-owned policy, workflow, specs, rules, skills, hooks, and relevant architecture docs.
 
 Codex CLI should not depend on private ChatGPT session context to understand what to do.
 
 ## Profile Files
 
-- `operational-profile.md` — Codex-specific operating rules and boundaries.
-- `context-loading.md` — Required context loading order before work begins.
-- `issue-intake.md` — How Codex should interpret and validate issue readiness.
-- `task-prompt.md` — Reusable task prompt pattern for Codex CLI.
+- `operational-profile.md` — how Codex CLI fits into the SquadSync workflow.
+- `context-loading.md` — required context loading order before work begins.
+- `issue-intake.md` — how Codex should interpret and validate issue readiness.
+- `task-prompt.md` — reusable task prompt pattern for Codex CLI.
 - `validation.md` — Codex-specific validation reporting expectations.
-- `pr-reporting.md` — Pull request summary and review expectations.
-- `future-hooks.md` — Candidate scripts/hooks to consider after real Codex usage reveals friction.
+- `pr-reporting.md` — pull request summary and review expectations.
+
+## Codex-Native Structure
+
+- `rules/` — persistent Codex behavior constraints.
+- `skills/` — reusable Codex task playbooks.
+- `hooks/` — lifecycle automation points and planned validation hooks.
+- `subagents/` — planned specialized roles for future orchestration.
 
 ## Relationship to Generic Workflow
 

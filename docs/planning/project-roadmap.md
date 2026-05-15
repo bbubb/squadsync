@@ -37,6 +37,7 @@ Phase 0 is not complete until the repository contains both:
 
 - strategic project documentation
 - a repo-owned agentic workflow architecture with usable ChatGPT GitHub and Codex CLI tool profiles
+- engineering workflow standards for branching, testing, coding, validation, and review
 
 ### Deliverables
 
@@ -48,8 +49,12 @@ Phase 0 is not complete until the repository contains both:
 - Agent instructions
 - Agentic workflow architecture under `docs/agentic-workflow/`
 - Generic policy, workflow, and task specification docs
+- Branching strategy
+- TDD-oriented testing strategy
+- Coding standards
 - ChatGPT GitHub tool profile
 - Codex CLI operational profile
+- Codex rules, skills, hooks, and subagents structure
 - Symphony future/reference profile
 - Agent-ready issue template
 - Pull request review template
@@ -63,6 +68,8 @@ The current Phase 0 hardening work adds:
 - generic policy/workflow/spec layers
 - ChatGPT GitHub tool profile
 - Codex CLI tool profile
+- Codex-native `rules/`, `skills/`, `hooks/`, and `subagents/` structure
+- branching, testing, and coding standards
 - validation gates and stop conditions
 - agent-ready issue template
 - PR template alignment
@@ -78,7 +85,8 @@ The current Phase 0 hardening work adds:
 - GitHub issues can act as executable task records.
 - ChatGPT GitHub can support planning, issue/PR creation, review, and closeout from repository-owned context.
 - Codex CLI can load repository-owned context before implementation.
-- Validation gates and stop conditions are documented.
+- Codex CLI has stable rules, skills, hooks, and subagent placeholder structure.
+- Branching, testing, coding, validation, and stop-condition standards are documented.
 - Tool-specific behavior is nested under `docs/agentic-workflow/tools/`.
 - Phase 1 can begin without relying on hidden ChatGPT session context.
 
@@ -396,4 +404,4 @@ This keeps each branch focused while preserving context from the main planning t
 
 Complete Phase 0 operational harness hardening.
 
-Phase 1 begins only after the agentic workflow architecture and ChatGPT GitHub/Codex CLI operational profiles are merged.
+Phase 1 begins only after the agentic workflow architecture, engineering workflow standards, and ChatGPT GitHub/Codex CLI operational profiles are merged.

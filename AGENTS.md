@@ -19,12 +19,19 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/README.md` for the layered agentic workflow architecture
 - `docs/agentic-workflow/policy/project-policy.md` for workflow policy
 - `docs/agentic-workflow/workflow/lifecycle.md` for task lifecycle
+- `docs/agentic-workflow/workflow/branching-strategy.md` for branch/PR standards
+- `docs/agentic-workflow/workflow/testing-strategy.md` for TDD-oriented validation expectations
+- `docs/agentic-workflow/workflow/coding-standards.md` for Clean Architecture, SOLID, and implementation standards
 - `docs/agentic-workflow/workflow/validation-gates.md` for validation expectations
 - `docs/agentic-workflow/workflow/stop-conditions.md` for when agents should pause
 - `docs/agentic-workflow/specs/agent-task-spec.md` for agent-ready issue structure
 - `docs/agentic-workflow/specs/pull-request-spec.md` for PR expectations
 - `docs/agentic-workflow/tools/chatgpt-github/README.md` for ChatGPT GitHub Connector workflow
 - `docs/agentic-workflow/tools/codex-cli/README.md` for Codex CLI implementation workflow
+- `docs/agentic-workflow/tools/codex-cli/rules/README.md` for Codex-specific rules
+- `docs/agentic-workflow/tools/codex-cli/skills/README.md` for Codex task playbooks
+- `docs/agentic-workflow/tools/codex-cli/hooks/README.md` for Codex hook structure
+- `docs/agentic-workflow/tools/codex-cli/subagents/README.md` for planned Codex subagent roles
 
 ## Working Boundaries
 
@@ -59,6 +66,7 @@ Frontend changes should preserve feature-oriented organization and type-safe API
 ## Task Rules
 
 - One issue or prompt should produce one focused change.
+- Use short-lived branches from `main`.
 - Do not implement broad product areas in one pass.
 - Update docs when behavior, architecture, or scope changes.
 - Add or update tests when adding behavior.
@@ -73,6 +81,7 @@ Before finishing a task, verify:
 - The change stays inside MVP scope.
 - The change follows existing docs and ADRs.
 - The change follows the agentic workflow docs when applicable.
+- The change follows branching, testing, coding, and validation standards.
 - The change does not introduce unapproved service responsibilities or algorithm behavior.
 - Validation gates were run or limitations are documented.
 - Tests were added or the absence of tests is justified.
