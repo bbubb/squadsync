@@ -10,14 +10,14 @@ This document describes the intended architecture for SquadSync. It gives future
 
 ## Architecture Summary
 
-SquadSync will be built as a modular monorepo containing a backend API, frontend dashboard, infrastructure artifacts, and project documentation.
+SquadSync will be built as a modular monorepo containing an API app, web app, infrastructure artifacts, and project documentation.
 
 The core platform is a modular monolith. External capabilities, such as lineup suggestions and cloud notifications, are integrated through explicit service boundaries rather than embedded directly into the platform core.
 
 ```mermaid
 flowchart LR
-    Coach[Coach / Team Manager] --> Frontend[Next.js Frontend]
-    Frontend --> Api[ASP.NET Core API]
+    Coach[Coach / Team Manager] --> Web[Next.js Web App]
+    Web --> Api[ASP.NET Core API]
     Api --> App[Application Layer]
     App --> Domain[Domain Layer]
     App --> Infra[Infrastructure Layer]
@@ -34,23 +34,24 @@ Planned layout:
 
 ```text
 squadsync/
-  backend/
-    src/
-      SquadSync.Api/
-      SquadSync.Application/
-      SquadSync.Domain/
-      SquadSync.Infrastructure/
-    tests/
-      SquadSync.UnitTests/
-      SquadSync.IntegrationTests/
-  frontend/
-    src/
-      app/
-      components/
-      features/
-      lib/
-      services/
-      types/
+  apps/
+    api/
+      src/
+        SquadSync.Api/
+        SquadSync.Application/
+        SquadSync.Domain/
+        SquadSync.Infrastructure/
+      tests/
+        SquadSync.UnitTests/
+        SquadSync.IntegrationTests/
+    web/
+      src/
+        app/
+        components/
+        features/
+        lib/
+        services/
+        types/
   infra/
     docker/
     aws/
@@ -59,15 +60,16 @@ squadsync/
     planning/
     adr/
     diagrams/
+    integrations/
     agentic-workflow/
   .github/
     workflows/
     ISSUE_TEMPLATE/
 ```
 
-## Backend Architecture
+## API Architecture
 
-The backend should use a modular ASP.NET Core structure with clear dependency direction.
+The API app should use a modular ASP.NET Core structure with clear dependency direction.
 
 ```mermaid
 flowchart TD
@@ -128,9 +130,9 @@ Responsibilities:
 
 Infrastructure implements interfaces defined by the application layer.
 
-## Frontend Architecture
+## Web Architecture
 
-The frontend should be a Next.js + TypeScript application organized by feature.
+The web app should be a Next.js + TypeScript application organized by feature.
 
 Primary feature areas:
 
@@ -180,6 +182,8 @@ The SquadSync repository may contain:
 - Failure handling rules
 - Planning summary placeholder
 
+The actual optimization service remains outside this repository unless a future ADR changes that boundary.
+
 ### Event Notification Boundary
 
 The core platform should eventually emit domain/application events. A later AWS notification capability can subscribe to or process these events.
@@ -201,7 +205,7 @@ Early local development should support:
 
 - Docker Compose for PostgreSQL
 - API running locally
-- Frontend running locally
+- Web app running locally
 - Swagger available for backend testing
 - Seed data for demo workflows
 
@@ -211,13 +215,15 @@ AWS integration should be layered in after the core vertical slice is useful.
 
 Potential path:
 
-1. Containerize backend
-2. Host database or use managed database
-3. Deploy frontend
+1. Containerize local development/runtime pieces where useful
+2. Host database or use managed database when justified
+3. Deploy web app
 4. Add event outbox pattern
 5. Add AWS notification pipeline
-6. Integrate soccer-subber as a serverless/containerized service
+6. Integrate soccer-subber through a service boundary
 7. Add AI-generated planning summary capability
+
+Scale-to-zero or low-idle-cost AWS services should be preferred where practical, especially for event-driven capabilities.
 
 ## Architectural Principle
 
