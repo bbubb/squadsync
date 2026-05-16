@@ -10,9 +10,13 @@ SquadSync is a soccer-focused team management and match-planning platform. The r
 
 Before making changes, read the relevant documents:
 
-- `README.md` for repository purpose and scope
+- `README.md` for repository purpose, current state, and navigation
+- `CONTRIBUTING.md` for issue, branch, PR, and validation rules
 - `docs/planning/project-roadmap.md` for phase and sprint direction
 - `docs/planning/mvp-scope.md` for MVP boundaries
+- `docs/product/product-brief.md` for product direction
+- `docs/product/ux-notes.md` for early UX direction
+- `docs/product/brand-notes.md` for lightweight voice/brand direction
 - `docs/architecture/system-overview.md` for system structure
 - `docs/architecture/domain-model.md` for domain concepts
 - `docs/adr/` for accepted architectural decisions
@@ -22,11 +26,16 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/workflow/branching-strategy.md` for branch/PR standards
 - `docs/agentic-workflow/workflow/testing-strategy.md` for TDD-oriented validation expectations
 - `docs/agentic-workflow/workflow/coding-standards.md` for Clean Architecture, SOLID, and implementation standards
+- `docs/agentic-workflow/workflow/documentation-standards.md` for document headers, status, and versioning
+- `docs/agentic-workflow/workflow/root-summary-sync.md` for root summary consistency
+- `docs/agentic-workflow/workflow/spec-consistency.md` for source-of-truth discrepancy handling
+- `docs/agentic-workflow/workflow/issue-orchestration.md` for route-by-task/path guidance
 - `docs/agentic-workflow/workflow/validation-gates.md` for validation expectations
 - `docs/agentic-workflow/workflow/stop-conditions.md` for when agents should pause
 - `docs/agentic-workflow/specs/agent-task-spec.md` for agent-ready issue structure
 - `docs/agentic-workflow/specs/pull-request-spec.md` for PR expectations
 - `docs/agentic-workflow/tools/chatgpt-github/README.md` for ChatGPT GitHub Connector workflow
+- `docs/agentic-workflow/tools/chatgpt-github/navigation.md` for ChatGPT routing behavior
 - `docs/agentic-workflow/tools/codex-cli/README.md` for Codex CLI implementation workflow
 - `docs/agentic-workflow/tools/codex-cli/rules/README.md` for Codex-specific rules
 - `docs/agentic-workflow/tools/codex-cli/skills/README.md` for Codex task playbooks
@@ -54,14 +63,14 @@ Local editor assistants may be used by a human contributor, but they are not par
 
 Use explicit, readable, production-minded code. Prefer simple domain language and straightforward architecture over clever abstractions.
 
-Backend changes should preserve a modular ASP.NET Core structure:
+API changes should preserve a modular ASP.NET Core structure under `apps/api/`:
 
 - Domain: entities, value objects, domain rules
 - Application: use cases, interfaces, DTOs, validation orchestration
 - Infrastructure: persistence, external clients, logging implementations
 - API: controllers/endpoints, request/response contracts, composition root
 
-Frontend changes should preserve feature-oriented organization and type-safe API access.
+Web changes should preserve feature-oriented organization and type-safe API access under `apps/web/`.
 
 ## Task Rules
 
@@ -81,7 +90,8 @@ Before finishing a task, verify:
 - The change stays inside MVP scope.
 - The change follows existing docs and ADRs.
 - The change follows the agentic workflow docs when applicable.
-- The change follows branching, testing, coding, and validation standards.
+- The change follows branching, testing, coding, documentation, and validation standards.
+- Root summaries and derivative docs were checked when relevant.
 - The change does not introduce unapproved service responsibilities or algorithm behavior.
 - Validation gates were run or limitations are documented.
 - Tests were added or the absence of tests is justified.
