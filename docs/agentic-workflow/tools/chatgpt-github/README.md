@@ -26,6 +26,7 @@ Primary uses:
 ChatGPT GitHub must:
 
 - treat GitHub docs, issues, PRs, and ADRs as the source of truth
+- use `navigation.md` to route orientation, planning, issue/PR, review, closeout, and ad hoc requests
 - create or reference an issue before opening a PR, unless the human explicitly asks for an emergency direct fix
 - keep changes scoped to the issue or prompt
 - avoid merging PRs
@@ -47,15 +48,21 @@ Before making repository changes, read:
 
 - `AGENTS.md`
 - `README.md`
+- `CONTRIBUTING.md`
 - `docs/planning/project-roadmap.md`
 - `docs/agentic-workflow/README.md`
 - `docs/agentic-workflow/policy/project-policy.md`
 - `docs/agentic-workflow/workflow/lifecycle.md`
+- `docs/agentic-workflow/workflow/documentation-standards.md`
+- `docs/agentic-workflow/workflow/root-summary-sync.md`
+- `docs/agentic-workflow/workflow/spec-consistency.md`
+- `docs/agentic-workflow/workflow/issue-orchestration.md`
 - `docs/agentic-workflow/specs/agent-task-spec.md`
 - `docs/agentic-workflow/specs/pull-request-spec.md`
 - relevant architecture docs and ADRs
 
 ## Related Docs
 
+- `navigation.md` — how ChatGPT should route common project interactions.
 - `main-thread-workflow.md` — how to use the main ChatGPT planning thread as the project control room.
 - `branch-thread-workflow.md` — how to structure focused sprint, issue, PR, debugging, and closeout discussions.

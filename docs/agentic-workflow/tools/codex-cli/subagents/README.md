@@ -4,7 +4,7 @@
 
 Subagents are specialized delegated roles that may be useful in future Codex or orchestration workflows.
 
-This directory reserves the production-shaped structure for future subagent definitions without enabling subagent automation prematurely.
+This directory defines planned role profiles without enabling subagent automation prematurely.
 
 ## Current Status
 
@@ -12,9 +12,27 @@ No active subagents are configured for SquadSync.
 
 Codex CLI remains the primary implementation profile. The human owner remains the approval and merge authority.
 
-## Candidate Subagent Roles
+## Planned Role Profiles
 
-Potential future roles are documented in `planned-subagents.md`.
+- `api-impl.md` — API/backend implementation role.
+- `web-impl.md` — web/frontend implementation role.
+- `infra-impl.md` — local/cloud infrastructure role.
+- `qa-review.md` — test and validation review role.
+- `docs-maintainer.md` — documentation and sync role.
+- `spec-verifier.md` — source-of-truth consistency role.
+- `security-review.md` — security and sensitive-data review role.
+- `planned-subagents.md` — high-level status and adoption notes.
+
+## Role Profile Standard
+
+Each role profile should define:
+
+- purpose
+- when to use
+- required context
+- allowed changes
+- stop conditions
+- validation expectations
 
 ## Adoption Rule
 

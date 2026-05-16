@@ -11,6 +11,9 @@ Rules are tool-specific expressions of the broader project policy, workflow, and
 - `project-rules.md` — repository and workflow behavior Codex must follow.
 - `architecture-rules.md` — application architecture boundaries Codex must preserve.
 - `workflow-rules.md` — issue, branch, PR, validation, and stop-condition rules.
+- `documentation-rules.md` — documentation governance, headers, sync, and stale-reference behavior.
+- `spec-discrepancy-rules.md` — source-of-truth conflict handling.
+- `orchestration-rules.md` — issue routing, path routing, and planned role behavior.
 
 ## Relationship to Generic Docs
 
@@ -28,4 +31,4 @@ Codex-specific rule interpretation lives here.
 
 These rules are active documentation constraints.
 
-They are not executable configuration files yet. If future Codex configuration supports direct rule loading from this structure, these docs can be adapted without changing the overall repository architecture.
+They are not tool-enforced yet. Future Codex setup can adapt these docs into tool-native config without changing the repository architecture.
