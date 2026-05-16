@@ -12,6 +12,9 @@ Before making changes, read the relevant documents:
 
 - `README.md` for repository purpose, current state, and navigation
 - `CONTRIBUTING.md` for issue, branch, PR, and validation rules
+- `PLANS.md` for ExecPlan usage on complex or multi-step work
+- `.agents/README.md` for repo-native agent asset structure
+- `.codex/README.md` for future Codex-native configuration placeholders
 - `docs/planning/project-roadmap.md` for phase and sprint direction
 - `docs/planning/mvp-scope.md` for MVP boundaries
 - `docs/product/product-brief.md` for product direction
@@ -41,6 +44,20 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/tools/codex-cli/skills/README.md` for Codex task playbooks
 - `docs/agentic-workflow/tools/codex-cli/hooks/README.md` for Codex hook structure
 - `docs/agentic-workflow/tools/codex-cli/subagents/README.md` for planned Codex subagent roles
+
+## ExecPlans
+
+Use `PLANS.md` when work is complex, multi-step, cross-cutting, risky, or expected to take multiple implementation passes.
+
+Do not require an ExecPlan for small documentation edits, simple issue fixes, or routine PR reviews.
+
+## Repo-Native Skills
+
+Codex-native repo skills live under `.agents/skills/`.
+
+Human-readable Codex playbooks live under `docs/agentic-workflow/tools/codex-cli/skills/`.
+
+Use native skills for repeatable workflows and use the playbooks for deeper explanation and project-specific context.
 
 ## Working Boundaries
 
