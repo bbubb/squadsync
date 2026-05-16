@@ -44,9 +44,10 @@ apps/                 # Application surfaces
 infra/                # Local and future cloud infrastructure notes/artifacts
   docker/             #   Local Docker Compose direction
   aws/                #   Future AWS/serverless direction
-docs/                 # Architecture, planning, ADRs, integrations, diagrams, workflow docs
+docs/                 # Architecture, planning, ADRs, product, integrations, workflow docs
   architecture/       #   System and domain architecture
   planning/           #   Roadmap, MVP scope, implementation planning
+  product/            #   Product, UX, and brand notes
   adr/                #   Architecture decision records
   integrations/       #   External service boundaries such as soccer-subber
   agentic-workflow/   #   AI-assisted workflow, tool profiles, rules, skills, hooks
@@ -86,19 +87,9 @@ Until then, begin with the documentation map below and the active GitHub issue/P
 
 ## Contributing
 
-This project uses trunk-based GitHub Flow:
+This project uses trunk-based GitHub Flow and issue-backed pull requests.
 
-- create short-lived branches from `main`
-- link work to GitHub issues
-- keep pull requests small and reviewable
-- run or document validation before review
-- do not merge without human approval
-
-See:
-
-- [Branching Strategy](docs/agentic-workflow/workflow/branching-strategy.md)
-- [Pull Request Specification](docs/agentic-workflow/specs/pull-request-spec.md)
-- [Validation Gates](docs/agentic-workflow/workflow/validation-gates.md)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution rules, branch expectations, validation guidance, and AI-assisted workflow notes.
 
 ## Links
 
@@ -106,6 +97,12 @@ See:
 
 - [Project Roadmap](docs/planning/project-roadmap.md)
 - [MVP Scope](docs/planning/mvp-scope.md)
+
+### Product
+
+- [Product Brief](docs/product/product-brief.md)
+- [UX Notes](docs/product/ux-notes.md)
+- [Brand Notes](docs/product/brand-notes.md)
 
 ### Architecture
 
@@ -124,6 +121,10 @@ See:
 ### Agentic Workflow
 
 - [Agentic Workflow Architecture](docs/agentic-workflow/README.md)
+- [Documentation Standards](docs/agentic-workflow/workflow/documentation-standards.md)
+- [Root Summary Sync](docs/agentic-workflow/workflow/root-summary-sync.md)
+- [Spec Consistency](docs/agentic-workflow/workflow/spec-consistency.md)
+- [Issue Orchestration](docs/agentic-workflow/workflow/issue-orchestration.md)
 - [ChatGPT GitHub Tool Profile](docs/agentic-workflow/tools/chatgpt-github/README.md)
 - [Codex CLI Tool Profile](docs/agentic-workflow/tools/codex-cli/README.md)
 - [Codex Rules](docs/agentic-workflow/tools/codex-cli/rules/README.md)
