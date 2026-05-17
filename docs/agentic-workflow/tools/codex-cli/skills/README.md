@@ -2,19 +2,31 @@
 
 ## Purpose
 
-Skills are reusable Codex task playbooks.
+This directory contains expanded task playbooks for common Codex work in SquadSync.
 
-They describe how Codex should approach common categories of work in SquadSync.
+These playbooks explain how to approach project-specific work in more detail than a short skill trigger file.
 
-## Current Skills
+## Current Playbooks
 
 - `implement-agent-task.md` — default implementation flow for an agent-ready issue.
-- `scaffold-backend.md` — Phase 1 backend scaffold playbook.
+- `scaffold-backend.md` — Phase 1 API scaffold playbook.
 - `update-docs.md` — documentation update playbook.
 - `review-pr.md` — PR review support playbook.
 
+## Repo Skill Location
+
+Short repo skill entry points live under:
+
+```text
+.agents/skills/
+```
+
+Use `.agents/skills/` for concise tool-discoverable instructions.
+
+Use this directory for fuller supporting playbooks.
+
 ## Status
 
-These skills are documentation-based playbooks.
+These files are documentation-based playbooks.
 
-They are not executable automation. They can later be converted into tool-native skill/config files if the project adopts that format.
+They are not executable automation.
