@@ -8,6 +8,7 @@ Before changing the repository, read:
 
 - [README.md](README.md)
 - [AGENTS.md](AGENTS.md)
+- [PLANS.md](PLANS.md)
 - [Project Roadmap](docs/planning/project-roadmap.md)
 - [Agentic Workflow Architecture](docs/agentic-workflow/README.md)
 - [Branching Strategy](docs/agentic-workflow/workflow/branching-strategy.md)
@@ -25,6 +26,7 @@ Issue -> short-lived branch -> scoped change -> validation -> pull request -> hu
 - Start from a GitHub issue unless the human owner explicitly approves an emergency direct fix.
 - Keep each branch and PR scoped to one focused change.
 - Use short-lived branches from `main`.
+- Use `PLANS.md` for complex, cross-cutting, risky, or multi-step work.
 - Preserve documented architecture boundaries.
 - Update docs when behavior, architecture, workflow, or scope changes.
 - Run relevant validation or document why validation cannot be run.
@@ -71,5 +73,9 @@ ChatGPT GitHub and Codex CLI workflows are documented under:
 
 - [ChatGPT GitHub Tool Profile](docs/agentic-workflow/tools/chatgpt-github/README.md)
 - [Codex CLI Tool Profile](docs/agentic-workflow/tools/codex-cli/README.md)
+
+Repo-native Codex skills live under:
+
+- [.agents/skills](.agents/skills)
 
 AI tools may assist planning, documentation, implementation, and review, but the human owner retains final authority over architecture, scope, and merge decisions.
