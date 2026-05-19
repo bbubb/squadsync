@@ -19,6 +19,8 @@ Codex CLI = implementation worker for scoped agent-ready tasks
 GitHub Issues = task records
 GitHub Project = visual tracking board
 Docs/ADRs = durable project memory
+PLANS.md = complex-task execution plan standard
+.agents/skills = native Codex skill entry points
 ```
 
 ## Use Branch Threads For
@@ -51,19 +53,28 @@ Goal:
 Relevant docs:
 - README.md
 - AGENTS.md
+- CONTRIBUTING.md
+- PLANS.md if the task is complex or multi-step
 - docs/planning/project-roadmap.md
 - docs/planning/mvp-scope.md
+- docs/planning/phase-0-closeout-guide.md
 - docs/architecture/system-overview.md
 - docs/architecture/domain-model.md
 - docs/agentic-workflow/README.md
 - docs/agentic-workflow/policy/project-policy.md
 - docs/agentic-workflow/workflow/lifecycle.md
+- docs/agentic-workflow/workflow/context-management.md
+- docs/agentic-workflow/workflow/prompting-standards.md
 - docs/agentic-workflow/workflow/validation-gates.md
 - docs/agentic-workflow/workflow/stop-conditions.md
 - docs/agentic-workflow/specs/agent-task-spec.md
 - docs/agentic-workflow/specs/pull-request-spec.md
 - docs/agentic-workflow/tools/chatgpt-github/README.md
+- docs/agentic-workflow/tools/chatgpt-github/navigation.md
 - docs/agentic-workflow/tools/codex-cli/README.md
+- .agents/README.md
+- .agents/skills/
+- .codex/README.md
 - docs/adr/
 - .github/ISSUE_TEMPLATE/
 - .github/PULL_REQUEST_TEMPLATE.md
@@ -83,12 +94,13 @@ Review the relevant issue/PR/docs first. Confirm scope, non-goals, acceptance cr
 ```text
 1. Inspect the referenced sprint, issue, PR, and docs.
 2. Confirm scope, non-goals, acceptance criteria, and validation.
-3. Execute or guide the scoped work.
-4. Create/update an issue, branch, or PR when appropriate.
-5. Review results against acceptance criteria.
-6. Capture suggested follow-ups without expanding scope.
-7. Move to the next sprint issue when appropriate.
-8. Produce a closeout summary for the main planning thread when the sprint or issue is complete.
+3. Decide whether the task needs a normal issue workflow or an ExecPlan.
+4. Execute or guide the scoped work.
+5. Create/update an issue, branch, or PR when appropriate.
+6. Review results against acceptance criteria and validation gates.
+7. Capture suggested follow-ups without expanding scope.
+8. Move to the next sprint issue when appropriate.
+9. Produce a closeout summary for the main planning thread when the sprint or issue is complete.
 ```
 
 ## GitHub Change Rule
@@ -112,29 +124,33 @@ Name/number:
 
 ## What Changed
 
-- 
+-
 
 ## PRs / Branches
 
-- 
+-
 
 ## Validation
 
-- 
+-
 
 ## Docs / ADRs Updated
 
-- 
+-
 
 ## Follow-up Issues Created or Suggested
 
-- 
+-
 
 ## Questions for Main Planning
 
-- 
+-
 ```
 
 ## Scope Rule
 
 If a branch thread uncovers work outside the current sprint or issue, do not silently implement it. Record it under suggested follow-ups and return it to the main planning thread.
+
+## Context Rule
+
+Do not rely on hidden chat memory for project decisions. If a decision, issue, constraint, or follow-up must survive the current thread, capture it in GitHub or a canonical repo document.

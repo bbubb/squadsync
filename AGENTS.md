@@ -17,6 +17,7 @@ Before making changes, read the relevant documents:
 - `.codex/README.md` for future Codex-native configuration placeholders
 - `docs/planning/project-roadmap.md` for phase and sprint direction
 - `docs/planning/mvp-scope.md` for MVP boundaries
+- `docs/planning/phase-0-closeout-guide.md` for Phase 0 orientation and active/placeholder status
 - `docs/product/product-brief.md` for product direction
 - `docs/product/ux-notes.md` for early UX direction
 - `docs/product/brand-notes.md` for lightweight voice/brand direction
@@ -26,6 +27,8 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/README.md` for the layered agentic workflow architecture
 - `docs/agentic-workflow/policy/project-policy.md` for workflow policy
 - `docs/agentic-workflow/workflow/lifecycle.md` for task lifecycle
+- `docs/agentic-workflow/workflow/context-management.md` for thread/session context rules
+- `docs/agentic-workflow/workflow/prompting-standards.md` for prompt structure expectations
 - `docs/agentic-workflow/workflow/branching-strategy.md` for branch/PR standards
 - `docs/agentic-workflow/workflow/testing-strategy.md` for TDD-oriented validation expectations
 - `docs/agentic-workflow/workflow/coding-standards.md` for Clean Architecture, SOLID, and implementation standards
@@ -44,6 +47,13 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/tools/codex-cli/skills/README.md` for Codex task playbooks
 - `docs/agentic-workflow/tools/codex-cli/hooks/README.md` for Codex hook structure
 - `docs/agentic-workflow/tools/codex-cli/subagents/README.md` for planned Codex subagent roles
+
+When working inside a scoped area, also read the nearest local `AGENTS.md`, such as:
+
+- `apps/api/AGENTS.md` for API work
+- `apps/web/AGENTS.md` for future web work
+- `infra/AGENTS.md` for future infrastructure work
+- `docs/AGENTS.md` for documentation work
 
 ## ExecPlans
 
