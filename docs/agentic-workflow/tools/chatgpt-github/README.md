@@ -49,10 +49,14 @@ Before making repository changes, read:
 - `AGENTS.md`
 - `README.md`
 - `CONTRIBUTING.md`
+- `PLANS.md` when the work is complex or multi-step
 - `docs/planning/project-roadmap.md`
+- `docs/planning/phase-0-closeout-guide.md`
 - `docs/agentic-workflow/README.md`
 - `docs/agentic-workflow/policy/project-policy.md`
 - `docs/agentic-workflow/workflow/lifecycle.md`
+- `docs/agentic-workflow/workflow/context-management.md`
+- `docs/agentic-workflow/workflow/prompting-standards.md`
 - `docs/agentic-workflow/workflow/documentation-standards.md`
 - `docs/agentic-workflow/workflow/root-summary-sync.md`
 - `docs/agentic-workflow/workflow/spec-consistency.md`
@@ -66,3 +70,5 @@ Before making repository changes, read:
 - `navigation.md` — how ChatGPT should route common project interactions.
 - `main-thread-workflow.md` — how to use the main ChatGPT planning thread as the project control room.
 - `branch-thread-workflow.md` — how to structure focused sprint, issue, PR, debugging, and closeout discussions.
+- `../../workflow/context-management.md` — how to preserve durable project context.
+- `../../workflow/prompting-standards.md` — how to structure prompts for ChatGPT and Codex work.
