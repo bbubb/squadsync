@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft for ongoing planning.
+Active. Phase 0 is closed; Phase 1 planning and implementation readiness are current.
 
 ## Purpose
 
@@ -33,7 +33,7 @@ Agentic workflow docs define how tools execute work.
 
 Create a professional foundation for architecture, planning, and AI-assisted development before application code is generated.
 
-Phase 0 is not complete until the repository contains both:
+Phase 0 required the repository to contain:
 
 - strategic project documentation
 - a repo-owned agentic workflow architecture with usable ChatGPT GitHub and Codex CLI tool profiles
@@ -63,7 +63,7 @@ Phase 0 is not complete until the repository contains both:
 
 ### Operational Harness Outcomes
 
-The current Phase 0 hardening work adds:
+Phase 0 added:
 
 - layered `docs/agentic-workflow/` structure
 - generic policy/workflow/spec layers
@@ -371,40 +371,16 @@ Each sprint should avoid:
 - mixing API, web, infra, and cloud work unless the sprint is explicitly integration-focused
 - implementation without a reviewable branch/PR
 
-## Branched Conversation Strategy
+## Conversation Context Strategy
 
-For each new ChatGPT thread, start from the ChatGPT GitHub profile:
+Use the [Standard Main Thread Prompt](../agentic-workflow/tools/chatgpt-github/main-thread-workflow.md#standard-main-thread-prompt) to start or re-orient the project control-room discussion.
 
-```text
-We are working on SquadSync.
-Reference docs:
-- README.md
-- AGENTS.md
-- docs/planning/project-roadmap.md
-- docs/planning/mvp-scope.md
-- docs/architecture/system-overview.md
-- docs/architecture/domain-model.md
-- docs/agentic-workflow/README.md
-- docs/agentic-workflow/tools/chatgpt-github/README.md
-- docs/agentic-workflow/tools/chatgpt-github/branch-thread-workflow.md
+After a sprint or task is confirmed, use the [Standard Branch Thread Prompt](../agentic-workflow/tools/chatgpt-github/branch-thread-workflow.md#standard-branch-thread-prompt) for bounded execution, review, debugging, or closeout work.
 
-Current phase:
-[phase name]
-
-Current sprint:
-[sprint name]
-
-Goal:
-[one clear goal]
-
-Non-goals:
-[what should not be changed]
-```
-
-This keeps each branch focused while preserving context from the main planning track.
+The ChatGPT tool-profile documents own the prompt templates. This roadmap owns current phase and sprint direction; GitHub issues, Project, and pull requests own executable work state. Populate prompt fields from those sources during handoff instead of duplicating current state or prompt wording here.
 
 ## Current Next Step
 
-Complete Phase 0 documentation polish and project-area pathing.
+Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40).
 
-Phase 1 begins with the API foundation under `apps/api/`.
+Before application code begins, reassess Phase 1 Sprint 1 and refresh [Issue #11](https://github.com/bbubb/squadsync/issues/11) against the current `apps/api/` structure, architecture baseline, and `agent-ready` standard.

@@ -2,11 +2,11 @@
 
 ## Status
 
-Draft for Sprint 0 review.
+Active. This document is the current system architecture baseline.
 
 ## Purpose
 
-This document describes the intended architecture for SquadSync. It gives future contributors and AI coding agents a stable map before application code is generated.
+This document describes the intended architecture for SquadSync. It gives contributors and AI coding agents a stable map of the system and its boundaries.
 
 ## Architecture Summary
 

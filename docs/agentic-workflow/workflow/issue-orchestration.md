@@ -24,14 +24,14 @@ The guidance is tool-agnostic. Tool-specific profiles may adapt this routing und
 
 | Path | Work type | Notes |
 |---|---|---|
-| `apps/api/` | API/backend implementation | Phase 1 starts here |
-| `apps/web/` | frontend/web implementation | Later phase |
+| `apps/api/` | API/backend implementation | Initial backend implementation starts here |
+| `apps/web/` | frontend/web implementation | Frontend implementation area |
 | `infra/` | local/cloud infrastructure docs/artifacts | Deployment choices require ADR when material |
-| `.github/` | templates, CI, repo automation | CI begins after app scaffold exists |
+| `.github/` | templates, CI, repo automation | Add CI when executable validation exists |
 | `docs/architecture/` | system/domain design | Architecture changes may require ADR |
 | `docs/planning/` | roadmap, MVP, implementation planning | Planning state lives here |
 | `docs/agentic-workflow/` | agent/workflow governance | Workflow changes require issue-backed review |
-| `docs/product/` | product, UX, brand direction | Lightweight until web work begins |
+| `docs/product/` | product, UX, brand direction | Keep lightweight until product/UI work justifies expansion |
 | `docs/integrations/` | external service boundaries | soccer-subber integration docs live here |
 
 ## Issue Granularity

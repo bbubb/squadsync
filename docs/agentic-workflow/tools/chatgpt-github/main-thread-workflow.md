@@ -19,11 +19,43 @@ Use the main thread for:
 - checking whether a phase is complete enough to proceed
 - keeping GitHub issues, GitHub Projects, docs, and PRs aligned
 
-## Standard Main Thread Startup
+## Standard Main Thread Prompt
 
-When starting a new main planning discussion, use a durable prompt that references the repository and stable docs, but does not hard-code current sprint state.
+Use this canonical prompt when starting or re-orienting the main SquadSync planning discussion:
 
-The main thread should inspect repository docs and GitHub issues/PRs to determine current state.
+```text
+We are working on SquadSync inside the ChatGPT Project “SquadSync.”
+
+Use the GitHub connector for repository context and authorized GitHub actions when needed.
+
+Repository:
+https://github.com/bbubb/squadsync
+
+Thread role:
+Main planning thread / project control room
+
+Goal:
+Reconstruct the current project state from GitHub, explain the next planning decision, and preserve human ownership before bounded execution begins.
+
+Required starting context:
+- README.md
+- AGENTS.md
+- CONTRIBUTING.md
+- docs/planning/project-roadmap.md
+- docs/agentic-workflow/README.md
+- docs/agentic-workflow/tools/chatgpt-github/README.md
+- docs/agentic-workflow/tools/chatgpt-github/navigation.md
+- relevant open GitHub issues, pull requests, and Project state
+- additional source-of-truth documents selected through navigation.md for the current question
+
+Instructions:
+- Derive the current phase, sprint, and task state from GitHub; do not rely on prompt text or chat memory.
+- Identify stale issues, conflicting documents, missing decisions, or unvalidated work before recommending execution.
+- Explain the recommendation, why it is next, its risk, and the proposed next action.
+- Do not begin bounded sprint/issue execution or make unapproved repository changes until the intended state and action are confirmed.
+```
+
+This file owns the main-thread startup prompt. Other documents should link here instead of maintaining duplicate copies.
 
 ## Required Startup Behavior
 

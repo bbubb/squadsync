@@ -55,6 +55,8 @@ A ChatGPT GitHub prompt should include:
 - explicit non-goals;
 - whether to create issues/branches/PRs or only advise.
 
+Complete project-specific ChatGPT templates live in `docs/agentic-workflow/tools/chatgpt-github/main-thread-workflow.md` and `branch-thread-workflow.md`. Those tool-specific files own the exact startup wording; generic workflow and planning documents should link to them rather than copy them.
+
 ## Codex CLI Prompts
 
 Use Codex CLI for scoped implementation work.
@@ -69,7 +71,7 @@ A Codex prompt should include:
 - validation commands;
 - stop conditions.
 
-For the first API scaffold task, Codex should use:
+For API scaffold work, Codex should use:
 
 - `AGENTS.md`
 - `apps/api/AGENTS.md`

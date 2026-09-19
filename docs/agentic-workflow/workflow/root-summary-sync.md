@@ -28,6 +28,21 @@ Do not duplicate details across all root docs. Instead:
 - keep system overview canonical for architecture structure
 - keep agentic workflow README canonical for workflow structure
 
+## State Ownership and Update Cadence
+
+| Information | Canonical home | Update when |
+|---|---|---|
+| Active phase and next planning action | `docs/planning/project-roadmap.md` | A phase or sprint transition is accepted |
+| Executable task status | GitHub Issues, Project, and pull requests | Work is created, refined, blocked, reviewed, or completed |
+| Public milestone summary | `README.md` | A meaningful public-facing milestone changes |
+| Area status and operating guidance | Nearest area `README.md` and `AGENTS.md` | The area becomes active or its paths, commands, or rules change |
+| Product and architecture truth | MVP, architecture, domain, and ADR docs | An accepted product or architecture decision changes |
+| Workflow invariants | Generic policy, workflow, and spec docs | The project-wide process or governance rule changes |
+| Current tool assignments and behavior | Agentic-workflow index and tool profiles | A supported tool or its role changes |
+| Historical milestone record | Closeout guides and accepted ADRs | A historical error needs correction, not when current work advances |
+
+Do not copy routine phase, sprint, or issue status into generic workflow documents or historical closeout guides. Link to the canonical current-state source instead.
+
 ## Common Sync Triggers
 
 Check root summaries when changing:

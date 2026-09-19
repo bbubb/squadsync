@@ -20,11 +20,13 @@ Then route to the appropriate workflow document and source-of-truth docs.
 
 For most project work, start with:
 
-- `AGENTS.md`
 - `README.md`
+- `AGENTS.md`
+- `CONTRIBUTING.md`
 - `docs/planning/project-roadmap.md`
 - `docs/agentic-workflow/README.md`
 - `docs/agentic-workflow/tools/chatgpt-github/README.md`
+- the active issue or pull request when the work is bounded
 
 For architecture/product questions, also read:
 
@@ -32,6 +34,12 @@ For architecture/product questions, also read:
 - `docs/architecture/system-overview.md`
 - `docs/architecture/domain-model.md`
 - relevant ADRs in `docs/adr/`
+
+## Canonical Thread Starts
+
+- Use the [Standard Main Thread Prompt](main-thread-workflow.md#standard-main-thread-prompt) for orientation, roadmap work, phase transitions, and sprint planning.
+- Use the [Standard Branch Thread Prompt](branch-thread-workflow.md#standard-branch-thread-prompt) only after a sprint or task is confirmed.
+- Derive current phase, sprint, issue, and PR state from GitHub during startup. Do not encode those values into the stable prompt templates.
 
 ## Routing Table
 

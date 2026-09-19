@@ -47,9 +47,7 @@ If scope, validation, or architecture is unclear, the agent should stop and requ
 
 ## 4. Implement
 
-The active implementation tool executes the scoped issue through its profile under `docs/agentic-workflow/tools/`.
-
-The current active implementation profile is `tools/codex-cli/`.
+The implementation tool executes the scoped issue through its applicable profile under `docs/agentic-workflow/tools/`.
 
 Implementation should happen in a task branch and remain inside the issue scope.
 

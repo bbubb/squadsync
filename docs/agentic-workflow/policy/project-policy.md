@@ -42,7 +42,7 @@ Agents must not:
 - implement lineup optimization inside the SquadSync core platform
 - add unapproved service responsibilities
 - add new architectural patterns without an ADR
-- begin Phase 1 implementation before Phase 0 operational harness hardening is complete
+- implement from an issue whose scope conflicts with current canonical documentation
 
 ## Tool Boundaries
 

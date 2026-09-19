@@ -8,6 +8,10 @@ SquadSync is a soccer-focused team management and match-planning platform. The r
 
 ## Source of Truth
 
+Load only the documents relevant to the current task. Use this section and the agentic-workflow indexes as a routing map, not as a requirement to load every linked file.
+
+Current phase, sprint, and executable work belong in the project roadmap and GitHub issues, Project, and pull requests. Historical closeout guides and generic workflow documents are not live status records.
+
 Before making changes, read the relevant documents:
 
 - `README.md` for repository purpose, current state, and navigation
@@ -17,7 +21,7 @@ Before making changes, read the relevant documents:
 - `.codex/README.md` for future Codex-native configuration placeholders
 - `docs/planning/project-roadmap.md` for phase and sprint direction
 - `docs/planning/mvp-scope.md` for MVP boundaries
-- `docs/planning/phase-0-closeout-guide.md` for Phase 0 orientation and active/placeholder status
+- `docs/planning/phase-0-closeout-guide.md` for historical Phase 0 orientation and closeout criteria
 - `docs/product/product-brief.md` for product direction
 - `docs/product/ux-notes.md` for early UX direction
 - `docs/product/brand-notes.md` for lightweight voice/brand direction
@@ -76,7 +80,7 @@ Use native skills for repeatable workflows and use the playbooks for deeper expl
 - Do not implement lineup optimization logic inside the core platform unless a future issue and ADR explicitly approve that direction.
 - Do not add new architectural patterns without an ADR.
 - Keep service responsibilities clear and documented.
-- Do not begin Phase 1 application code before Phase 0 operational harness hardening is merged.
+- Do not implement from a stale or non-agent-ready issue; reconcile source-of-truth conflicts before work begins.
 
 ## Tool Roles
 
