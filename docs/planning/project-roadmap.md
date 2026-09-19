@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 is closed; Phase 1 planning and implementation readiness are current.
+Active. Phase 0 is closed; Phase 1 planning and implementation-readiness review are current.
 
 ## Purpose
 

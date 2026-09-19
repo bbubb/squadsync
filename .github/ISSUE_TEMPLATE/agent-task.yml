@@ -1,13 +1,11 @@
-name: Agent-ready task
-description: Define a focused task that Codex CLI or another implementation agent can execute.
+name: Agent task candidate
+description: Draft a focused task for readiness review before Codex CLI or another implementation agent executes it.
 title: "[Agent Task]: "
-labels:
-  - agent-ready
 body:
   - type: markdown
     attributes:
       value: |
-        Use this template for scoped work that should be executable from repository-owned context.
+        Use this template for scoped work that should be executable from repository-owned context. Submission does not make the issue agent-ready; add that label only after the completed issue is checked against current repository guidance.
 
   - type: textarea
     id: objective
@@ -46,7 +44,7 @@ body:
     id: relevant-docs
     attributes:
       label: Relevant docs / ADRs
-      description: List canonical docs, ADRs, issues, or PRs the agent should read.
+      description: List canonical docs and ADRs by exact repository path, plus any issues or PRs the agent should read.
       placeholder: |
         - AGENTS.md
         - docs/agentic-workflow/README.md

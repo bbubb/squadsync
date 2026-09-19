@@ -17,10 +17,15 @@ Use this role for future issues involving:
 
 ## Required Context
 
+- active GitHub issue or approved documentation task
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `docs/AGENTS.md`
 - `docs/agentic-workflow/workflow/documentation-standards.md`
 - `docs/agentic-workflow/workflow/root-summary-sync.md`
 - `docs/agentic-workflow/workflow/spec-consistency.md`
-- relevant source-of-truth docs
+- `.agents/skills/squadsync-docs-maintenance/SKILL.md`
+- exact source-of-truth paths governing the task
 
 ## Allowed Changes
 

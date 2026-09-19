@@ -40,6 +40,10 @@ Whether README, architecture docs, ADRs, workflow docs, or prompt templates chan
 
 Any architecture-relevant trade-offs, boundaries, or ADR needs.
 
+### Known Limitations
+
+Checks not run, incomplete criteria, temporary constraints, or review risks that remain.
+
 ### Suggested Follow-ups
 
 New issues or workflow improvements discovered during implementation.
@@ -51,6 +55,7 @@ A PR is reviewable when:
 - it is linked to a clear issue
 - it stays inside scope
 - validation is reported honestly
+- known limitations are explicit
 - docs or ADRs are updated when needed
 - follow-up work is captured
 - implementation decisions are understandable without private chat context

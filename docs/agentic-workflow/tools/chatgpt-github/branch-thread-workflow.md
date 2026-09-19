@@ -61,6 +61,9 @@ Current task:
 Goal:
 [One clear goal]
 
+Scope:
+[List the exact files, areas, behavior, or GitHub records allowed to change]
+
 Intended GitHub action:
 [Advise only / refine issue / create docs branch and PR / review PR / prepare Codex handoff / other approved action]
 
@@ -95,6 +98,8 @@ Review the baseline context, active task record, and task-specific documents fir
 
 This file owns the branch-thread startup prompt. The roadmap and main-thread workflow should link here instead of copying it.
 
+For application-code handoff, populate the [Codex CLI Task Prompt](../codex-cli/task-prompt.md) from the confirmed issue and task-specific sources.
+
 ## Branch Thread Operating Loop
 
 ```text
@@ -106,7 +111,7 @@ This file owns the branch-thread startup prompt. The roadmap and main-thread wor
 6. Review results against acceptance criteria and validation gates.
 7. Capture suggested follow-ups without expanding scope.
 8. Move to the next sprint issue when appropriate.
-9. Produce a closeout summary for the main planning thread when the sprint or issue is complete.
+9. Produce a closeout summary for the main planning thread when execution is ready for a human closeout decision.
 ```
 
 ## GitHub Change Rule
@@ -124,11 +129,21 @@ If a PR is created before an issue by mistake, create and link the issue before 
 ## Closeout Summary Template
 
 ```markdown
-## Sprint/Issue Completed
+## Sprint/Issue Closeout Candidate
 
 Name/number:
 
+## GitHub State
+
+- Issue:
+- Pull request:
+- Checks/reviews:
+
 ## What Changed
+
+-
+
+## Scope / Non-Goal Status
 
 -
 
@@ -137,6 +152,14 @@ Name/number:
 -
 
 ## Validation
+
+-
+
+## Acceptance Criteria Status
+
+-
+
+## Known Limitations / Risks
 
 -
 
@@ -151,6 +174,10 @@ Name/number:
 ## Questions for Main Planning
 
 -
+
+## Human Decision Needed
+
+- Close, iterate, create follow-up work, or defer:
 ```
 
 ## Scope Rule

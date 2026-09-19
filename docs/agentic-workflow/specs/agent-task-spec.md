@@ -53,7 +53,13 @@ An issue should receive `agent-ready` only when:
 - acceptance criteria are testable or reviewable
 - validation expectations are documented
 - required architecture decisions already exist or are not needed
-- relevant docs/ADRs are linked or named
+- relevant docs/ADRs are linked or named by exact repository path
+
+## Label Lifecycle
+
+Creating an issue from the agent-task template does not make it ready for implementation. After the issue is complete, the main planning thread or human owner should compare its paths, scope, acceptance criteria, validation, and required decisions with the current repository and then add `agent-ready`.
+
+Treat an existing `agent-ready` label as stale if the issue conflicts with current canonical guidance or no longer satisfies this specification. Pause implementation until the issue is refreshed; remove or restore the label only through an authorized GitHub action.
 
 ## Labels
 

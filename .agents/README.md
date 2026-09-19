@@ -17,6 +17,13 @@ This directory contains repo-native agent assets intended for tools that discove
 
 The files under `.agents/skills/` are concise Codex-native skills.
 
+## Current Skills
+
+- [API task](skills/squadsync-api-task/SKILL.md)
+- [Documentation maintenance](skills/squadsync-docs-maintenance/SKILL.md)
+- [Pull request review](skills/squadsync-pr-review/SKILL.md)
+- [Specification verification](skills/squadsync-spec-verification/SKILL.md)
+
 Expanded human-readable playbooks remain under:
 
 ```text

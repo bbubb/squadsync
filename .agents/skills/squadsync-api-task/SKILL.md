@@ -11,14 +11,19 @@ Use this skill for scoped API/backend work in `apps/api/`.
 
 Read first:
 
+- the active GitHub issue
 - `AGENTS.md`
+- `CONTRIBUTING.md`
 - `PLANS.md` if the task is complex or multi-step
+- `apps/api/AGENTS.md`
 - `apps/api/README.md`
+- `docs/planning/project-roadmap.md`
+- `docs/planning/mvp-scope.md`
 - `docs/architecture/system-overview.md`
 - `docs/architecture/domain-model.md`
 - `docs/agentic-workflow/workflow/coding-standards.md`
 - `docs/agentic-workflow/workflow/testing-strategy.md`
-- `docs/agentic-workflow/tools/codex-cli/skills/scaffold-backend.md` for Phase 1 scaffold work
+- `docs/agentic-workflow/tools/codex-cli/skills/scaffold-backend.md` for initial API scaffold work
 
 ## Process
 
@@ -31,4 +36,4 @@ Read first:
 
 ## Stop Conditions
 
-Stop if the task requires product scope changes, service boundary changes, unapproved infrastructure dependencies, or app architecture changes without an ADR.
+Stop if the issue is not ready, targets a location outside canonical `apps/api/` scope, conflicts with current docs, or requires product scope changes, service boundary changes, unapproved infrastructure dependencies, or app architecture changes without an ADR.

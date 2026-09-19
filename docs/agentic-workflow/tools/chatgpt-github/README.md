@@ -64,12 +64,12 @@ Always begin with:
 Then load context by task:
 
 - complex or multi-step work: [PLANS.md](../../../../PLANS.md)
-- product or architecture decisions: [MVP scope](../../../planning/mvp-scope.md), [system overview](../../../architecture/system-overview.md), [domain model](../../../architecture/domain-model.md), and relevant [ADRs](../../../adr/)
+- product or architecture decisions: [MVP scope](../../../planning/mvp-scope.md), [system overview](../../../architecture/system-overview.md), [domain model](../../../architecture/domain-model.md), and the exact governing [ADRs](../../../adr/)
 - documentation changes: [docs/AGENTS.md](../../../AGENTS.md), [documentation standards](../../workflow/documentation-standards.md), [root-summary sync](../../workflow/root-summary-sync.md), and [spec consistency](../../workflow/spec-consistency.md)
-- issue creation or refinement: [agent-task specification](../../specs/agent-task-spec.md) and relevant source documents
-- PR review: [pull-request specification](../../specs/pull-request-spec.md), [validation gates](../../workflow/validation-gates.md), the related issue, and changed-area guidance
+- issue creation or refinement: [issue orchestration](../../workflow/issue-orchestration.md), the applicable issue template, and exact source documents; use the [agent-task specification](../../specs/agent-task-spec.md) only for executable tasks and apply `agent-ready` after review
+- PR review: [PR review prompt](../../../prompt-library/pr-review.prompt.md), [pull-request specification](../../specs/pull-request-spec.md), [validation gates](../../workflow/validation-gates.md), the related issue, and changed-area guidance
 - scoped area work: the nearest local `AGENTS.md` and relevant [repo-native skill](../../../../.agents/README.md)
-- Phase 0 history or closeout questions: [Phase 0 closeout guide](../../../planning/phase-0-closeout-guide.md)
+- Phase 0 historical orientation: [Phase 0 closeout guide](../../../planning/phase-0-closeout-guide.md)
 
 Do not load every referenced document by default. Use `navigation.md`, the active task, and local guidance to select the required set.
 

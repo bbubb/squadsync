@@ -8,6 +8,8 @@ These rules define how Codex CLI should move work through issues, branches, vali
 
 Codex should work from `agent-ready` issues.
 
+The label is a routing signal. Codex must still perform the readiness check in `docs/agentic-workflow/tools/codex-cli/issue-intake.md` before implementation.
+
 Before implementation, Codex should verify:
 
 - objective is clear
@@ -15,7 +17,7 @@ Before implementation, Codex should verify:
 - non-goals are explicit
 - acceptance criteria are reviewable
 - validation expectations are defined
-- relevant docs/ADRs are known
+- governing docs/ADRs are named by exact path or resolved through the repository routing docs
 
 ## Branch Rules
 
@@ -41,6 +43,7 @@ Codex PRs should include:
 - acceptance criteria status
 - validation results
 - documentation/ADR impact
+- known limitations and remaining review risks
 - follow-up work
 
 ## Validation Rules

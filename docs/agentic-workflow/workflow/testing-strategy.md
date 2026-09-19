@@ -26,6 +26,7 @@ This means tests should normally be defined before or alongside behavior impleme
 When backend code exists, expected validation includes:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

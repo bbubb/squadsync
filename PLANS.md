@@ -76,6 +76,7 @@ Every ExecPlan must explain how success is proven.
 For future API work, expected baseline commands are:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

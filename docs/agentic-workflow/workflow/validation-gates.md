@@ -28,6 +28,7 @@ Used once backend application code exists.
 Expected checks:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test
@@ -42,6 +43,7 @@ Used once frontend application code exists.
 Expected checks will likely include:
 
 ```bash
+cd apps/web
 npm install
 npm run lint
 npm run build

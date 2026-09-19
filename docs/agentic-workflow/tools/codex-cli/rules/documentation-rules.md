@@ -11,7 +11,7 @@ Codex must:
 - follow `docs/agentic-workflow/workflow/documentation-standards.md`
 - check `docs/agentic-workflow/workflow/root-summary-sync.md` when changing root-level summaries or navigation
 - check `docs/agentic-workflow/workflow/spec-consistency.md` when editing derivative docs
-- update document headers when making meaningful changes to major docs
+- update document status or existing metadata when a meaningful change affects it, without adding full metadata solely for uniformity
 - remove stale references when moving, renaming, or superseding docs
 - link to canonical docs instead of duplicating large sections
 

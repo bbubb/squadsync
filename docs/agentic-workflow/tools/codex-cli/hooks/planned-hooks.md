@@ -49,6 +49,7 @@ scripts/validate-backend.sh
 Expected commands:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

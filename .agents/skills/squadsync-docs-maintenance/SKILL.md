@@ -11,8 +11,10 @@ Use this skill for documentation-focused tasks.
 
 Read first:
 
+- the active GitHub issue or approved documentation task
 - `AGENTS.md`
 - `CONTRIBUTING.md`
+- `docs/AGENTS.md`
 - `docs/agentic-workflow/workflow/documentation-standards.md`
 - `docs/agentic-workflow/workflow/root-summary-sync.md`
 - `docs/agentic-workflow/workflow/spec-consistency.md`
@@ -22,7 +24,7 @@ Read first:
 
 1. Identify the main reference document before editing.
 2. Check whether README, AGENTS, roadmap, or system overview need matching updates.
-3. Update document headers for meaningful changes to major docs.
+3. Update a document's status or existing metadata when the change materially affects it; do not add full metadata solely for uniformity.
 4. Remove stale references when paths or terms change.
 5. Link to canonical docs instead of duplicating long sections.
 6. Report validation performed in the PR.

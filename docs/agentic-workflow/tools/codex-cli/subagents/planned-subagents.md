@@ -28,7 +28,7 @@ Codex CLI remains the primary implementation profile. The human owner remains re
 
 Do not activate subagents until:
 
-- Phase 1 has working tests and CI
+- the application has working tests and CI
 - role boundaries are validated through real issues
 - the cost/complexity tradeoff is justified
 - validation gates are strong enough to support delegation

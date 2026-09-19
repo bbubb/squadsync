@@ -11,13 +11,13 @@ The guidance is tool-agnostic. Tool-specific profiles may adapt this routing und
 | Task type | Primary owner/tool profile | Expected output |
 |---|---|---|
 | Phase/sprint planning | ChatGPT GitHub + human owner | sprint plan, issues, roadmap updates |
-| Issue creation/refinement | ChatGPT GitHub + human owner | agent-ready GitHub issue |
+| Issue creation/refinement | ChatGPT GitHub + human owner | issue using the applicable template; `agent-ready` only after readiness review |
 | API implementation | Codex CLI implementation profile | app code, tests, PR |
 | Web implementation | Codex CLI implementation profile later | app code, tests, PR |
-| Infrastructure docs | ChatGPT GitHub or Codex CLI | docs/placeholders/ADR suggestions |
+| Infrastructure docs | ChatGPT GitHub or Codex CLI | scoped infrastructure docs, placeholder updates, or ADR recommendations |
 | Documentation update | ChatGPT GitHub or Codex CLI docs skill | docs PR |
 | PR review support | ChatGPT GitHub or Codex review skill | review notes, risks, follow-ups |
-| Spec verification | planned spec-verifier role | consistency findings |
+| Spec verification | Codex CLI using `squadsync-spec-verification` or human/ChatGPT review | consistency findings |
 | QA/test review | planned QA role | validation and coverage findings |
 
 ## Routing by Path
@@ -56,6 +56,8 @@ Before executing an issue, identify:
 - expected validation
 - likely stop conditions
 - whether an ADR may be needed
+
+Use the agent-task specification for work intended for autonomous implementation. Planning, architecture-decision, and exploratory issues should use their applicable contracts and should not receive `agent-ready` until they are converted into an executable task.
 
 ## Human Ownership
 

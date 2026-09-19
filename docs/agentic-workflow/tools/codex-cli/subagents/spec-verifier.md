@@ -16,10 +16,13 @@ Use this role for future issues involving:
 
 ## Required Context
 
+- active issue, PR, or discrepancy request
+- `AGENTS.md`
+- `CONTRIBUTING.md`
 - `docs/agentic-workflow/workflow/spec-consistency.md`
 - `docs/agentic-workflow/workflow/stop-conditions.md`
-- relevant ADRs
-- relevant planning and architecture docs
+- `.agents/skills/squadsync-spec-verification/SKILL.md`
+- exact ADR, planning, and architecture paths governing the discrepancy
 
 ## Allowed Changes
 

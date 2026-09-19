@@ -28,6 +28,7 @@ The initial backend scaffold will create the .NET solution, projects, health end
 Once scaffolded, expected validation is:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

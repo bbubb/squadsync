@@ -1,6 +1,12 @@
+---
+applyTo: "**/*.md"
+---
+
 # Documentation Instructions
 
 Apply these instructions to documentation changes under `docs/`, root Markdown files, and ADRs.
+
+Before changing documentation, follow the active issue, the root `AGENTS.md`, and `docs/AGENTS.md`.
 
 ## Documentation Style
 

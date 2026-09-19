@@ -43,7 +43,9 @@ Work is converted into GitHub issues with:
 
 An issue is `agent-ready` only when an implementation agent can begin without making new architecture decisions.
 
-If scope, validation, or architecture is unclear, the agent should stop and request clarification or create a follow-up planning issue.
+The label is applied only after the completed issue has been checked against current repository paths, scope, validation, and architecture. An existing label is not proof of readiness; the implementation agent must recheck the issue during intake.
+
+If scope, validation, architecture, or current-path alignment is unclear, the agent should stop and request clarification or create a follow-up planning issue.
 
 ## 4. Implement
 

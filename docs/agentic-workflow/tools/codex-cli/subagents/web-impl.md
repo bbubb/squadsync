@@ -17,7 +17,10 @@ Use this role for future issues that modify:
 
 ## Required Context
 
+- active GitHub issue
 - `AGENTS.md`
+- `CONTRIBUTING.md`
+- `apps/web/AGENTS.md`
 - `apps/web/README.md`
 - `docs/planning/mvp-scope.md`
 - `docs/product/product-brief.md`
@@ -48,6 +51,7 @@ When web scaffold exists, expected validation will be defined by the web app pac
 Potential future commands:
 
 ```bash
+cd apps/web
 npm run lint
 npm run build
 npm test

@@ -48,6 +48,7 @@ Use a TDD-oriented flow for behavior work:
 Initial expected validation after scaffold exists:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

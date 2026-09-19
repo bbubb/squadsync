@@ -1,13 +1,19 @@
+---
+applyTo: "apps/api/**"
+---
+
 # Backend Instructions
 
-Apply these instructions to backend changes under `backend/`.
+Apply these instructions to backend changes under `apps/api/`.
+
+Before changing backend files, follow the active issue, the root `AGENTS.md`, and `apps/api/AGENTS.md`.
 
 ## Target Architecture
 
 Use a modular ASP.NET Core architecture:
 
 ```text
-backend/
+apps/api/
   src/
     SquadSync.Api/
     SquadSync.Application/

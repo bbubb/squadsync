@@ -16,6 +16,7 @@ A Codex-generated PR should include:
 - validation performed
 - validation limitations
 - docs or ADR impact
+- known limitations or remaining review risks
 - known follow-ups
 
 ## Acceptance Criteria Mapping
@@ -35,6 +36,10 @@ Codex should map each issue acceptance criterion to a status:
 If the task touches architecture, service boundaries, workflow structure, dependencies, or project conventions, Codex should explain the trade-off and whether an ADR is needed.
 
 If no architecture impact exists, write `N/A`.
+
+## Known Limitations
+
+State checks not run, incomplete criteria, temporary constraints, and remaining review risks explicitly. Write `None` only when none are known.
 
 ## Follow-up Work
 
