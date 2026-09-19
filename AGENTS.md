@@ -10,7 +10,7 @@ SquadSync is a soccer-focused team management and match-planning platform. The r
 
 Load only the documents relevant to the current task. Use this section and the agentic-workflow indexes as a routing map, not as a requirement to load every linked file.
 
-Current phase, sprint, and executable work belong in the project roadmap and GitHub issues, Project, and pull requests. Historical closeout guides and generic workflow documents are not live status records.
+The project roadmap owns the active phase, sprint direction, and next planning action. GitHub issues, Project, and pull requests own executable work status. Historical closeout guides and generic workflow documents are not live status records.
 
 Before making changes, read the relevant documents:
 

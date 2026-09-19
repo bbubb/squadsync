@@ -60,4 +60,4 @@ Phase 0 established the repository-owned policy, workflow, specifications, valid
 
 For a historical orientation to that foundation, see the [Phase 0 Closeout Guide](../planning/phase-0-closeout-guide.md).
 
-Current phase and sprint direction belong in the [Project Roadmap](../planning/project-roadmap.md) and GitHub issues. Future workflow changes should be driven by observed implementation friction rather than speculative harness expansion.
+Current phase, sprint direction, and the next planning action belong in the [Project Roadmap](../planning/project-roadmap.md). Executable work status belongs in GitHub issues, Project, and pull requests. Future workflow changes should be driven by observed implementation friction rather than speculative harness expansion.

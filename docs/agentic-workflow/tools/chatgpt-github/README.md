@@ -53,30 +53,30 @@ These files own the exact prompt wording. The roadmap and other workflow documen
 
 Always begin with:
 
-- `README.md`
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/planning/project-roadmap.md`
-- `docs/agentic-workflow/README.md`
-- `docs/agentic-workflow/tools/chatgpt-github/navigation.md`
+- [README.md](../../../../README.md)
+- [AGENTS.md](../../../../AGENTS.md)
+- [CONTRIBUTING.md](../../../../CONTRIBUTING.md)
+- [Project roadmap](../../../planning/project-roadmap.md)
+- [Agentic workflow index](../../README.md)
+- [ChatGPT GitHub navigation](navigation.md)
 - the active issue or pull request when work is bounded
 
 Then load context by task:
 
-- complex or multi-step work: `PLANS.md`
-- product or architecture decisions: MVP scope, system overview, domain model, and relevant ADRs
-- documentation changes: `docs/AGENTS.md`, documentation standards, root-summary sync, and spec consistency
-- issue creation or refinement: agent-task specification and relevant source documents
-- PR review: pull-request specification, validation gates, the related issue, and changed-area guidance
-- scoped area work: the nearest local `AGENTS.md` and relevant repo-native skill
-- Phase 0 history or closeout questions: the Phase 0 closeout guide
+- complex or multi-step work: [PLANS.md](../../../../PLANS.md)
+- product or architecture decisions: [MVP scope](../../../planning/mvp-scope.md), [system overview](../../../architecture/system-overview.md), [domain model](../../../architecture/domain-model.md), and relevant [ADRs](../../../adr/)
+- documentation changes: [docs/AGENTS.md](../../../AGENTS.md), [documentation standards](../../workflow/documentation-standards.md), [root-summary sync](../../workflow/root-summary-sync.md), and [spec consistency](../../workflow/spec-consistency.md)
+- issue creation or refinement: [agent-task specification](../../specs/agent-task-spec.md) and relevant source documents
+- PR review: [pull-request specification](../../specs/pull-request-spec.md), [validation gates](../../workflow/validation-gates.md), the related issue, and changed-area guidance
+- scoped area work: the nearest local `AGENTS.md` and relevant [repo-native skill](../../../../.agents/README.md)
+- Phase 0 history or closeout questions: [Phase 0 closeout guide](../../../planning/phase-0-closeout-guide.md)
 
 Do not load every referenced document by default. Use `navigation.md`, the active task, and local guidance to select the required set.
 
 ## Related Docs
 
-- `navigation.md` — how ChatGPT should route common project interactions.
-- `main-thread-workflow.md` — project-control-room behavior and the canonical main-thread startup prompt.
-- `branch-thread-workflow.md` — bounded-work behavior and the canonical branch-thread startup prompt.
-- `../../workflow/context-management.md` — how to preserve durable project context.
-- `../../workflow/prompting-standards.md` — how to structure prompts for ChatGPT and Codex work.
+- [Navigation](navigation.md) — how ChatGPT should route common project interactions.
+- [Main thread workflow](main-thread-workflow.md) — project-control-room behavior and the canonical main-thread startup prompt.
+- [Branch thread workflow](branch-thread-workflow.md) — bounded-work behavior and the canonical branch-thread startup prompt.
+- [Context management](../../workflow/context-management.md) — how to preserve durable project context.
+- [Prompting standards](../../workflow/prompting-standards.md) — how to structure prompts for ChatGPT and Codex work.

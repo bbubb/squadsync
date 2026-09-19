@@ -4,7 +4,7 @@ This directory is reserved for local Docker and Docker Compose artifacts.
 
 ## Planned Role
 
-Phase 1 may add Docker Compose support for local dependencies such as PostgreSQL.
+Initial backend work may add Docker Compose support for local dependencies such as PostgreSQL.
 
 Potential future files:
 

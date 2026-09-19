@@ -32,7 +32,7 @@ Do not duplicate details across all root docs. Instead:
 
 | Information | Canonical home | Update when |
 |---|---|---|
-| Active phase and next planning action | `docs/planning/project-roadmap.md` | A phase or sprint transition is accepted |
+| Active phase, sprint direction, and next planning action | `docs/planning/project-roadmap.md` | A phase or sprint transition is accepted |
 | Executable task status | GitHub Issues, Project, and pull requests | Work is created, refined, blocked, reviewed, or completed |
 | Public milestone summary | `README.md` | A meaningful public-facing milestone changes |
 | Area status and operating guidance | Nearest area `README.md` and `AGENTS.md` | The area becomes active or its paths, commands, or rules change |
@@ -40,6 +40,8 @@ Do not duplicate details across all root docs. Instead:
 | Workflow invariants | Generic policy, workflow, and spec docs | The project-wide process or governance rule changes |
 | Current tool assignments and behavior | Agentic-workflow index and tool profiles | A supported tool or its role changes |
 | Historical milestone record | Closeout guides and accepted ADRs | A historical error needs correction, not when current work advances |
+
+For routine work, update the roadmap and GitHub task records rather than distributing status changes across the documentation tree. Update the root README only for a meaningful public milestone, and update area docs only when that area's state, paths, commands, or operating rules actually change.
 
 Do not copy routine phase, sprint, or issue status into generic workflow documents or historical closeout guides. Link to the canonical current-state source instead.
 

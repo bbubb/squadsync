@@ -45,15 +45,17 @@ For architecture/product questions, also read:
 
 | User intent | Route to | Output |
 |---|---|---|
-| Orientation / “where are we?” | `main-thread-workflow.md` | Current state summary and next action |
-| Phase or sprint planning | `main-thread-workflow.md` | Sprint plan, issues, non-goals, validation |
-| Focused sprint or issue execution | `branch-thread-workflow.md` | Focused execution/review plan |
-| GitHub issue creation | `agent-task-spec.md` and `main-thread-workflow.md` | Issue(s) with scope and acceptance criteria |
-| PR review | `pull-request-spec.md` and relevant issue | Review summary or requested changes |
-| Documentation edit | `documentation-standards.md` and `spec-consistency.md` | Scoped docs change with sync checks |
-| Implementation support | Codex skill/profile docs | Codex-ready prompt or implementation guidance |
-| Closeout | `branch-thread-workflow.md` closeout template | Closeout summary and follow-ups |
-| Ad hoc project question | Relevant canonical docs | Concise answer with source-of-truth caveats |
+| Orientation / “where are we?” | [Main thread workflow](main-thread-workflow.md) | Current state summary and next action |
+| Phase or sprint planning | [Main thread workflow](main-thread-workflow.md) | Sprint plan, issues, non-goals, validation |
+| Focused sprint or issue execution | [Branch thread workflow](branch-thread-workflow.md) | Focused execution/review plan |
+| GitHub issue creation | [Agent task spec](../../specs/agent-task-spec.md) and [main thread workflow](main-thread-workflow.md) | Issue(s) with scope and acceptance criteria |
+| PR review | [Pull request spec](../../specs/pull-request-spec.md) and relevant issue | Review summary or requested changes |
+| Documentation edit | [Documentation standards](../../workflow/documentation-standards.md) and [spec consistency](../../workflow/spec-consistency.md) | Scoped docs change with sync checks |
+| Implementation support | [Codex CLI profile](../codex-cli/README.md) and the task-relevant [repo-native skill](../../../../.agents/README.md) | Codex-ready prompt or implementation guidance |
+| Closeout | [Branch-thread closeout template](branch-thread-workflow.md#closeout-summary-template) | Closeout summary and follow-ups |
+| Ad hoc project question | [Required first reads](#required-first-reads), then relevant canonical docs | Concise answer with source-of-truth caveats |
+
+Open the linked route target before acting, then follow its explicit references and the nearest scoped `AGENTS.md`. If a required task-specific source cannot be named by exact repository path, stop and ask for clarification instead of guessing.
 
 ## Main Thread vs Branch Thread
 

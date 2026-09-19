@@ -143,7 +143,7 @@ The main thread may create GitHub issues directly when the scope is clear and th
 
 ## Branch Thread Handoff
 
-When a sprint or issue is ready for execution, the main thread should produce a branch-thread prompt that includes:
+When a sprint or issue is ready for execution, the main thread should use the [Standard Branch Thread Prompt](branch-thread-workflow.md#standard-branch-thread-prompt) and populate:
 
 - repository
 - current issue/PR/sprint

@@ -88,6 +88,8 @@ Validation:
 [List the required checks or explain why a check is not applicable]
 
 Instructions:
+Resolve every bracketed field before acting, and name task-specific sources by exact repository path rather than a generic label such as “relevant docs.” If the roadmap, active task record, and navigation cannot resolve a required value, stop and ask for clarification.
+
 Review the baseline context, active task record, and task-specific documents first. Confirm scope, non-goals, acceptance criteria, intended state change, and validation before repository changes. Keep work within the confirmed task. Perform only the authorized GitHub action. Route scoped application-code implementation through the Codex CLI profile. Surface broader discoveries as follow-up work, and persist decisions that must survive this thread in GitHub.
 ```
 
