@@ -42,33 +42,41 @@ Codex CLI remains the primary implementation profile for scoped code-generation 
 
 Symphony remains a future/reference orchestrator profile.
 
-## Canonical References
+## Canonical Thread Prompts
 
-Before making repository changes, read:
+- [Standard Main Thread Prompt](main-thread-workflow.md#standard-main-thread-prompt) — start or re-orient the project control room.
+- [Standard Branch Thread Prompt](branch-thread-workflow.md#standard-branch-thread-prompt) — begin bounded sprint, issue, PR, debugging, or closeout work after scope is confirmed.
 
-- `AGENTS.md`
-- `README.md`
-- `CONTRIBUTING.md`
-- `PLANS.md` when the work is complex or multi-step
-- `docs/planning/project-roadmap.md`
-- `docs/planning/phase-0-closeout-guide.md`
-- `docs/agentic-workflow/README.md`
-- `docs/agentic-workflow/policy/project-policy.md`
-- `docs/agentic-workflow/workflow/lifecycle.md`
-- `docs/agentic-workflow/workflow/context-management.md`
-- `docs/agentic-workflow/workflow/prompting-standards.md`
-- `docs/agentic-workflow/workflow/documentation-standards.md`
-- `docs/agentic-workflow/workflow/root-summary-sync.md`
-- `docs/agentic-workflow/workflow/spec-consistency.md`
-- `docs/agentic-workflow/workflow/issue-orchestration.md`
-- `docs/agentic-workflow/specs/agent-task-spec.md`
-- `docs/agentic-workflow/specs/pull-request-spec.md`
-- relevant architecture docs and ADRs
+These files own the exact prompt wording. The roadmap and other workflow documents should link to them rather than maintain duplicate prompt copies.
+
+## Required Context
+
+Always begin with:
+
+- [README.md](../../../../README.md)
+- [AGENTS.md](../../../../AGENTS.md)
+- [CONTRIBUTING.md](../../../../CONTRIBUTING.md)
+- [Project roadmap](../../../planning/project-roadmap.md)
+- [Agentic workflow index](../../README.md)
+- [ChatGPT GitHub navigation](navigation.md)
+- the active issue or pull request when work is bounded
+
+Then load context by task:
+
+- complex or multi-step work: [PLANS.md](../../../../PLANS.md)
+- product or architecture decisions: [MVP scope](../../../planning/mvp-scope.md), [system overview](../../../architecture/system-overview.md), [domain model](../../../architecture/domain-model.md), and the exact governing [ADRs](../../../adr/)
+- documentation changes: [docs/AGENTS.md](../../../AGENTS.md), [documentation standards](../../workflow/documentation-standards.md), [root-summary sync](../../workflow/root-summary-sync.md), and [spec consistency](../../workflow/spec-consistency.md)
+- issue creation or refinement: [issue orchestration](../../workflow/issue-orchestration.md), the applicable issue template, and exact source documents; use the [agent-task specification](../../specs/agent-task-spec.md) only for executable tasks and apply `agent-ready` after review
+- PR review: [PR review prompt](../../../prompt-library/pr-review.prompt.md), [pull-request specification](../../specs/pull-request-spec.md), [validation gates](../../workflow/validation-gates.md), the related issue, and changed-area guidance
+- scoped area work: the nearest local `AGENTS.md` and relevant [repo-native skill](../../../../.agents/README.md)
+- Phase 0 historical orientation: [Phase 0 closeout guide](../../../planning/phase-0-closeout-guide.md)
+
+Do not load every referenced document by default. Use `navigation.md`, the active task, and local guidance to select the required set.
 
 ## Related Docs
 
-- `navigation.md` — how ChatGPT should route common project interactions.
-- `main-thread-workflow.md` — how to use the main ChatGPT planning thread as the project control room.
-- `branch-thread-workflow.md` — how to structure focused sprint, issue, PR, debugging, and closeout discussions.
-- `../../workflow/context-management.md` — how to preserve durable project context.
-- `../../workflow/prompting-standards.md` — how to structure prompts for ChatGPT and Codex work.
+- [Navigation](navigation.md) — how ChatGPT should route common project interactions.
+- [Main thread workflow](main-thread-workflow.md) — project-control-room behavior and the canonical main-thread startup prompt.
+- [Branch thread workflow](branch-thread-workflow.md) — bounded-work behavior and the canonical branch-thread startup prompt.
+- [Context management](../../workflow/context-management.md) — how to preserve durable project context.
+- [Prompting standards](../../workflow/prompting-standards.md) — how to structure prompts for ChatGPT and Codex work.

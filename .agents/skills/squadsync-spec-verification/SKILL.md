@@ -11,11 +11,13 @@ Use this skill when an issue, PR, or implementation plan may depend on conflicti
 
 Read first:
 
+- the active issue, PR, or discrepancy request
 - `AGENTS.md`
+- `CONTRIBUTING.md`
 - `docs/agentic-workflow/workflow/spec-consistency.md`
 - `docs/agentic-workflow/workflow/stop-conditions.md`
 - `docs/agentic-workflow/tools/codex-cli/rules/spec-discrepancy-rules.md`
-- relevant planning, architecture, product, and ADR docs
+- the exact planning, architecture, product, and ADR paths governing the discrepancy
 
 ## Process
 

@@ -4,13 +4,13 @@
 
 This profile reserves a place for future Symphony-oriented workflow documentation.
 
-Symphony is not implemented during current Phase 0 hardening.
+This profile is a placeholder. Symphony is not configured or used by SquadSync.
 
 ## Current Status
 
 Status: future/reference profile.
 
-SquadSync's immediate implementation path is:
+SquadSync's canonical implementation path is:
 
 ```text
 ChatGPT + human owner -> GitHub issues/docs -> Codex CLI -> PR review
@@ -34,7 +34,7 @@ A future Symphony profile could document:
 
 ## Non-Goals
 
-Current Phase 0 hardening does not:
+This placeholder does not:
 
 - install Symphony
 - configure Symphony

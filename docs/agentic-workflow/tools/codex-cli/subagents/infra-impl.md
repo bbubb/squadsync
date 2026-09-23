@@ -16,7 +16,10 @@ Use this role for future issues involving:
 
 ## Required Context
 
+- active GitHub issue
 - `AGENTS.md`
+- `CONTRIBUTING.md`
+- `infra/AGENTS.md`
 - `infra/README.md`
 - `infra/docker/README.md`
 - `infra/aws/README.md`

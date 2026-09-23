@@ -6,6 +6,7 @@ SquadSync is a soccer-focused MVP used to demonstrate production-minded full-sta
 
 - Prefer clear, explicit, maintainable code over clever abstractions.
 - Keep the implementation soccer-focused.
+- Put backend code under `apps/api/` and frontend code under `apps/web/`; do not create legacy root-level `backend/` or `frontend/` directories.
 - Do not introduce broad new product areas unless a future ADR approves them.
 - Do not implement lineup optimization logic in the core platform unless explicitly requested by an approved issue.
 - Keep changes small and reviewable.

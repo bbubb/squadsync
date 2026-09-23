@@ -8,25 +8,30 @@ Codex CLI is the first supported implementation tool for the agentic workflow ar
 
 ## Role
 
-Codex CLI should implement scoped, `agent-ready` GitHub issues by reading repository-owned policy, workflow, specs, rules, skills, hooks, and relevant architecture docs.
+Codex CLI should implement scoped, `agent-ready` GitHub issues after revalidating the issue body against current repository guidance; the label alone is not proof of readiness.
 
 Codex CLI should not depend on private ChatGPT session context to understand what to do.
 
 ## Profile Files
 
-- `operational-profile.md` — how Codex CLI fits into the SquadSync workflow.
-- `context-loading.md` — required context loading order before work begins.
-- `issue-intake.md` — how Codex should interpret and validate issue readiness.
-- `task-prompt.md` — reusable task prompt pattern for Codex CLI.
-- `validation.md` — Codex-specific validation reporting expectations.
-- `pr-reporting.md` — pull request summary and review expectations.
+- [Operational profile](operational-profile.md) — how Codex CLI fits into the SquadSync workflow.
+- [Context loading](context-loading.md) — required context loading order before work begins.
+- [Issue intake](issue-intake.md) — how Codex should interpret and validate issue readiness.
+- [Task prompt](task-prompt.md) — reusable task prompt pattern for Codex CLI.
+- [Validation](validation.md) — Codex-specific validation reporting expectations.
+- [PR reporting](pr-reporting.md) — pull request summary and review expectations.
 
 ## Codex-Native Structure
 
-- `rules/` — persistent Codex behavior constraints.
-- `skills/` — reusable Codex task playbooks.
-- `hooks/` — lifecycle automation points and planned validation hooks.
-- `subagents/` — planned specialized roles for future orchestration.
+- [Rules](rules/README.md) — persistent Codex behavior constraints.
+- [Skills](skills/README.md) — reusable Codex task playbooks.
+- [Hooks](hooks/README.md) — lifecycle automation points and planned validation hooks.
+- [Subagents](subagents/README.md) — planned specialized roles for future orchestration.
+
+## Task-Specific Prompts
+
+- [Initial API Scaffold](../../../prompt-library/backend-scaffold.prompt.md) — copy-ready scaffold prompt that must be populated from a refreshed agent-ready issue.
+- [Pull Request Review](../../../prompt-library/pr-review.prompt.md) — bounded review prompt aligned with the PR specification and human merge authority.
 
 ## Relationship to Generic Workflow
 

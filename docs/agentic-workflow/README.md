@@ -54,16 +54,10 @@ Local editor assistants may be used by a human contributor, but they are not par
 - [Codex CLI](tools/codex-cli/README.md)
 - [Symphony](tools/symphony/README.md)
 
-## Phase 0 Closeout
+## Phase 0 Foundation
 
-For a guided overview of what Phase 0 created and how later phases build on it, see [Phase 0 Closeout Guide](../planning/phase-0-closeout-guide.md).
+Phase 0 established the repository-owned policy, workflow, specifications, validation gates, documentation governance, engineering standards, scoped agent guidance, and tool profiles needed to begin implementation without hidden chat context.
 
-Phase 0 is complete only when future work can be driven from repository-owned policy, workflow, specs, validation gates, documentation governance, engineering standards, and tool profiles.
+For a historical orientation to that foundation, see the [Phase 0 Closeout Guide](../planning/phase-0-closeout-guide.md).
 
-Phase 1 application code should not begin until:
-
-- ChatGPT GitHub and Codex CLI profiles are usable for their scoped roles
-- scoped `AGENTS.md` files exist for active or planned implementation areas
-- Codex CLI has native skills and documented placeholders for future rules/hooks/configuration
-- branching, testing, coding, documentation, context, prompting, and validation standards are documented
-- Phase 1 issues can be executed from repository-owned context without relying on hidden chat state
+Current phase, sprint direction, and the next planning action belong in the [Project Roadmap](../planning/project-roadmap.md). Executable work status belongs in GitHub issues, Project, and pull requests. Future workflow changes should be driven by observed implementation friction rather than speculative harness expansion.

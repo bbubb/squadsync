@@ -17,13 +17,17 @@ Use this role for future issues that modify:
 
 ## Required Context
 
+- active GitHub issue
 - `AGENTS.md`
+- `CONTRIBUTING.md`
+- `apps/api/AGENTS.md`
 - `apps/api/README.md`
 - `docs/architecture/system-overview.md`
 - `docs/architecture/domain-model.md`
 - `docs/agentic-workflow/workflow/coding-standards.md`
 - `docs/agentic-workflow/workflow/testing-strategy.md`
-- Codex rules under `../rules/`
+- `.agents/skills/squadsync-api-task/SKILL.md`
+- `docs/agentic-workflow/tools/codex-cli/rules/README.md` and task-applicable rule files
 
 ## Allowed Changes
 
@@ -46,6 +50,7 @@ Stop if the issue requires:
 When API scaffold exists, expected validation is:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

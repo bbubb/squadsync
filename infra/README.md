@@ -6,7 +6,7 @@ This directory contains local infrastructure direction and future cloud deployme
 
 No runtime infrastructure code has been added yet.
 
-Phase 1 should prioritize local development support. Cloud deployment artifacts should be added later when the core vertical slice is useful.
+Initial backend work should prioritize local development support. Cloud deployment artifacts should be added later when the core vertical slice is useful.
 
 ## Structure
 

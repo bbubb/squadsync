@@ -28,6 +28,7 @@ Used once backend application code exists.
 Expected checks:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test
@@ -42,6 +43,7 @@ Used once frontend application code exists.
 Expected checks will likely include:
 
 ```bash
+cd apps/web
 npm install
 npm run lint
 npm run build
@@ -106,8 +108,8 @@ Do not mark validation as complete when it was not performed.
 
 ## Validation Ownership
 
-The active implementation tool should run available validation gates before opening or finalizing a PR.
+The implementation tool should run available validation gates before opening or finalizing a PR.
 
-The current active implementation profile is `docs/agentic-workflow/tools/codex-cli/`.
+Tool-specific validation behavior belongs in the applicable profile under `docs/agentic-workflow/tools/`.
 
 The human owner decides whether the validation evidence is sufficient to merge.

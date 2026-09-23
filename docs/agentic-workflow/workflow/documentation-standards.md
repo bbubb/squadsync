@@ -6,11 +6,21 @@ This document defines baseline documentation governance for SquadSync.
 
 The goal is to keep docs useful for humans, ChatGPT GitHub, Codex CLI, and future agents without creating unnecessary process overhead.
 
-## Documentation Header
+## Status Treatment
 
-Major planning, architecture, workflow, and product docs should include a lightweight document header near the top of the file.
+Major planning, architecture, workflow, and product documents should state their status near the top when the distinction between draft, active, historical, or placeholder materially affects how they should be used.
 
-Recommended format:
+Use a simple status section by default:
+
+```markdown
+## Status
+
+Active. This document is the current implementation baseline.
+```
+
+Use a fuller metadata header only when version, date, owner, and change-summary fields materially help govern the document. Do not add metadata solely for uniformity or update it for routine wording and link fixes.
+
+Optional format:
 
 ```markdown
 ## Document Header
@@ -24,17 +34,7 @@ Recommended format:
 | Change Summary | Concise summary of the latest meaningful change. |
 ```
 
-## When Headers Are Required
-
-Use document headers for:
-
-- core planning docs
-- architecture docs
-- product docs
-- major agentic workflow docs
-- ADR-like governance docs when not already covered by ADR format
-
-Document headers are not required for every small placeholder README.
+Placeholder READMEs do not require full metadata, but they must clearly identify their planned or inactive status.
 
 ## Status Values
 
@@ -48,11 +48,13 @@ Use these status values:
 
 ## Versioning
 
-Use simple semantic-style document versions:
+When a document uses an explicit version field, use simple semantic-style versions:
 
-- Patch bump: typo, link, wording, or small clarification.
+- Patch bump: small clarification that changes guidance.
 - Minor bump: new section, changed guidance, or meaningful scope expansion.
 - Major bump: incompatible governance, architecture, or workflow change.
+
+Routine typo, formatting, and link fixes do not require version or status churn.
 
 ## Related Documents
 
@@ -64,7 +66,7 @@ Agents should follow references before changing derivative docs.
 
 When updating docs:
 
-- update the header date/version when the change is meaningful
+- update the header date/version, when present, only when the change is meaningful
 - keep change summaries concise
 - remove stale references
 - avoid duplicating canonical content

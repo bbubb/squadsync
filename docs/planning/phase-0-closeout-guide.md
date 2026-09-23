@@ -1,5 +1,9 @@
 # Phase 0 Closeout Guide
 
+## Status
+
+Accepted historical orientation. Current phase and sprint state belong in `docs/planning/project-roadmap.md` and GitHub issues.
+
 ## Purpose
 
 This guide explains what Phase 0 created, why it matters, and how the foundation should be used in later phases.
@@ -32,7 +36,7 @@ AGENTS.md = root agent operating map
 PLANS.md = complex-task planning standard
 GitHub Issues = executable task records
 Pull Requests = review and validation gates
-.agentic workflow docs = human-readable process manual
+docs/agentic-workflow = human-readable process manual
 .agents/skills = native Codex skill entry points
 .codex = future native Codex configuration area
 ChatGPT GitHub = planning, docs, issues, PR setup, review support
@@ -79,9 +83,9 @@ For Phase 1 API work, Codex should begin with:
 - `.agents/skills/squadsync-api-task/SKILL.md`;
 - `docs/agentic-workflow/tools/codex-cli/skills/scaffold-backend.md`.
 
-## Active vs Placeholder Areas
+## Status at Phase 0 Closeout
 
-Active now:
+Established artifacts at closeout:
 
 - `README.md`
 - `AGENTS.md`
@@ -95,7 +99,7 @@ Active now:
 - `apps/api/AGENTS.md`
 - `docs/AGENTS.md`
 
-Placeholder or planned:
+Reserved or planned at closeout:
 
 - `apps/web/`
 - `infra/`

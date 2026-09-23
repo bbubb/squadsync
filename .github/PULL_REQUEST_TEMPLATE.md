@@ -16,8 +16,9 @@ List anything intentionally not included in this PR.
 
 ## Acceptance Criteria Status
 
-- [ ] Issue acceptance criteria reviewed
-- [ ] Acceptance criteria met or limitations documented
+Copy each issue acceptance criterion and map it to evidence or an explicit limitation.
+
+- [ ] Criterion — evidence or limitation
 
 ## Validation
 
@@ -42,6 +43,10 @@ For docs-only changes, describe link/path/terminology checks performed.
 ## Architecture Notes
 
 Describe any architecture-relevant decisions, trade-offs, or service-boundary implications. Write `N/A` if none.
+
+## Known Limitations
+
+List checks not run, incomplete criteria, temporary constraints, or remaining review risks. Write `None` if there are none.
 
 ## Agentic Workflow Notes
 

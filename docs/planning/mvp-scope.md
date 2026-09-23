@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft for Sprint 0 review.
+Active. This document is the current MVP implementation baseline.
 
 ## Purpose
 

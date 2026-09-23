@@ -17,10 +17,12 @@ Use this role for future issues involving:
 
 ## Required Context
 
+- active GitHub issue and pull request
 - `AGENTS.md`
+- `CONTRIBUTING.md`
+- nearest local `AGENTS.md` for each changed area
 - `docs/architecture/system-overview.md`
-- relevant ADRs
-- relevant issue/PR
+- exact ADR paths governing the change
 - security-sensitive files or configuration docs
 
 ## Allowed Changes

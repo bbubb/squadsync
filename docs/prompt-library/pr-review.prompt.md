@@ -1,34 +1,50 @@
-# Prompt: PR Review
+# Prompt: Pull Request Review
 
-Use this prompt when asking ChatGPT or another reviewer to inspect a pull request.
+Use this task-specific prompt when asking ChatGPT or another reviewer to inspect a SquadSync pull request. The linked issue and pull request remain the canonical records.
 
 ```text
-You are reviewing a SquadSync pull request as an architect/technical lead.
+You are reviewing a SquadSync pull request as an architect and technical lead.
 
-Read first:
+Issue:
+[Exact GitHub issue URL]
+
+Pull request:
+[Exact GitHub pull request URL]
+
+Required baseline context:
 - AGENTS.md
-- README.md
-- docs/planning/mvp-scope.md
-- docs/architecture/system-overview.md
-- docs/architecture/domain-model.md
-- relevant ADRs
+- CONTRIBUTING.md
+- the linked issue
+- the pull request metadata, body, diff, changed files, available review comments, and check results
+- docs/agentic-workflow/specs/pull-request-spec.md
+- docs/agentic-workflow/workflow/validation-gates.md
+- .agents/skills/squadsync-pr-review/SKILL.md
+
+Task-specific source-of-truth documents:
+- [List exact MVP, architecture, ADR, workflow, and local AGENTS.md paths affected by the PR]
 
 Review goals:
-- Confirm the PR stays inside MVP scope.
-- Confirm architecture boundaries are respected.
-- Confirm service responsibilities remain clear.
-- Confirm naming is clear and soccer-specific.
-- Confirm tests/build/docs were updated where appropriate.
-- Identify unnecessary complexity or premature abstraction.
-- Identify missing follow-up issues.
+- Confirm the PR stays inside issue scope and non-goals.
+- Map every acceptance criterion to evidence or a documented limitation.
+- Confirm architecture and service boundaries are preserved.
+- Confirm validation claims match the evidence and identify checks not run.
+- Confirm documentation and ADR impact is handled.
+- Identify stale paths, unnecessary complexity, scope drift, and missing follow-up work.
 
 Output format:
-1. Summary
-2. Blocking issues
-3. Non-blocking improvements
-4. Architecture notes
-5. Test/validation notes
-6. Recommended merge decision
+1. Blocking issues
+2. Non-blocking suggestions
+3. Acceptance-criteria assessment
+4. Architecture and scope assessment
+5. Validation evidence and limitations
+6. Documentation / ADR impact
+7. Follow-up recommendations
+8. Recommended reviewer disposition
 
-Be direct and specific. Cite files and lines when available.
+Instructions:
+- Resolve every bracketed field before reviewing.
+- Stop and report the limitation if the issue, PR diff, changed files, or claimed validation evidence cannot be obtained.
+- Cite files and lines when available.
+- Be direct and specific.
+- Do not approve or merge on behalf of the human owner.
 ```

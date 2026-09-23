@@ -1,13 +1,19 @@
+---
+applyTo: "apps/web/**"
+---
+
 # Frontend Instructions
 
-Apply these instructions to frontend changes under `frontend/`.
+Apply these instructions to frontend changes under `apps/web/`.
+
+Before changing frontend files, follow the active issue, the root `AGENTS.md`, and `apps/web/AGENTS.md`.
 
 ## Target Architecture
 
 Use a Next.js + TypeScript frontend organized by feature:
 
 ```text
-frontend/
+apps/web/
   src/
     app/
     components/

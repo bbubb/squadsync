@@ -62,6 +62,7 @@ For docs-only changes, validate paths, links, terminology, and scope.
 For future API code, expected baseline validation will be:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

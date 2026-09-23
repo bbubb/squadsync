@@ -16,10 +16,13 @@ Use this role for future issues involving:
 
 ## Required Context
 
+- active GitHub issue and pull request
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- nearest local `AGENTS.md` for the changed area
 - `docs/agentic-workflow/workflow/testing-strategy.md`
 - `docs/agentic-workflow/workflow/validation-gates.md`
 - `docs/agentic-workflow/specs/pull-request-spec.md`
-- relevant issue and PR
 
 ## Allowed Changes
 

@@ -14,7 +14,7 @@ apps/
 
 No application source code has been scaffolded yet.
 
-Phase 1 begins with the API foundation under `apps/api/`.
+The API foundation under `apps/api/` is the first planned application surface. Phase and sprint sequencing belong in the [Project Roadmap](../docs/planning/project-roadmap.md) and current GitHub task records.
 
 ## Rules
 

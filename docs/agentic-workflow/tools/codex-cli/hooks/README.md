@@ -10,7 +10,7 @@ The project should use this structure now so future executable hooks can be adde
 
 No executable Codex hooks are active yet.
 
-The hook structure is intentionally present as a production-shaped placeholder. Planned hooks are documented in `planned-hooks.md`.
+The hook structure is intentionally present as a production-shaped placeholder. Planned hooks are documented in [Planned Hooks](planned-hooks.md).
 
 ## Hook Categories
 

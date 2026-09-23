@@ -8,10 +8,10 @@ These playbooks explain how to approach project-specific work in more detail tha
 
 ## Current Playbooks
 
-- `implement-agent-task.md` — default implementation flow for an agent-ready issue.
-- `scaffold-backend.md` — Phase 1 API scaffold playbook.
-- `update-docs.md` — documentation update playbook.
-- `review-pr.md` — PR review support playbook.
+- [Implement agent task](implement-agent-task.md) — default implementation flow for an agent-ready issue.
+- [Scaffold API](scaffold-backend.md) — initial API scaffold playbook.
+- [Update docs](update-docs.md) — documentation update playbook.
+- [Review PR](review-pr.md) — PR review support playbook.
 
 ## Repo Skill Location
 

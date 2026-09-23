@@ -2,7 +2,7 @@
 
 ## Status
 
-Active for Phase 1.
+Active for API planning and implementation.
 
 This file provides local guidance for agents working under `apps/api/`.
 
@@ -10,7 +10,7 @@ This file provides local guidance for agents working under `apps/api/`.
 
 `apps/api/` contains the SquadSync ASP.NET Core API and backend application layers.
 
-Phase 1 should scaffold the API foundation here before domain or feature work expands.
+Scaffold the API foundation here before domain or feature work expands.
 
 ## Expected Structure
 
@@ -48,6 +48,7 @@ Use a TDD-oriented flow for behavior work:
 Initial expected validation after scaffold exists:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test

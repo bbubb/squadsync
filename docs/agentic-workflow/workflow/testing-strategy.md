@@ -26,6 +26,7 @@ This means tests should normally be defined before or alongside behavior impleme
 When backend code exists, expected validation includes:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test
@@ -72,6 +73,6 @@ Implementation agents should:
 - document missing test infrastructure as a limitation
 - suggest follow-up issues when stronger test coverage is needed
 
-## Phase 1 Implication
+## Initial Backend Scaffold
 
 The backend scaffold should include test projects early so future issues can follow this testing strategy without retrofitting basic test infrastructure later.

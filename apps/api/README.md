@@ -21,13 +21,14 @@ tests/
 
 Not scaffolded yet.
 
-Phase 1 will create the initial .NET solution, projects, health endpoint, Swagger/OpenAPI setup, logging baseline, and test projects.
+The initial backend scaffold will create the .NET solution, projects, health endpoint, Swagger/OpenAPI setup, logging baseline, and test projects.
 
 ## Validation Direction
 
 Once scaffolded, expected validation is:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test
@@ -35,6 +36,7 @@ dotnet test
 
 ## References
 
+- [Project Roadmap](../../docs/planning/project-roadmap.md)
 - [System Overview](../../docs/architecture/system-overview.md)
 - [Domain Model](../../docs/architecture/domain-model.md)
 - [Testing Strategy](../../docs/agentic-workflow/workflow/testing-strategy.md)

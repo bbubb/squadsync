@@ -25,6 +25,7 @@ For documentation and workflow changes, Codex should verify:
 When backend code exists, Codex should run:
 
 ```bash
+cd apps/api
 dotnet restore
 dotnet build
 dotnet test
@@ -39,6 +40,7 @@ When frontend code exists, Codex should use the commands documented by the front
 Expected future commands may include:
 
 ```bash
+cd apps/web
 npm install
 npm run lint
 npm run build

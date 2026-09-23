@@ -65,6 +65,6 @@ Agents should not create broad branches that attempt to complete multiple unrela
 
 If a task expands, the agent should stop, report scope drift, and suggest follow-up issues instead of silently broadening the PR.
 
-## Phase 1 Implication
+## Application-Code Protection
 
 Once backend code exists, GitHub Actions should protect `main` with restore/build/test validation before application PRs are merged.
