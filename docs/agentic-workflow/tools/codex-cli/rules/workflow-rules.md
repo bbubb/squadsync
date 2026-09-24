@@ -21,7 +21,7 @@ Before implementation, Codex should verify:
 
 ## Branch Rules
 
-Codex should use short-lived branches from `main`.
+Codex must use a short-lived, issue-scoped branch from `main`.
 
 Recommended pattern:
 
@@ -34,7 +34,11 @@ chore/<short-topic>
 
 ## PR Rules
 
-Codex PRs should include:
+After scoped implementation and available validation, Codex must push its issue-scoped branch and open a draft PR unless a documented stop condition prevents it. Validation limitations must be reported in the draft PR; they should not prevent draft-PR creation by default.
+
+Codex must not merge its own PR or close the related issue.
+
+Codex draft PRs must include:
 
 - linked issue
 - summary
