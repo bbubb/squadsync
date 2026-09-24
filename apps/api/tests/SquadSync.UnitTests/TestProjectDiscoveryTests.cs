@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace SquadSync.UnitTests;
 
 public class TestProjectDiscoveryTests
