@@ -8,7 +8,7 @@ The project is intentionally scoped to a practical vertical slice: team and rost
 
 SquadSync is in active MVP development.
 
-Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 begins the backend foundation for the API.
+Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 now includes the initial API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; a health endpoint; development-only Swagger; and console logging.
 
 Canonical planning state and active work are tracked in:
 
@@ -81,9 +81,7 @@ Start here:
 
 ## Getting Started
 
-Application code has not been scaffolded yet. Phase 1 will create the API foundation under `apps/api/` with build and test validation.
-
-Until then, begin with the documentation map below and the active GitHub issue/PR workflow.
+The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. PostgreSQL, Docker Compose, CI, authentication, the frontend, and soccer-subber integration are planned later in Phase 1 and beyond.
 
 ## Contributing
 
