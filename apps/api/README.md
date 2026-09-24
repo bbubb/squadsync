@@ -1,31 +1,18 @@
 # SquadSync API
 
-The API app will contain the ASP.NET Core backend for SquadSync.
+The initial SquadSync API foundation is an ASP.NET Core modular-monolith solution at `apps/api/SquadSync.sln`. It contains API, Application, Domain, Infrastructure, unit-test, and integration-test projects.
 
-## Planned Role
+## Prerequisite
 
-`apps/api/` will host the modular monolith backend with clear boundaries:
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Confirm it is available:
 
-```text
-src/
-  SquadSync.Api/
-  SquadSync.Application/
-  SquadSync.Domain/
-  SquadSync.Infrastructure/
-tests/
-  SquadSync.UnitTests/
-  SquadSync.IntegrationTests/
+```bash
+dotnet --version
 ```
 
-## Current Status
+## Local setup and validation
 
-Not scaffolded yet.
-
-The initial backend scaffold will create the .NET solution, projects, health endpoint, Swagger/OpenAPI setup, logging baseline, and test projects.
-
-## Validation Direction
-
-Once scaffolded, expected validation is:
+From the repository root, run:
 
 ```bash
 cd apps/api
@@ -33,6 +20,30 @@ dotnet restore
 dotnet build
 dotnet test
 ```
+
+`dotnet test` runs both the unit-test and in-process health integration-test projects. No database, Docker service, environment variables, secrets, or connection strings are required for the current scaffold.
+
+## Run the API
+
+From `apps/api`, start the API in Development on a fixed local port. In PowerShell:
+
+```bash
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+dotnet run --project src/SquadSync.Api --urls http://localhost:5050
+```
+
+In a POSIX-compatible shell, use `ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/SquadSync.Api --urls http://localhost:5050` instead. ASP.NET Core defaults to Production when no environment is set.
+
+When running in Development, use:
+
+- Health check: <http://localhost:5050/health>
+- Swagger UI: <http://localhost:5050/swagger>
+
+Swagger is enabled only in the Development environment. Serilog writes structured logs to the console only.
+
+## Not included yet
+
+This scaffold intentionally does not include PostgreSQL, Docker Compose, CI, authentication, a frontend, or soccer-subber integration. Those capabilities remain planned for later work.
 
 ## References
 
