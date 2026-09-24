@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 is closed; Phase 1 planning and implementation-readiness review are current.
+Active. Phase 0 and Phase 1 Sprint 1 are closed. Phase 1 Sprint 2 planning is next.
 
 ## Purpose
 
@@ -381,6 +381,6 @@ The ChatGPT tool-profile documents own the prompt templates. This roadmap owns c
 
 ## Current Next Step
 
-Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40).
+Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40). Phase 1 Sprint 1's API scaffold is complete through [Issue #11](https://github.com/bbubb/squadsync/issues/11) and its five child issues, #44–#48.
 
-Before application code begins, reassess Phase 1 Sprint 1 and refresh [Issue #11](https://github.com/bbubb/squadsync/issues/11) against the current `apps/api/` structure, architecture baseline, and `agent-ready` standard.
+Plan Phase 1 Sprint 2's local database and infrastructure baseline. Define focused, agent-ready issues for the PostgreSQL local development path and Docker Compose baseline before implementation. Keep EF Core persistence, migrations, database health probes, and CI scoped to their planned work rather than assuming Sprint 1 delivered them.
