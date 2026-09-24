@@ -23,6 +23,7 @@ Codex CLI must:
 - update docs when behavior, architecture, or workflow changes
 - run available validation gates before reporting completion
 - document validation limitations honestly
+- create an issue-scoped branch, push it, and open a draft PR after implementation and available validation unless a documented stop condition prevents it
 - stop instead of guessing when scope or architecture is unclear
 
 Codex CLI must not:
@@ -76,4 +77,4 @@ A Codex CLI task is complete when:
 - tests are added/updated when behavior changes
 - docs/ADRs are updated if needed
 - scope drift has been avoided
-- a PR summary can be written from repo-visible facts
+- a draft PR has been opened with a summary based on repo-visible facts, or a documented stop condition explains why it could not be opened

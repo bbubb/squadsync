@@ -65,7 +65,9 @@ Instructions:
 - Do not introduce architecture changes without an approved ADR.
 - Update docs if behavior, architecture, workflow, or operating commands change.
 - Run available validation gates or document why they cannot be run.
-- Prepare PR notes that map changes and evidence to each acceptance criterion.
+- Create an issue-scoped branch from `main`, push it, and open a draft PR after scoped implementation and available validation unless a documented stop condition prevents it.
+- Include PR notes that map changes and evidence to each acceptance criterion; document any validation limitation in the draft PR.
+- Do not merge the PR or close the issue.
 - Suggest follow-up issues instead of expanding scope.
 ```
 

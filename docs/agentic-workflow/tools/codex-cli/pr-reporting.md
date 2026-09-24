@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This document defines how Codex CLI should summarize completed work for pull request review.
+This document defines how Codex CLI should open and summarize a draft pull request for completed work.
+
+After scoped implementation and available validation, Codex must push the issue-scoped branch and open a draft PR unless a documented stop condition prevents it. Failed, unavailable, or incomplete validation must be recorded honestly in the draft PR. Codex must not merge its own PR or close the related issue.
 
 ## PR Summary Requirements
 
