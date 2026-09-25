@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 Sprint 1 are closed. Phase 1 Sprint 2 planning is next.
+Active. Phase 0 and Phase 1 Sprint 1 are closed. Phase 1 Sprint 2 is confirmed; its open executable issues are tracked under #57.
 
 ## Purpose
 
@@ -381,6 +381,15 @@ The ChatGPT tool-profile documents own the prompt templates. This roadmap owns c
 
 ## Current Next Step
 
-Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40). Phase 1 Sprint 1's API scaffold is complete through [Issue #11](https://github.com/bbubb/squadsync/issues/11) and its five child issues, #44–#48.
+Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40). Phase 1 Sprint 1 is complete through [Issue #11](https://github.com/bbubb/squadsync/issues/11) and child issues #44–#48.
 
-Plan Phase 1 Sprint 2's local database and infrastructure baseline. Define focused, agent-ready issues for the PostgreSQL local development path and Docker Compose baseline before implementation. Keep EF Core persistence, migrations, database health probes, and CI scoped to their planned work rather than assuming Sprint 1 delivered them.
+Phase 1 Sprint 2 — Local PostgreSQL & Infrastructure Baseline — is confirmed and tracked by [umbrella issue #57](https://github.com/bbubb/squadsync/issues/57):
+
+1. [#58 — Minimal API CI validation](https://github.com/bbubb/squadsync/issues/58)
+2. [#59 — Local PostgreSQL Docker Compose baseline](https://github.com/bbubb/squadsync/issues/59)
+3. [#60 — PostgreSQL readiness health check](https://github.com/bbubb/squadsync/issues/60)
+4. [#61 — Document and validate the local database workflow](https://github.com/bbubb/squadsync/issues/61)
+
+The minimum restore/build/test CI gate is included now to satisfy the repository branching strategy; broader CI hardening remains Sprint 3. Sprint 2 proves local PostgreSQL availability and API readiness without introducing EF Core, a `DbContext`, domain tables, or migrations. Persistence modeling remains in Phase 2.
+
+Begin with #58 or #59. Complete #59 before #60, and complete #59 and #60 before #61. Each implementation issue should be handled in its own branch and reviewed PR.
