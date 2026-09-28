@@ -53,7 +53,9 @@ Codex sessions should start from repo instructions, issue scope, and relevant sk
 
 ## Context Loading Order
 
-For Codex issue execution, read the root `AGENTS.md` as the landing/router document, then retrieve the active issue immediately before loading broad task context. Check readiness, then resolve the scoped instructions and source documents from the issue and affected paths. The Codex [context-loading guide](../tools/codex-cli/context-loading.md) defines retrieval and fallback details.
+For Codex issue execution, read the root `AGENTS.md` as the landing/router document, retrieve the active issue immediately, then read `CONTRIBUTING.md` for repository-wide implementation rules. Check readiness next, then resolve the scoped instructions and source documents from the issue and affected paths. The Codex [context-loading guide](../tools/codex-cli/context-loading.md) defines retrieval and fallback details.
+
+`README.md` remains the public orientation/current-state document and should be read when that context is needed; it is not a mandatory reread for every already well-scoped issue.
 
 For other human or agent work, begin with the source that identifies the active task (issue, PR, or requested change), then use `AGENTS.md` and repository indexes to resolve the relevant context. Read `PLANS.md` when the work meets its complexity threshold. Do not treat linked indexes as mandates to load every document.
 
