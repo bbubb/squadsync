@@ -6,12 +6,13 @@ This document defines how Codex CLI resolves task context without loading unrela
 
 ## Startup and Issue Retrieval
 
-Use this order for a prompt such as `Work Issue #59.`:
+Use this order for a prompt such as `Work Issue #<number>.`:
 
 1. Read the already-discovered root `AGENTS.md` as the repository landing page and routing map.
 2. Retrieve the active GitHub issue immediately, before loading broad project or workflow context.
-3. Confirm readiness using `issue-intake.md`, including objective, scope, non-goals, acceptance criteria, validation, governing sources, and stop conditions.
-4. Resolve and read the task-specific sources and scoped instructions described below.
+3. Read `CONTRIBUTING.md` for repository-wide issue, branch, PR, and validation rules that apply to implementation work.
+4. Confirm readiness using `issue-intake.md`, including objective, scope, non-goals, acceptance criteria, validation, governing sources, and stop conditions.
+5. Resolve and read the task-specific sources and scoped instructions described below.
 
 Prefer authenticated, repository-aware GitHub tooling available in the Codex environment. If using the GitHub CLI, identify the repository explicitly so retrieval does not depend on local Git repository discovery:
 
@@ -23,12 +24,15 @@ Public web search is not the normal fallback for canonical issue state. If authe
 
 ## Minimal Startup Baseline
 
-The normal startup baseline is only:
+The normal implementation baseline is:
 
 - root `AGENTS.md`;
-- the active issue.
+- the active issue;
+- `CONTRIBUTING.md`.
 
-Read `README.md`, `CONTRIBUTING.md`, and the Codex profile entry points only when needed to understand repository purpose, workflow obligations, or the applicable task route. Do not preload `PLANS.md`, roadmap/MVP/product/architecture documents, generic workflow documents, or unrelated skills for every issue. Load them when the issue, affected path, or routing guidance makes them relevant.
+`README.md` remains an important orientation source for repository purpose and current state, but it does not need to be reread for every issue when that context is already sufficient from the issue and scoped instructions.
+
+Do not preload `PLANS.md`, roadmap/MVP/product/architecture documents, generic workflow documents, or unrelated skills for every issue. Load them when the issue, affected path, or routing guidance makes them relevant.
 
 ## Task-Specific Context Resolution
 
