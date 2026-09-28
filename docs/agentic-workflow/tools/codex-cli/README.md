@@ -15,7 +15,7 @@ Codex CLI should not depend on private ChatGPT session context to understand wha
 ## Profile Files
 
 - [Operational profile](operational-profile.md) — how Codex CLI fits into the SquadSync workflow.
-- [Context loading](context-loading.md) — required context loading order before work begins.
+- [Context loading](context-loading.md) — issue-first retrieval and scoped context resolution.
 - [Issue intake](issue-intake.md) — how Codex should interpret and validate issue readiness.
 - [Task prompt](task-prompt.md) — reusable task prompt pattern for Codex CLI.
 - [Validation](validation.md) — Codex-specific validation reporting expectations.

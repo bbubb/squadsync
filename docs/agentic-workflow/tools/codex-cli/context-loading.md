@@ -2,38 +2,47 @@
 
 ## Purpose
 
-This document defines how Codex CLI should load enough repository context to execute an issue safely without flooding every task with unrelated documents.
+This document defines how Codex CLI resolves task context without loading unrelated repository documents before it knows the active issue.
 
-## Required Baseline Context
+## Startup and Issue Retrieval
 
-Before modifying files, Codex CLI should read:
+Use this order for a prompt such as `Work Issue #59.`:
 
-1. `AGENTS.md`
-2. `README.md`
-3. `CONTRIBUTING.md`
-4. the current GitHub issue
-5. `docs/planning/project-roadmap.md`
-6. `docs/agentic-workflow/README.md`
-7. `docs/agentic-workflow/tools/codex-cli/README.md`
-8. `docs/agentic-workflow/tools/codex-cli/operational-profile.md`
-9. `docs/agentic-workflow/tools/codex-cli/issue-intake.md`
-10. `docs/agentic-workflow/tools/codex-cli/validation.md`
-11. `docs/agentic-workflow/tools/codex-cli/pr-reporting.md`
+1. Read the already-discovered root `AGENTS.md` as the repository landing page and routing map.
+2. Retrieve the active GitHub issue immediately, before loading broad project or workflow context.
+3. Confirm readiness using `issue-intake.md`, including objective, scope, non-goals, acceptance criteria, validation, governing sources, and stop conditions.
+4. Resolve and read the task-specific sources and scoped instructions described below.
 
-Read the issue early because its scope, affected paths, acceptance criteria, and validation determine which additional documents are relevant.
+Prefer authenticated, repository-aware GitHub tooling available in the Codex environment. If using the GitHub CLI, identify the repository explicitly so retrieval does not depend on local Git repository discovery:
+
+```powershell
+gh issue view <number> --repo bbubb/squadsync
+```
+
+Public web search is not the normal fallback for canonical issue state. If authenticated retrieval and the explicit-repository CLI command are unavailable, report the retrieval blocker rather than treating search results as the issue record.
+
+## Minimal Startup Baseline
+
+The normal startup baseline is only:
+
+- root `AGENTS.md`;
+- the active issue.
+
+Read `README.md`, `CONTRIBUTING.md`, and the Codex profile entry points only when needed to understand repository purpose, workflow obligations, or the applicable task route. Do not preload `PLANS.md`, roadmap/MVP/product/architecture documents, generic workflow documents, or unrelated skills for every issue. Load them when the issue, affected path, or routing guidance makes them relevant.
 
 ## Task-Specific Context Resolution
 
-Then load the exact paths required for the task:
+After readiness is confirmed, load the exact paths required for the task:
 
 - the nearest scoped `AGENTS.md` for each affected area;
-- the relevant repo-native skill under `.agents/skills/`;
+- the relevant repo-native skill under `.agents/skills/` and its linked playbook, if needed;
 - planning, product, architecture, domain, integration, and ADR documents named by the issue or required by the affected area;
 - applicable policy, workflow, and specification documents selected through `AGENTS.md` and `docs/agentic-workflow/workflow/issue-orchestration.md`;
-- `PLANS.md` and the issue's ExecPlan, if the task meets the ExecPlan threshold;
-- changed-area setup or validation documentation.
+- `PLANS.md` and the issue's ExecPlan only when the task meets the ExecPlan threshold;
+- changed-area setup or validation documentation;
+- Codex validation and PR-reporting guidance when preparing those task outputs.
 
-For API work, this must include `apps/api/AGENTS.md` and `.agents/skills/squadsync-api-task/SKILL.md`. Other areas must use their nearest local `AGENTS.md` and applicable skill or playbook.
+For API work, include `apps/api/AGENTS.md` and `.agents/skills/squadsync-api-task/SKILL.md`. Other areas use their nearest local `AGENTS.md` and applicable skill or playbook.
 
 ## Context Resolution Gate
 
