@@ -14,6 +14,8 @@ gh issue view <number> --repo bbubb/squadsync
 
 Do not use public web search as the normal source for canonical issue state. See [Context Loading](context-loading.md) for the complete sequence and fallback behavior.
 
+Read `CONTRIBUTING.md` before implementation so repository-wide issue, branch, PR, and validation rules remain part of every implementation task.
+
 Before implementation, Codex should confirm:
 
 - the issue has a clear objective
@@ -25,7 +27,7 @@ Before implementation, Codex should confirm:
 - validation steps are defined
 - stop conditions are understood
 
-Read only the project, architecture, and workflow sources needed to resolve those checks, following root `AGENTS.md` and the task's affected paths.
+Read only the additional project, architecture, and workflow sources needed to resolve those checks, following root `AGENTS.md` and the task's affected paths.
 
 ## Agent-Ready Decision
 
