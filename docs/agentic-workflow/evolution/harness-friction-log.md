@@ -66,8 +66,8 @@ The task started with unnecessary context, and canonical issue retrieval was slo
 
 ### Proposed Change
 
-Retrieve the issue immediately with authenticated repository-aware GitHub tooling; if using GitHub CLI, pass `--repo bbubb/squadsync`. Treat root `AGENTS.md` as a router, then load only the documents selected by issue readiness and affected paths. Preserve all readiness, validation, draft PR, and human merge safeguards.
+Retrieve the issue immediately with authenticated repository-aware GitHub tooling; if using GitHub CLI, pass `--repo bbubb/squadsync`. Treat root `AGENTS.md` as the router, retain `CONTRIBUTING.md` as the small repository-wide implementation baseline, and then load only documents selected by issue readiness and affected paths. Keep `README.md` available as orientation context when needed rather than forcing a reread on every task. Preserve all readiness, validation, draft PR, and human merge safeguards.
 
 ### Status
 
-Accepted. Codex context loading, issue intake, task prompt, implementation playbook, and generic context-order guidance now follow this sequence.
+Accepted in PR #65. Codex context loading, issue intake, task prompt, implementation playbook, and generic context-order guidance follow this sequence.
