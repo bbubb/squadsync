@@ -8,7 +8,7 @@ The project is intentionally scoped to a practical vertical slice: team and rost
 
 SquadSync is in active MVP development.
 
-Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 now includes the initial API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; a health endpoint; development-only Swagger; and console logging.
+Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 now includes the initial API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; and console logging. A local PostgreSQL service is available through Docker Compose under `infra/docker/`, and GitHub Actions validates API restore, build, and test. The API currently checks database connectivity but does not yet persist application data or include EF Core, domain tables, or migrations.
 
 Canonical planning state and active work are tracked in:
 
@@ -81,7 +81,7 @@ Start here:
 
 ## Getting Started
 
-The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. PostgreSQL, Docker Compose, CI, authentication, the frontend, and soccer-subber integration are planned later in Phase 1 and beyond.
+The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); database persistence modeling, authentication, the frontend, and soccer-subber integration remain later work.
 
 ## Contributing
 
