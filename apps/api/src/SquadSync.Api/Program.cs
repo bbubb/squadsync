@@ -1,4 +1,6 @@
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using SquadSync.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,9 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext());
 
 builder.Services.AddControllers();
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddCheck("postgres", new PostgresHealthCheck(
+        builder.Configuration.GetConnectionString("SquadSync")));
 
 if (builder.Environment.IsDevelopment())
 {
@@ -25,7 +29,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
+app.MapHealthChecks("/health/ready");
 app.MapControllers();
 
 app.Run();
