@@ -43,22 +43,16 @@ Validation:
 Stop conditions:
 [Known reasons to pause]
 
-Required baseline context:
-- AGENTS.md
-- README.md
-- CONTRIBUTING.md
-- the active GitHub issue
-- docs/planning/project-roadmap.md
-- docs/agentic-workflow/README.md
-- docs/agentic-workflow/tools/codex-cli/README.md
-- docs/agentic-workflow/tools/codex-cli/operational-profile.md
-- docs/agentic-workflow/tools/codex-cli/context-loading.md
-- docs/agentic-workflow/tools/codex-cli/issue-intake.md
-- docs/agentic-workflow/tools/codex-cli/validation.md
-- docs/agentic-workflow/tools/codex-cli/pr-reporting.md
+Startup baseline:
+- Root `AGENTS.md` as the landing/router document.
+- The active GitHub issue, retrieved immediately with authenticated repository-aware tooling or `gh issue view <number> --repo bbubb/squadsync`.
+- `CONTRIBUTING.md` for repository-wide issue, branch, PR, and validation rules.
+
+Use `docs/agentic-workflow/tools/codex-cli/context-loading.md` to resolve additional documents from the issue scope and affected paths. Treat `README.md` as orientation context when needed rather than a mandatory reread. Load validation and PR-reporting guidance when preparing those outputs; do not preload a fixed broad document set for every task.
 
 Instructions:
 - Resolve every bracketed field and name task-specific sources by exact repository path before changing files.
+- Retrieve the active issue before loading broad task context, then read `CONTRIBUTING.md` and confirm readiness before resolving implementation-specific documents.
 - Confirm issue readiness, scope, non-goals, acceptance criteria, validation, and stop conditions.
 - If the issue conflicts with current pathing, architecture, MVP scope, or validation guidance, stop and report the discrepancy.
 - Keep the change scoped to the issue and affected paths.

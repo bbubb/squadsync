@@ -53,16 +53,11 @@ Codex sessions should start from repo instructions, issue scope, and relevant sk
 
 ## Context Loading Order
 
-Default order for human or agent work:
+For Codex issue execution, read the root `AGENTS.md` as the landing/router document, retrieve the active issue immediately, then read `CONTRIBUTING.md` for repository-wide implementation rules. Check readiness next, then resolve the scoped instructions and source documents from the issue and affected paths. The Codex [context-loading guide](../tools/codex-cli/context-loading.md) defines retrieval and fallback details.
 
-1. `README.md`
-2. `AGENTS.md`
-3. `CONTRIBUTING.md`
-4. `PLANS.md` if the work is complex
-5. active issue or PR
-6. relevant planning, architecture, product, and workflow docs
-7. relevant local `AGENTS.md` file, such as `apps/api/AGENTS.md`
-8. relevant native skill under `.agents/skills/`
+`README.md` remains the public orientation/current-state document and should be read when that context is needed; it is not a mandatory reread for every already well-scoped issue.
+
+For other human or agent work, begin with the source that identifies the active task (issue, PR, or requested change), then use `AGENTS.md` and repository indexes to resolve the relevant context. Read `PLANS.md` when the work meets its complexity threshold. Do not treat linked indexes as mandates to load every document.
 
 ## When to Summarize or Close a Thread
 

@@ -6,14 +6,16 @@ Use this skill when Codex is asked to implement a scoped `agent-ready` issue.
 
 ## Flow
 
-1. Read required context from `docs/agentic-workflow/tools/codex-cli/context-loading.md`.
-2. Confirm issue readiness using `docs/agentic-workflow/tools/codex-cli/issue-intake.md`; do not rely on the label alone.
-3. Check the task-applicable rules routed through `docs/agentic-workflow/tools/codex-cli/rules/README.md`.
-4. Identify expected tests or validation gates.
-5. Make the smallest change that satisfies acceptance criteria.
-6. Run validation or document why it cannot be run.
-7. Prepare PR notes using `docs/agentic-workflow/tools/codex-cli/pr-reporting.md`.
-8. Suggest follow-up issues instead of expanding scope.
+1. Read root `AGENTS.md` and immediately retrieve the active issue using authenticated repository-aware GitHub tooling, or `gh issue view <number> --repo bbubb/squadsync` as the CLI fallback.
+2. Read `CONTRIBUTING.md` for the repository-wide issue, branch, PR, and validation rules.
+3. Confirm issue readiness using `docs/agentic-workflow/tools/codex-cli/issue-intake.md`; do not rely on the label alone.
+4. Use `docs/agentic-workflow/tools/codex-cli/context-loading.md` to resolve only the task-specific context required by the issue and affected paths.
+5. Check the task-applicable rules routed through `docs/agentic-workflow/tools/codex-cli/rules/README.md`.
+6. Identify expected tests or validation gates.
+7. Make the smallest change that satisfies acceptance criteria.
+8. Run validation or document why it cannot be run.
+9. Prepare PR notes using `docs/agentic-workflow/tools/codex-cli/pr-reporting.md`.
+10. Suggest follow-up issues instead of expanding scope.
 
 ## TDD-Oriented Guidance
 
