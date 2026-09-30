@@ -4,7 +4,7 @@ This directory contains local infrastructure direction and future cloud deployme
 
 ## Current Status
 
-No runtime infrastructure code has been added yet.
+Local PostgreSQL Docker Compose infrastructure is available under `infra/docker/` for local development only. Cloud, IaC, and production infrastructure remain deferred.
 
 Initial backend work should prioritize local development support. Cloud deployment artifacts should be added later when the core vertical slice is useful.
 
