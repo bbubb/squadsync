@@ -32,7 +32,7 @@ The normal implementation baseline is:
 
 `README.md` remains an important orientation source for repository purpose and current state, but it does not need to be reread for every issue when that context is already sufficient from the issue and scoped instructions.
 
-Do not preload `PLANS.md`, roadmap/MVP/product/architecture documents, generic workflow documents, or unrelated skills for every issue. Load them when the issue, affected path, or routing guidance makes them relevant.
+Do not preload `PLANS.md`, roadmap/MVP/product/architecture documents, generic workflow documents, or unrelated skills for every issue. Scoped `AGENTS.md` files and skills should state essential local rules directly and route to deeper sources conditionally; a reference list is not a mandatory preload bundle. Load deeper sources when the issue, affected path, or a concrete dependency, ambiguity, conflict, or architecture question makes them relevant. Preserve all documented stop conditions and safeguards while resolving context progressively.
 
 ## Task-Specific Context Resolution
 

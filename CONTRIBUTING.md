@@ -4,16 +4,9 @@ SquadSync uses issue-backed, reviewable changes. This guide applies to humans an
 
 ## Source of Truth
 
-Before changing the repository, read:
+Use the active issue and the root `AGENTS.md` to route task context. This guide is the repository-wide baseline for issue scope, branches, pull requests, and validation; it is not a checklist to preload every linked project document.
 
-- [README.md](README.md)
-- [AGENTS.md](AGENTS.md)
-- [PLANS.md](PLANS.md)
-- [Project Roadmap](docs/planning/project-roadmap.md)
-- [Agentic Workflow Architecture](docs/agentic-workflow/README.md)
-- [Branching Strategy](docs/agentic-workflow/workflow/branching-strategy.md)
-- [Pull Request Specification](docs/agentic-workflow/specs/pull-request-spec.md)
-- [Validation Gates](docs/agentic-workflow/workflow/validation-gates.md)
+Read the nearest scoped `AGENTS.md` and applicable skill or playbook for the affected area. Follow their references to planning, architecture, product, workflow, or validation sources when the issue, affected path, or a concrete dependency, ambiguity, conflict, or architecture question requires them. Keep `PLANS.md` conditional on work that is complex, cross-cutting, risky, or multi-step. `README.md` is available for repository orientation when needed.
 
 ## Workflow
 

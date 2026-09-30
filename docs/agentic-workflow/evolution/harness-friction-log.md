@@ -71,3 +71,25 @@ Retrieve the issue immediately with authenticated repository-aware GitHub toolin
 ### Status
 
 Accepted in PR #65. Codex context loading, issue intake, task prompt, implementation playbook, and generic context-order guidance follow this sequence.
+
+## 2026-09-30 - Scoped context directives still preload broad bundles
+
+### Context
+
+The first follow-on API and infrastructure implementation runs after #65, including Issue #59, tested the issue-first context-loading sequence against repository-wide contribution guidance, path-scoped `AGENTS.md` files, and active native skills.
+
+### Friction
+
+Although the Codex context-loading profile described a minimal baseline and progressive disclosure, `CONTRIBUTING.md` and scoped API, web, infrastructure, and documentation guidance still listed broad document bundles as required before work. The API and documentation skills repeated similar unconditional lists. During #59, those directives led to reading roadmap, MVP, architecture/domain, broad workflow, and AWS context before or around issue-specific routing, even where the task was limited to narrower Docker and validation sources.
+
+### Impact
+
+The older directives defeated the issue-first model in actual use, adding unrelated context and making the intended task-specific source selection unclear. The workflow could not reliably keep simple infrastructure work focused or prepare #60 as a clean API context-loading validation run.
+
+### Proposed Change
+
+Keep the active issue, root `AGENTS.md`, and `CONTRIBUTING.md` as the universal baseline. Keep essential local rules in the nearest `AGENTS.md` and applicable skill, and route deeper sources conditionally based on issue scope, affected paths, and concrete dependencies, ambiguity, conflicts, or architecture questions. Preserve validation, stop conditions, human merge authority, and `PLANS.md` for genuinely complex work.
+
+### Status
+
+Accepted in Issue #68; scoped directives and active skills are reconciled with progressive context loading.

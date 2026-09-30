@@ -34,15 +34,8 @@ Agents should stop before adding infrastructure code if:
 - credentials, secrets, or account-specific values would be needed;
 - the work would expand the MVP into production infrastructure prematurely.
 
-## Required Context
+## Context Routing
 
-Before future infrastructure work, review:
+For future infrastructure work, start with the active issue, root `AGENTS.md`, `CONTRIBUTING.md`, and this file. Load only the setup or design sources selected by the task: consult `infra/docker/README.md` for local Docker changes, `infra/aws/README.md` for an AWS-specific issue, `infra/README.md` for general infrastructure orientation, the system overview for a service-boundary question, and roadmap or validation guidance when the issue requires it. Do not preload AWS, Docker, roadmap, or architecture documents solely because a task is under `infra/`.
 
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/planning/project-roadmap.md`
-- `docs/architecture/system-overview.md`
-- `infra/README.md`
-- `infra/docker/README.md`
-- `infra/aws/README.md`
-- `docs/agentic-workflow/workflow/validation-gates.md`
+Follow references or investigate further when a dependency, ambiguity, conflict, or architecture concern emerges. Read `PLANS.md` when the task is complex, cross-cutting, risky, or multi-step. Preserve the stop conditions above.

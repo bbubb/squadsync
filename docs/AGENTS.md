@@ -41,13 +41,8 @@ Agents should stop before changing docs if:
 - the requested doc appears to duplicate an existing canonical doc;
 - the content would be filler rather than meaningful guidance.
 
-## Required Context
+## Context Routing
 
-Before changing documentation, review:
+For documentation work, start with the active issue, root `AGENTS.md`, `CONTRIBUTING.md`, this file, and `.agents/skills/squadsync-docs-maintenance/SKILL.md`. Apply documentation standards when editing canonical docs; consult root-summary sync or spec-consistency guidance when the change affects summaries, derivative documents, or source-of-truth alignment. Follow the issue and affected paths to other canonical sources as needed instead of preloading unrelated planning, product, or architecture documents.
 
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/agentic-workflow/workflow/documentation-standards.md`
-- `docs/agentic-workflow/workflow/root-summary-sync.md`
-- `docs/agentic-workflow/workflow/spec-consistency.md`
-- `.agents/skills/squadsync-docs-maintenance/SKILL.md`
+Follow references or investigate further when a dependency, ambiguity, conflict, or architecture concern emerges. Read `PLANS.md` when the task is complex, cross-cutting, risky, or multi-step. Preserve the stop conditions above.
