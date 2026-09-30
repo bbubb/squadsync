@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 Sprint 1 are closed. Phase 1 Sprint 2 is confirmed; its open executable issues are tracked under #57.
+Active. Phase 0 and Phase 1 Sprints 1–2 are closed. The next planning action is Phase 1 Sprint 3 planning; Sprint 3 scope is not yet confirmed.
 
 ## Purpose
 
@@ -383,13 +383,17 @@ The ChatGPT tool-profile documents own the prompt templates. This roadmap owns c
 
 Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40). Phase 1 Sprint 1 is complete through [Issue #11](https://github.com/bbubb/squadsync/issues/11) and child issues #44–#48.
 
-Phase 1 Sprint 2 — Local PostgreSQL & Infrastructure Baseline — is confirmed and tracked by [umbrella issue #57](https://github.com/bbubb/squadsync/issues/57):
+Phase 1 Sprint 2 — Local PostgreSQL & Infrastructure Baseline — is complete through umbrella [#57](https://github.com/bbubb/squadsync/issues/57) and child issues [#58](https://github.com/bbubb/squadsync/issues/58)–[#61](https://github.com/bbubb/squadsync/issues/61). Sprint 2 established:
 
-1. [#58 — Minimal API CI validation](https://github.com/bbubb/squadsync/issues/58)
-2. [#59 — Local PostgreSQL Docker Compose baseline](https://github.com/bbubb/squadsync/issues/59)
-3. [#60 — PostgreSQL readiness health check](https://github.com/bbubb/squadsync/issues/60)
-4. [#61 — Document and validate the local database workflow](https://github.com/bbubb/squadsync/issues/61)
+- minimal GitHub Actions restore/build/test validation for the .NET 10 API;
+- local PostgreSQL through Docker Compose with loopback-only host binding, health checking, and a persistent named volume;
+- database-independent `GET /health` liveness and PostgreSQL-backed `GET /health/ready` readiness;
+- successful local validation of readiness failure and recovery when PostgreSQL is stopped and restarted;
+- documented local setup, connection-string, health-check, credential, and volume workflows;
+- continued separation between connectivity readiness and Phase 2 persistence modeling.
 
-The minimum restore/build/test CI gate is included now to satisfy the repository branching strategy; broader CI hardening remains Sprint 3. Sprint 2 proves local PostgreSQL availability and API readiness without introducing EF Core, a `DbContext`, domain tables, or migrations. Persistence modeling remains in Phase 2.
+Sprint 2 deliberately did not introduce EF Core, a `DbContext`, domain tables, migrations, seed data, production/cloud infrastructure, or API containerization.
 
-Begin with #58 or #59. Complete #59 before #60, and complete #59 and #60 before #61. Each implementation issue should be handled in its own branch and reviewed PR.
+Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). These are durable follow-ups, not automatically confirmed Sprint 3 scope.
+
+The next planning action is Phase 1 Sprint 3 planning for CI/build/test hardening based on actual Sprint 2 evidence. Confirm Sprint 3 scope in the main planning thread before creating or executing its implementation issues. Persistence modeling remains Phase 2 work.
