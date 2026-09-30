@@ -7,23 +7,11 @@ description: Use for SquadSync API/backend implementation tasks under apps/api, 
 
 Use this skill for scoped API/backend work in `apps/api/`.
 
-## Required Context
+## Context Routing
 
-Read first:
+Use the active issue, root `AGENTS.md`, and `CONTRIBUTING.md` as the universal baseline, then read `apps/api/AGENTS.md` for local rules. Read `apps/api/README.md` when setup or current scaffold details matter. Load roadmap/MVP, system/domain architecture, coding/testing standards, and validation guidance when selected by the issue, affected behavior, or a concrete implementation question; consult applicable ADRs for potentially decided design choices. Read `docs/agentic-workflow/tools/codex-cli/skills/scaffold-backend.md` for initial API scaffold work. These are routed sources, not a mandatory bundle for every API task.
 
-- the active GitHub issue
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `PLANS.md` if the task is complex or multi-step
-- `apps/api/AGENTS.md`
-- `apps/api/README.md`
-- `docs/planning/project-roadmap.md`
-- `docs/planning/mvp-scope.md`
-- `docs/architecture/system-overview.md`
-- `docs/architecture/domain-model.md`
-- `docs/agentic-workflow/workflow/coding-standards.md`
-- `docs/agentic-workflow/workflow/testing-strategy.md`
-- `docs/agentic-workflow/tools/codex-cli/skills/scaffold-backend.md` for initial API scaffold work
+Follow references or investigate deeper context when a dependency, ambiguity, conflict, or architecture concern emerges. Read `PLANS.md` and use an ExecPlan when the task is complex, cross-cutting, risky, or multi-step.
 
 ## Process
 

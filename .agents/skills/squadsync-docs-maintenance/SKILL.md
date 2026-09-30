@@ -7,18 +7,11 @@ description: Use for SquadSync documentation updates, stale link cleanup, docume
 
 Use this skill for documentation-focused tasks.
 
-## Required Context
+## Context Routing
 
-Read first:
+Use the active issue or approved documentation task, root `AGENTS.md`, and `CONTRIBUTING.md` as the universal baseline, then read `docs/AGENTS.md` for local rules. Apply `documentation-standards.md` when changing canonical docs; consult `root-summary-sync.md` and `spec-consistency.md` when summaries, derivative docs, or source alignment are in scope. Load other planning, product, architecture, policy, or workflow sources when selected by the issue or needed to resolve a concrete dependency, ambiguity, conflict, or consistency question. Read `docs/agentic-workflow/tools/codex-cli/skills/update-docs.md` for the documentation update flow. This skill is not a mandatory preload bundle.
 
-- the active GitHub issue or approved documentation task
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/AGENTS.md`
-- `docs/agentic-workflow/workflow/documentation-standards.md`
-- `docs/agentic-workflow/workflow/root-summary-sync.md`
-- `docs/agentic-workflow/workflow/spec-consistency.md`
-- `docs/agentic-workflow/tools/codex-cli/skills/update-docs.md`
+Read `PLANS.md` and use an ExecPlan when the task is complex, cross-cutting, risky, or multi-step.
 
 ## Process
 

@@ -30,14 +30,8 @@ Agents should stop before adding frontend code if:
 - the work depends on API contracts that do not exist yet;
 - the task would introduce product scope beyond the MVP.
 
-## Required Context
+## Context Routing
 
-Before future web work, review:
+For future web work, start with the active issue, root `AGENTS.md`, `CONTRIBUTING.md`, and this file. Load product, architecture, coding, and validation guidance when the issue or implementation needs that source; for example, consult UX or brand notes for a user-facing design question and the system overview for an API boundary question. Do not preload these documents solely because a task is under `apps/web/`.
 
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/product/ux-notes.md`
-- `docs/product/brand-notes.md`
-- `docs/architecture/system-overview.md`
-- `docs/agentic-workflow/workflow/coding-standards.md`
-- `docs/agentic-workflow/workflow/validation-gates.md`
+Follow references or investigate further when a dependency, ambiguity, conflict, or architecture concern emerges. Read `PLANS.md` when the task is complex, cross-cutting, risky, or multi-step. Preserve the stop conditions above.

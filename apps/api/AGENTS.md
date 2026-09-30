@@ -62,18 +62,10 @@ dotnet test
 - Use interfaces/ports for external service boundaries.
 - Stop if the issue requires an architectural decision that is not covered by an ADR.
 
-## Required Context
+## Context Routing
 
-Before changing API code, review:
+Use the active issue, root `AGENTS.md`, and `CONTRIBUTING.md` as the implementation baseline. For API work, also follow this file and `.agents/skills/squadsync-api-task/SKILL.md`.
 
-- `AGENTS.md`
-- `PLANS.md` when the work is complex
-- `CONTRIBUTING.md`
-- `docs/planning/project-roadmap.md`
-- `docs/planning/mvp-scope.md`
-- `docs/architecture/system-overview.md`
-- `docs/architecture/domain-model.md`
-- `docs/agentic-workflow/workflow/coding-standards.md`
-- `docs/agentic-workflow/workflow/testing-strategy.md`
-- `docs/agentic-workflow/workflow/validation-gates.md`
-- `.agents/skills/squadsync-api-task/SKILL.md`
+Load deeper sources when the issue or implementation needs them: use `docs/architecture/system-overview.md` for service boundaries, `docs/architecture/domain-model.md` for domain concepts, roadmap or MVP documents for scope questions, coding/testing standards for implementation and behavior changes, and validation guidance for the relevant checks. Check applicable ADRs when a design choice may already be decided. `apps/api/README.md` supplies setup details when needed. Do not preload these documents solely because a task is under `apps/api/`.
+
+Read `PLANS.md` and create an ExecPlan only when the task is complex, cross-cutting, risky, or multi-step. Follow references or investigate further when a dependency, ambiguity, conflict, or architecture concern emerges. Stop when the issue conflicts with canonical guidance or needs an unapproved architectural decision.
