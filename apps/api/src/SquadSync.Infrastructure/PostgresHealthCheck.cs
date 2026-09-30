@@ -18,6 +18,8 @@ public sealed class PostgresHealthCheck(string? connectionString) : IHealthCheck
         {
             await using var connection = new NpgsqlConnection(connectionString);
             await connection.OpenAsync(cancellationToken);
+            await using var command = new NpgsqlCommand("SELECT 1", connection);
+            await command.ExecuteScalarAsync(cancellationToken);
             return HealthCheckResult.Healthy();
         }
         catch (OperationCanceledException)
