@@ -36,6 +36,10 @@ Codex CLI must not:
 - invent new architecture without approval
 - auto-merge its own work
 
+## Windows Sandbox and Git
+
+Use the normal workspace-write sandbox with on-request approvals. If routine Git metadata operations or authenticated Git transport are blocked by the Windows sandbox, use Codex's supported approval/escalation mechanism for the understood operation. Session-scoped approval for repeated related Git actions is acceptable when their purpose and scope are clear. Do not make persistent Git configuration changes, alter ACLs, add credential workarounds, or rely on manual host-shell execution as the normal workflow. Full Access is not a normal SquadSync setting.
+
 ## Generic-to-Codex Mapping
 
 | Generic concept | Codex CLI expression |
