@@ -66,7 +66,7 @@ After confirming both health endpoints return HTTP 200, stop PostgreSQL with `do
 
 ## Not included yet
 
-The API can check PostgreSQL connectivity, but it does not yet use EF Core, persist application data, or define domain tables or migrations. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql and explicitly maps the current `User` and `Team` domain entities. The API can check PostgreSQL connectivity, but migrations and persisted application workflows are not included yet. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
