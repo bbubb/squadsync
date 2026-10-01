@@ -10,12 +10,8 @@ internal sealed class TeamConfiguration : IEntityTypeConfiguration<Team>
     {
         builder.HasKey(team => team.Id);
         builder.Property(team => team.Id)
-            .HasField("<Id>k__BackingField")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .ValueGeneratedNever();
         builder.Property(team => team.Name)
-            .HasField("<Name>k__BackingField")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .IsRequired();
     }
 }
