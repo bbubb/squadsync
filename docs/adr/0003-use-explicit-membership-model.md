@@ -18,10 +18,10 @@ Core relationship:
 
 ```
 User -> TeamMembership -> Team
-TeamMembership -> Role
+TeamMembership -> one constrained TeamRole value
 ```
 
-A user may have multiple memberships across teams. Each membership describes the user's relationship and role within that team.
+A user may have multiple memberships across teams. Each membership describes the user's relationship and has one constrained `TeamRole` value for the MVP. This does not require a persisted, dynamically configurable Role/Permission entity model.
 
 ## Consequences
 

@@ -29,15 +29,17 @@ Players and parents may become future user types, but the first MVP centers on t
 ### Team and Roster Management
 
 - Create and manage teams
-- Add users or player profiles to a team roster
-- Track player number, preferred positions, dominant side, and status
-- Track whether a player is active, inactive, injured, unavailable, or otherwise unavailable for selection
+- Add represented users to team memberships and player roster entries
+- Track jersey number and roster status on `RosterEntry`; track preferred positions and dominant side on the person-level `PlayerProfile`
+- Track match-specific player availability through `PlayerAvailability`
 
 ### Membership and Roles
 
 - Represent team participation through `TeamMembership` records
-- Assign membership roles such as Coach, AssistantCoach, Manager, Player, or Viewer
+- Assign one constrained `TeamRole` per membership, such as Coach, AssistantCoach, Manager, Player, or Viewer
 - Keep authorization simple for the MVP
+
+Authentication/account identity is deferred and remains separate from represented `User` people. `CoachProfile` and statistics models are also deferred. See the [domain model](../architecture/domain-model.md).
 
 ### Match Planning
 
