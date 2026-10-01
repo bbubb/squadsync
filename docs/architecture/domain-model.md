@@ -10,152 +10,70 @@ This document defines the initial SquadSync domain model. The model is intention
 
 ## Modeling Strategy
 
-The MVP uses explicit domain relationships.
-
-The central modeling choice is:
+The MVP uses explicit domain relationships:
 
 ```text
-A User participates in a Team through a TeamMembership.
-The TeamMembership carries the user's team role.
+A represented User participates in a Team through a TeamMembership.
+The TeamMembership carries one constrained TeamRole.
 ```
 
-This keeps team participation, roster state, and authorization context easy to reason about.
+`User` represents a person in SquadSync's domain. It is distinct from a future authentication account or external login identity. Authentication/account identity remains a future concern. The future access model may allow one account to act for more than one represented user, for example a parent or guardian acting for a youth player. This possibility does not define or implement account linking or delegation behavior in the MVP.
 
 ## Core Concepts
 
 ### User
 
-A person who can access or be represented in the system.
+A represented person in the domain, such as a coach, assistant coach, team manager, or player. A person's participation in each team is modeled by a separate `TeamMembership`.
 
-Examples:
-
-- Coach
-- Assistant coach
-- Team manager
-- Player
-- Parent/guardian later
-
-A `User` may have one or more soccer-related profiles depending on their role in the team context.
+`User` is not an authentication account. Account identity and authentication are deferred; an account may eventually be associated with or act for multiple represented users.
 
 ### Team
 
-A soccer team managed in SquadSync.
-
-A team owns roster, membership, matches, and lineups.
+A soccer team managed in SquadSync. A team has memberships; player memberships may carry roster entries. A team also owns matches and lineups.
 
 ### TeamMembership
 
-The relationship between a `User` and a `Team`.
+The relationship between a `User` and a `Team`. It records the person's team participation and has exactly one `TeamRole` in the MVP. A person may have memberships on multiple teams and may have different roles on each.
 
-This is the central relationship for roster and role management.
+### TeamRole
 
-A membership can represent:
-
-- Player membership
-- Coach membership
-- Assistant coach membership
-- Manager membership
-- Viewer membership later
-
-### Role
-
-A role describes what a user is allowed to do within a team context.
-
-Initial role examples:
-
-- Owner
-- Coach
-- AssistantCoach
-- Manager
-- Player
-- Viewer
-
-Authorization should stay simple at first. Add more granular permissions only when product behavior requires them.
+A constrained MVP value on `TeamMembership`, such as Owner, Coach, AssistantCoach, Manager, Player, or Viewer. It is not a persisted, dynamically configurable Role/Permission entity model. Keep authorization simple; introduce more granular permissions only when concrete product behavior requires them and an approved design defines them.
 
 ### PlayerProfile
 
-Soccer-specific player information associated with a user.
+Person-level soccer attributes associated with a `User`, such as preferred positions, dominant side, height, and weight. It does not own team-context data such as jersey number or roster status.
 
-Potential fields:
+### RosterEntry
 
-- Display name
-- Jersey number
-- Preferred positions
-- Dominant side
-- Height
-- Weight
-- Player status
-- Notes
-
-The profile belongs to the person. Team-specific data belongs on the membership or roster context.
+The planned player-only team-context record attached to a player's `TeamMembership`. The membership remains the canonical relationship between the represented `User` and `Team`; `RosterEntry` adds roster details such as jersey number and roster status to that player membership and does not create a second `User`-to-`Team` relationship. It is distinct from person-level `PlayerProfile` attributes.
 
 ### CoachProfile
 
-Soccer-specific coaching information associated with a user.
+Deferred. A dedicated coach profile is not needed for the initial model; add it only if a concrete MVP use case requires coaching-specific person attributes.
 
-Potential fields:
+### Statistics
 
-- Coaching display name
-- License/certification notes later
-- Bio/notes later
-
-For the MVP, this can stay minimal or be deferred.
+Deferred to later dedicated models. Do not add statistics fields to `PlayerProfile` or `RosterEntry` as a shortcut.
 
 ### Match
 
-A scheduled soccer match for a team.
-
-Potential fields:
-
-- Team
-- Opponent name
-- Scheduled date/time
-- Location
-- Status
-- Notes
+A scheduled soccer match for a team. Potential fields include opponent name, scheduled date/time, location, status, and notes.
 
 ### Formation
 
-A named soccer formation used for lineup planning.
-
-Examples:
-
-- 4-3-3
-- 4-4-2
-- 3-5-2
-- 7v7 or 9v9 formations later if desired
-
-The first MVP may store formations as controlled values before introducing a configurable formation model.
+A named soccer formation used for lineup planning, such as 4-3-3, 4-4-2, or 3-5-2. The first MVP may store formations as controlled values before introducing a configurable formation model.
 
 ### Lineup
 
-A lineup plan for a match.
-
-A lineup belongs to a match and contains lineup slots.
+A lineup plan for a match. A lineup belongs to a match and contains lineup slots.
 
 ### LineupSlot
 
-A specific assignment within a lineup.
-
-Potential fields:
-
-- Lineup
-- Position
-- Assigned player
-- Period/segment later
-- Notes
+A specific assignment within a lineup, including position and assigned player. Period/segment and notes may be added when needed.
 
 ### PlayerAvailability
 
-A player's availability for a match.
-
-Potential values:
-
-- Available
-- Unavailable
-- Injured
-- Late
-- Unknown
+A player's availability for a match, with values such as Available, Unavailable, Injured, Late, or Unknown.
 
 ## Initial Relationship Diagram
 
@@ -163,9 +81,11 @@ Potential values:
 erDiagram
     USER ||--o{ TEAM_MEMBERSHIP : has
     TEAM ||--o{ TEAM_MEMBERSHIP : has
-    ROLE ||--o{ TEAM_MEMBERSHIP : assigned_to
+    TEAM_MEMBERSHIP {
+        string team_role
+    }
     USER ||--o| PLAYER_PROFILE : may_have
-    USER ||--o| COACH_PROFILE : may_have
+    TEAM_MEMBERSHIP ||--o| ROSTER_ENTRY : may_have_player_roster_details
     TEAM ||--o{ MATCH : schedules
     MATCH ||--o{ PLAYER_AVAILABILITY : tracks
     USER ||--o{ PLAYER_AVAILABILITY : has
@@ -174,21 +94,24 @@ erDiagram
     USER ||--o{ LINEUP_SLOT : assigned
 ```
 
-## Suggested Initial Entities
+The diagram shows domain relationships, not authentication-account relationships. `TeamMembership` is the only `User`-to-`Team` relationship. `RosterEntry` is optional player-specific detail attached to that membership. `TeamRole` is a constrained value carried by membership, not a separately managed role catalog.
+
+## Suggested Initial Entities and Values
 
 ```text
 User
 Team
-TeamMembership
-Role
+TeamMembership (with one TeamRole value)
 PlayerProfile
-CoachProfile
+RosterEntry
 Match
 PlayerAvailability
 Formation
 Lineup
 LineupSlot
 ```
+
+`CoachProfile`, statistics models, and authentication/account models are deferred. `TeamRole` is a constrained value and does not imply a persisted `Role` entity.
 
 ## Soccer Position Modeling
 
@@ -209,18 +132,16 @@ Examples:
 
 Do not overbuild the position model early. Formation-specific slot modeling can evolve after manual lineup building works.
 
-## Membership Versus Profile
+## Membership, Roster, and Profile
 
-Use this distinction:
+Use these distinctions:
 
-- `User`: person identity
-- `PlayerProfile`: soccer player attributes about the person
-- `TeamMembership`: the person's relationship to a team
-- `Role`: what the person can do in that team context
+- `User`: represented person, separate from future authentication/account identity
+- `TeamMembership`: the person's team relationship and one constrained `TeamRole`
+- `PlayerProfile`: soccer attributes about the person
+- `RosterEntry`: player-only team-context data attached to a `TeamMembership`, including jersey number and roster status
 
-Example:
-
-A person can be a player on one team and an assistant coach on another. That should be represented as two memberships, not two different users.
+A person may be a player on one team and an assistant coach on another. Represent that with one `User` and separate memberships. A player's roster entry extends the player membership with team-specific data; it does not create another `User`-to-`Team` relationship or turn `PlayerProfile` into team data.
 
 ## Integration Boundary Concepts
 

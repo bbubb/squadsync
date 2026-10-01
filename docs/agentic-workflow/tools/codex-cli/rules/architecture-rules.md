@@ -28,7 +28,7 @@ Codex must:
 - use soccer-specific domain language
 - keep the first MVP explicit and understandable
 - avoid premature generalization into a broad competition platform
-- preserve `User`, `Team`, `TeamMembership`, `Role`, `PlayerProfile`, `Match`, `Lineup`, and related concepts unless an ADR changes the model
+- preserve the represented `User`, `Team`, canonical `TeamMembership` with one constrained `TeamRole`, person-level `PlayerProfile`, and player-only `RosterEntry` attached to a `TeamMembership`, along with `Match`, `Lineup`, and related concepts unless an ADR changes the model
 
 ## Integration Boundary Rules
 

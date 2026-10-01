@@ -123,7 +123,8 @@ The domain layer should be independent of ASP.NET Core, EF Core, external APIs, 
 Responsibilities:
 
 - EF Core DbContext and entity configuration
-- Repository/query implementations if used
+- Repository/query implementations when concrete Application use cases need them
+- PostgreSQL migrations
 - External service clients
 - Logging sinks and infrastructure adapters
 - Outbox/event persistence later
@@ -156,17 +157,19 @@ PostgreSQL is the target database. The first local version may run through Docke
 
 The initial persistence model should support:
 
-- Users
+- Represented Users (separate from future authentication/account identities)
 - Teams
 - TeamMemberships
-- Roles
+- One constrained TeamRole value per TeamMembership
 - PlayerProfiles
-- CoachProfiles
+- RosterEntries attached to player TeamMemberships for team-context data such as jersey number and roster status
 - Matches
 - Formations
 - Lineups
 - LineupSlots
 - PlayerAvailability
+
+Authentication/account identity, CoachProfile, and statistics models are deferred. See the [domain model](domain-model.md) and [ADR 0005](../adr/0005-ef-core-npgsql-persistence.md) for the current domain and persistence decisions.
 
 ## Service Boundaries
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 are complete. Phase 1 concluded after Sprints 1–2; the example Sprint 3 hardening sprint was not instantiated because the Phase 1 completion criteria were already met. The next planning action is Phase 2 planning.
+Active. Phase 0 and Phase 1 are complete. Phase 2 / Sprint 3 is the current actual sprint. Phase 1 concluded after Sprints 1–2; its example Sprint 3 hardening work was not instantiated because the Phase 1 completion criteria were already met.
 
 ## Purpose
 
@@ -133,23 +133,27 @@ Implement the MVP domain model and persistence layer.
 
 ### Primary Outcomes
 
-- User entity/model
+- Represented `User` entity/model
 - Team entity/model
 - TeamMembership entity/model
-- Role model
+- Constrained `TeamRole` value on each `TeamMembership` (one per membership)
 - PlayerProfile model
-- CoachProfile model if needed
+- `RosterEntry` attached to a player `TeamMembership` for team-context data such as jersey number and roster status
 - EF Core DbContext
 - Entity configurations
 - Initial migrations
 - Seed data for development/demo
 - Basic domain/application tests
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 4: team and user domain model
-- Sprint 5: membership and role model
-- Sprint 6: player profile and roster persistence
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- team and represented-user domain model
+- membership and constrained team-role model
+- player profile and roster persistence
+
+Authentication/account identity, `CoachProfile`, and statistics models are deferred. See the [domain model](../architecture/domain-model.md) and [persistence ADR](../adr/0005-ef-core-npgsql-persistence.md).
 
 ### Completion Criteria
 
@@ -174,11 +178,13 @@ Expose usable API behavior for team and roster management.
 - Standard API responses/errors
 - Integration tests for core flows
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 7: team management API
-- Sprint 8: roster/player profile API
-- Sprint 9: membership role API and validation
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- team management API
+- roster/player profile API
+- membership team-role API and validation
 
 ### Completion Criteria
 
@@ -203,11 +209,13 @@ Create the web application shell and connect it to APIs.
 - Dashboard layout
 - Basic team/roster screens
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 10: web scaffold and app shell
-- Sprint 11: team dashboard
-- Sprint 12: roster management UI
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- web scaffold and app shell
+- team dashboard
+- roster management UI
 
 ### Completion Criteria
 
@@ -230,11 +238,13 @@ Implement the first soccer-specific planning workflow.
 - Lineup slot assignment
 - Save/load lineup workflow
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 13: match planning backend
-- Sprint 14: player availability workflow
-- Sprint 15: manual lineup builder
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- match planning backend
+- player availability workflow
+- manual lineup builder
 
 ### Completion Criteria
 
@@ -259,11 +269,13 @@ Add a clean service boundary for future lineup assistance.
 - Integration documentation
 - Optional local service call later
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 16: contract and application port
-- Sprint 17: mock adapter and failure handling
-- Sprint 18: first soccer-subber service integration
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- contract and application port
+- mock adapter and failure handling
+- first soccer-subber service integration
 
 ### Completion Criteria
 
@@ -286,11 +298,13 @@ Prepare the core platform for event-driven notifications and AWS integration.
 - AWS notification architecture doc
 - Initial notification proof of concept later
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 19: event model and outbox design
-- Sprint 20: local notification event pipeline
-- Sprint 21: AWS notification proof of concept
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- event model and outbox design
+- local notification event pipeline
+- AWS notification proof of concept
 
 ### Completion Criteria
 
@@ -315,11 +329,13 @@ Deploy a credible cloud-ready version and improve portfolio presentation.
 - Demo script
 - Architecture diagrams polished for portfolio review
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 22: containerization and deployment prep
-- Sprint 23: cloud-hosted API/web
-- Sprint 24: portfolio demo polish
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- containerization and deployment preparation
+- cloud-hosted API/web
+- portfolio demo polish
 
 ### Completion Criteria
 
@@ -340,11 +356,13 @@ Add a future AI-assisted summary capability after the core workflow and service 
 - Reviewable explanation output
 - Optional AIF-aligned implementation path
 
-### Example Sprints
+### Descriptive Sprint Examples
 
-- Sprint 25: summary use-case design
-- Sprint 26: local mock summary workflow
-- Sprint 27: AI integration proof of concept
+These examples describe possible work areas only. They do not assign sprint numbers or establish chronology.
+
+- summary use-case design
+- local mock summary workflow
+- AI integration proof of concept
 
 ### Completion Criteria
 
@@ -396,4 +414,4 @@ Sprint 2 deliberately did not introduce EF Core, a `DbContext`, domain tables, m
 
 Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). Issues #73 and #74 are complete. Issue #72 remains open as deferred backlog maintenance and can be reconsidered when Phase 2 persistence makes repeated database-backed validation more valuable.
 
-Phase 1 is complete. A separate Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria. The next planning action is Phase 2 — Core Domain and Persistence. Confirm the first Phase 2 sprint scope in the main planning thread before creating or executing implementation issues.
+Phase 1 is complete. A separate Phase 1 Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria. Phase 2 / Sprint 3 is now active; its architecture gate is tracked by [Issue #83](https://github.com/bbubb/squadsync/issues/83), under sprint tracker [#82](https://github.com/bbubb/squadsync/issues/82). Revalidate child implementation issues against the merged architecture decision before marking them `agent-ready`.
