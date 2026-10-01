@@ -19,6 +19,7 @@ Primary uses:
 - create documentation branches and PRs when requested
 - review PRs against acceptance criteria
 - produce sprint or issue closeout summaries
+- during post-merge closeout, verify that the linked implementing issue reached completed/closed state; if it remains open, record the discrepancy and route manual completion through the approved human/ChatGPT workflow
 - identify follow-up work without silently expanding scope
 
 ## Required Operating Rules
@@ -32,6 +33,7 @@ ChatGPT GitHub must:
 - avoid merging PRs
 - surface scope changes as follow-up issues or recommendations
 - document validation honestly
+- preserve human authority for merges, issue-completion decisions, and sprint/phase closeout
 - stop when architecture, scope, or validation is unclear
 
 ## Tool Boundaries

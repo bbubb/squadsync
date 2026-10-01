@@ -146,7 +146,7 @@ Open.
 
 ### Context
 
-Sprint 2 exposed lifecycle misses across #68 and #61, plus repeated linked-issue closeout discrepancies after merged PRs.
+Sprint 2 exposed lifecycle misses across #68 and #61, plus repeated linked-issue closeout discrepancies after merged PRs #67, #69, #70, and #71.
 
 ### Friction
 
@@ -158,7 +158,7 @@ The repository can temporarily diverge from the intended issue -> branch -> vali
 
 ### Proposed Change
 
-Make branch/state verification a pre-edit invariant, make draft-PR creation part of the normal completion condition, and add an explicit post-merge check that the implementing issue actually closed rather than assuming closing keywords succeeded.
+Make branch/state verification and issue-branch creation pre-edit invariants, require commit/push/draft-PR creation as the normal implementation handoff, and add an explicit post-merge check that the implementing issue actually closed rather than assuming closing keywords succeeded. Preserve human merge and sprint/phase closeout authority.
 
 Tracked in [Issue #74](https://github.com/bbubb/squadsync/issues/74).
 

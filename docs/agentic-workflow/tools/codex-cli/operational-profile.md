@@ -23,7 +23,8 @@ Codex CLI must:
 - update docs when behavior, architecture, or workflow changes
 - run available validation gates before reporting completion
 - document validation limitations honestly
-- create an issue-scoped branch, push it, and open a draft PR after implementation and available validation unless a documented stop condition prevents it
+- verify Git state and create or switch to the issue-scoped branch before editing any files; stop without edits if repository state or branch creation cannot be established
+- commit and push the issue-scoped branch and open a draft PR after implementation and available validation unless a documented blocker prevents handoff
 - stop instead of guessing when scope or architecture is unclear
 
 Codex CLI must not:
@@ -72,9 +73,12 @@ Behavior changes should normally define or update tests before or alongside impl
 
 A Codex CLI task is complete when:
 
+- work began only after Git state was verified and the issue-scoped branch was active before file edits
 - issue acceptance criteria are addressed
 - relevant validation has been run or limitations documented
 - tests are added/updated when behavior changes
 - docs/ADRs are updated if needed
 - scope drift has been avoided
-- a draft PR has been opened with a summary based on repo-visible facts, or a documented stop condition explains why it could not be opened
+- the branch is committed and pushed and a draft PR is open with a summary based on repo-visible facts
+
+If a documented blocker prevents commit, push, or draft-PR creation, the implementation may be ready for review, but the task handoff is incomplete. Report the blocker and do not claim normal task completion.
