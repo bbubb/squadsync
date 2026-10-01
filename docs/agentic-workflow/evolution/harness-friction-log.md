@@ -116,7 +116,7 @@ Tracked in [Issue #72](https://github.com/bbubb/squadsync/issues/72).
 
 ### Status
 
-Open.
+Deferred — tracked in Issue #72. Reconsider when Phase 2 persistence makes repeated database-backed validation valuable enough to automate.
 
 ## 2026-09-30 - Root AGENTS routing still triggers broad startup loading
 
@@ -140,7 +140,7 @@ Tracked in [Issue #73](https://github.com/bbubb/squadsync/issues/73).
 
 ### Status
 
-Open.
+Closed — accepted in PR #78.
 
 ## 2026-09-30 - Codex lifecycle completion and post-merge issue state are not reliable enough
 
@@ -164,5 +164,5 @@ Tracked in [Issue #74](https://github.com/bbubb/squadsync/issues/74).
 
 ### Status
 
-Open.
+Closed — accepted in PR #79.
 
