@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 Sprints 1–2 are closed. The next planning action is Phase 1 Sprint 3 planning; Sprint 3 scope is not yet confirmed.
+Active. Phase 0 and Phase 1 are complete. Phase 1 concluded after Sprints 1–2; the example Sprint 3 hardening sprint was not instantiated because the Phase 1 completion criteria were already met. The next planning action is Phase 2 planning.
 
 ## Purpose
 
@@ -115,7 +115,7 @@ Create the API solution scaffold and local development baseline.
 
 - Sprint 1: API scaffold
 - Sprint 2: local database and infrastructure baseline
-- Sprint 3: CI/build/test hardening
+- Sprint 3: CI/build/test hardening — example only; not instantiated because the Phase 1 completion criteria were already met
 
 ### Completion Criteria
 
@@ -394,6 +394,6 @@ Phase 1 Sprint 2 — Local PostgreSQL & Infrastructure Baseline — is complete 
 
 Sprint 2 deliberately did not introduce EF Core, a `DbContext`, domain tables, migrations, seed data, production/cloud infrastructure, or API containerization.
 
-Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). These are durable follow-ups, not automatically confirmed Sprint 3 scope.
+Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). Issues #73 and #74 are complete. Issue #72 remains open as deferred backlog maintenance and can be reconsidered when Phase 2 persistence makes repeated database-backed validation more valuable.
 
-The next planning action is Phase 1 Sprint 3 planning for CI/build/test hardening based on actual Sprint 2 evidence. Confirm Sprint 3 scope in the main planning thread before creating or executing its implementation issues. Persistence modeling remains Phase 2 work.
+Phase 1 is complete. A separate Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria. The next planning action is Phase 2 — Core Domain and Persistence. Confirm the first Phase 2 sprint scope in the main planning thread before creating or executing implementation issues.
