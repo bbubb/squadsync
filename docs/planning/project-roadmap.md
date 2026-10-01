@@ -138,7 +138,7 @@ Implement the MVP domain model and persistence layer.
 - TeamMembership entity/model
 - Constrained `TeamRole` value on each `TeamMembership` (one per membership)
 - PlayerProfile model
-- `RosterEntry` for player-only team-context data such as jersey number and roster status
+- `RosterEntry` attached to a player `TeamMembership` for team-context data such as jersey number and roster status
 - EF Core DbContext
 - Entity configurations
 - Initial migrations

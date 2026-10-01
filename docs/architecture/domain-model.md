@@ -29,7 +29,7 @@ A represented person in the domain, such as a coach, assistant coach, team manag
 
 ### Team
 
-A soccer team managed in SquadSync. A team owns memberships, roster entries, matches, and lineups.
+A soccer team managed in SquadSync. A team has memberships; player memberships may carry roster entries. A team also owns matches and lineups.
 
 ### TeamMembership
 
@@ -45,7 +45,7 @@ Person-level soccer attributes associated with a `User`, such as preferred posit
 
 ### RosterEntry
 
-The planned team-context record for a player on a team's roster. It connects a player's `User` to a `Team` and is the home for player-only roster data such as jersey number and roster status. It is distinct from the general `TeamMembership` relationship and `PlayerProfile` attributes.
+The planned player-only team-context record attached to a player's `TeamMembership`. The membership remains the canonical relationship between the represented `User` and `Team`; `RosterEntry` adds roster details such as jersey number and roster status to that player membership and does not create a second `User`-to-`Team` relationship. It is distinct from person-level `PlayerProfile` attributes.
 
 ### CoachProfile
 
@@ -85,8 +85,7 @@ erDiagram
         string team_role
     }
     USER ||--o| PLAYER_PROFILE : may_have
-    USER ||--o{ ROSTER_ENTRY : appears_as_player
-    TEAM ||--o{ ROSTER_ENTRY : has_roster
+    TEAM_MEMBERSHIP ||--o| ROSTER_ENTRY : may_have_player_roster_details
     TEAM ||--o{ MATCH : schedules
     MATCH ||--o{ PLAYER_AVAILABILITY : tracks
     USER ||--o{ PLAYER_AVAILABILITY : has
@@ -95,7 +94,7 @@ erDiagram
     USER ||--o{ LINEUP_SLOT : assigned
 ```
 
-The diagram shows domain relationships, not authentication-account relationships. `TeamRole` is a constrained value carried by membership, not a separately managed role catalog.
+The diagram shows domain relationships, not authentication-account relationships. `TeamMembership` is the only `User`-to-`Team` relationship. `RosterEntry` is optional player-specific detail attached to that membership. `TeamRole` is a constrained value carried by membership, not a separately managed role catalog.
 
 ## Suggested Initial Entities and Values
 
@@ -140,9 +139,9 @@ Use these distinctions:
 - `User`: represented person, separate from future authentication/account identity
 - `TeamMembership`: the person's team relationship and one constrained `TeamRole`
 - `PlayerProfile`: soccer attributes about the person
-- `RosterEntry`: player-only team-context data, including jersey number and roster status
+- `RosterEntry`: player-only team-context data attached to a `TeamMembership`, including jersey number and roster status
 
-A person may be a player on one team and an assistant coach on another. Represent that with one `User` and separate memberships. A roster entry carries the player-specific team context; it does not turn `PlayerProfile` into team data.
+A person may be a player on one team and an assistant coach on another. Represent that with one `User` and separate memberships. A player's roster entry extends the player membership with team-specific data; it does not create another `User`-to-`Team` relationship or turn `PlayerProfile` into team data.
 
 ## Integration Boundary Concepts
 

@@ -162,7 +162,7 @@ The initial persistence model should support:
 - TeamMemberships
 - One constrained TeamRole value per TeamMembership
 - PlayerProfiles
-- RosterEntries for player-only team-context data such as jersey number and roster status
+- RosterEntries attached to player TeamMemberships for team-context data such as jersey number and roster status
 - Matches
 - Formations
 - Lineups

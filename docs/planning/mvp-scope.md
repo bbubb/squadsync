@@ -29,7 +29,7 @@ Players and parents may become future user types, but the first MVP centers on t
 ### Team and Roster Management
 
 - Create and manage teams
-- Add represented users to team memberships and player roster entries
+- Add represented users to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership
 - Track jersey number and roster status on `RosterEntry`; track preferred positions and dominant side on the person-level `PlayerProfile`
 - Track match-specific player availability through `PlayerAvailability`
 
