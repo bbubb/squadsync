@@ -8,11 +8,25 @@ SquadSync is a soccer-focused team management and match-planning platform. The r
 
 ## Source of Truth
 
-Load only the documents relevant to the current task. Use this section and the agentic-workflow indexes as a routing map, not as a requirement to load every linked file.
+Use repository documents as a routing map. Load only the context needed for the active task, and expand it when a concrete dependency, ambiguity, conflict, or architecture question requires more investigation.
 
 The project roadmap owns the active phase, sprint direction, and next planning action. GitHub issues, Project, and pull requests own executable work status. Historical closeout guides and generic workflow documents are not live status records.
 
-Before making changes, read the relevant documents:
+### Universal implementation startup order
+
+For an implementation prompt such as `Work Issue #<number>.`, use this sequence:
+
+1. Read this root `AGENTS.md` as the repository landing page and routing map.
+2. Retrieve the active GitHub issue immediately, before loading broad project or workflow context.
+3. Read `CONTRIBUTING.md` for repository-wide issue, branch, PR, and validation rules.
+4. Confirm issue readiness, including objective, scope, non-goals, acceptance criteria, validation, governing sources, and stop conditions.
+5. Read scoped instructions and task-selected sources needed for that issue.
+
+The Codex [context-loading guide](docs/agentic-workflow/tools/codex-cli/context-loading.md) defines issue retrieval and task-specific context resolution in detail. This order is the universal implementation baseline; the catalog below is conditional routing guidance, not a pre-change checklist.
+
+### Conditional source routing
+
+Select documents from this catalog only when the active issue, affected path, or a concrete dependency, ambiguity, conflict, or architecture question makes them relevant:
 
 - `README.md` for repository purpose, current state, and navigation
 - `CONTRIBUTING.md` for issue, branch, PR, and validation rules
@@ -52,7 +66,7 @@ Before making changes, read the relevant documents:
 - `docs/agentic-workflow/tools/codex-cli/hooks/README.md` for Codex hook structure
 - `docs/agentic-workflow/tools/codex-cli/subagents/README.md` for planned Codex subagent roles
 
-When working inside a scoped area, also read the nearest local `AGENTS.md`, such as:
+When working inside a scoped area, read the nearest local `AGENTS.md` for that area. Examples include:
 
 - `apps/api/AGENTS.md` for API work
 - `apps/web/AGENTS.md` for future web work
