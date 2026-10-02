@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 are complete. Phase 2 / Sprint 3 is the current actual sprint. Phase 1 concluded after Sprints 1–2; its example Sprint 3 hardening work was not instantiated because the Phase 1 completion criteria were already met.
+Active. Phase 0 and Phase 1 are complete. Phase 2 / Sprint 3 is complete; Phase 2 / Sprint 4 is the current actual sprint. Phase 1 concluded after Sprints 1–2; its example Sprint 3 hardening work was not instantiated because the Phase 1 completion criteria were already met.
 
 ## Purpose
 
@@ -414,4 +414,8 @@ Sprint 2 deliberately did not introduce EF Core, a `DbContext`, domain tables, m
 
 Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). Issues #73 and #74 are complete. Issue #72 remains open as deferred backlog maintenance and can be reconsidered when Phase 2 persistence makes repeated database-backed validation more valuable.
 
-Phase 1 is complete. A separate Phase 1 Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria. Phase 2 / Sprint 3 is now active; its architecture gate is tracked by [Issue #83](https://github.com/bbubb/squadsync/issues/83), under sprint tracker [#82](https://github.com/bbubb/squadsync/issues/82). Revalidate child implementation issues against the merged architecture decision before marking them `agent-ready`.
+Phase 1 is complete. A separate Phase 1 Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria.
+
+Phase 2 / Sprint 3 is complete through sprint tracker [#82](https://github.com/bbubb/squadsync/issues/82). Its architecture gate [#83](https://github.com/bbubb/squadsync/issues/83) and implementation established EF-independent `User` and `Team` entities, Infrastructure-owned EF Core/Npgsql persistence, the initial User/Team migration, and real PostgreSQL round-trip validation.
+
+Phase 2 / Sprint 4 — Team Membership Foundation — is current under sprint tracker [#94](https://github.com/bbubb/squadsync/issues/94). The sprint locks the [membership contract](../architecture/domain-model.md#sprint-4-membership-implementation-contract) through [#95](https://github.com/bbubb/squadsync/issues/95), then implements the Domain model through [#96](https://github.com/bbubb/squadsync/issues/96) and Infrastructure mapping/migration with PostgreSQL validation through [#97](https://github.com/bbubb/squadsync/issues/97). Revalidate each dependent child against the merged prerequisite changes before marking it `agent-ready`. PlayerProfile/RosterEntry implementation, API/Application use cases, authentication, and repository abstractions remain deferred beyond this membership slice.

@@ -37,7 +37,7 @@ The relationship between a `User` and a `Team`. It records the person's team par
 
 ### TeamRole
 
-A constrained MVP value on `TeamMembership`, such as Owner, Coach, AssistantCoach, Manager, Player, or Viewer. It is not a persisted, dynamically configurable Role/Permission entity model. Keep authorization simple; introduce more granular permissions only when concrete product behavior requires them and an approved design defines them.
+A constrained MVP value on `TeamMembership`. Its allowed values are exactly `Owner`, `Coach`, `AssistantCoach`, `Manager`, `Player`, and `Viewer`; undefined values are invalid. It is not a persisted, dynamically configurable Role/Permission entity model. Keep authorization simple; introduce more granular permissions only when concrete product behavior requires them and an approved design defines them.
 
 ### PlayerProfile
 
@@ -142,6 +142,42 @@ Use these distinctions:
 - `RosterEntry`: player-only team-context data attached to a `TeamMembership`, including jersey number and roster status
 
 A person may be a player on one team and an assistant coach on another. Represent that with one `User` and separate memberships. A player's roster entry extends the player membership with team-specific data; it does not create another `User`-to-`Team` relationship or turn `PlayerProfile` into team data.
+
+## Sprint 4 Membership Implementation Contract
+
+The minimal Sprint 4 shape is:
+
+```text
+TeamMembership
+- Id: Guid
+- UserId: Guid
+- TeamId: Guid
+- TeamRole: TeamRole
+```
+
+### Domain Invariants
+
+- A represented `User` may belong to many `Teams`; a `Team` may have many memberships.
+- A `User` may have at most one `TeamMembership` for the same `Team`.
+- Each membership has exactly one `TeamRole`, from the six allowed values above.
+- `Id`, `UserId`, and `TeamId` are application-assigned and must not be `Guid.Empty`.
+- Undefined `TeamRole` values are invalid.
+- Domain represents the relationship using `UserId` and `TeamId` identifiers and remains EF-independent; it does not require EF navigation properties or persistence annotations.
+- `TeamMembership` owns no roster-only or authentication/account fields.
+
+### Infrastructure Mapping Direction
+
+Under [ADR 0003](../adr/0003-use-explicit-membership-model.md) and [ADR 0005](../adr/0005-ef-core-npgsql-persistence.md), Infrastructure owns the EF Core mapping and migration:
+
+- Foreign keys from `TeamMembership.UserId` to `User` and from `TeamMembership.TeamId` to `Team` enforce endpoint existence.
+- Both relationships use restrictive/no-cascade deletion semantics: deleting a referenced `User` or `Team` must not implicitly delete memberships.
+- A unique constraint or unique index on `(UserId, TeamId)` enforces one membership per pair across persisted records.
+- `TeamRole` is persisted as a readable string value; there is no separate `Role` table.
+- No repository abstraction is introduced in Phase 2 merely because `TeamMembership` exists. Application persistence contracts wait for concrete use cases, as required by ADR 0005.
+
+### Deferred Concerns
+
+Sprint 4 excludes `PlayerProfile` and `RosterEntry` implementation, roster fields or status rules, authentication/account identity and delegation, membership status, joined/left timestamps, granular permissions, and a dynamic `Role` entity. API endpoints and Application use cases, generic repository/base entity work, auditing, and soft deletion also remain deferred. The future `RosterEntry` extends a player membership; it does not add another `User`-to-`Team` relationship.
 
 ## Integration Boundary Concepts
 

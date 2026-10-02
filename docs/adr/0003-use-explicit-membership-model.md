@@ -4,6 +4,8 @@
 
 Accepted for Sprint 0 foundation.
 
+Sprint 4 implementation clarification preserves the accepted membership relationship.
+
 ## Context
 
 SquadSync needs to represent how people participate in teams. A person may be a coach, player, manager, or viewer depending on the team context.
@@ -22,6 +24,12 @@ TeamMembership -> one constrained TeamRole value
 ```
 
 A user may have multiple memberships across teams. Each membership describes the user's relationship and has one constrained `TeamRole` value for the MVP. This does not require a persisted, dynamically configurable Role/Permission entity model.
+
+### Sprint 4 Implementation Clarification
+
+A represented `User` may have at most one membership per `Team`, and a `Team` may have many memberships. `TeamRole` is limited to `Owner`, `Coach`, `AssistantCoach`, `Manager`, `Player`, and `Viewer`. The exact fields, identifier invariants, and deferred concerns are defined in the [domain model's Sprint 4 contract](../architecture/domain-model.md#sprint-4-membership-implementation-contract).
+
+Domain represents membership endpoints by identifiers and remains EF-independent. Following [ADR 0005](0005-ef-core-npgsql-persistence.md), Infrastructure owns foreign keys to `User` and `Team`, restrictive/no-cascade deletion for both relationships, uniqueness on `(UserId, TeamId)`, and readable string persistence for `TeamRole`. There is no separate `Role` table and no Phase 2 repository abstraction merely because membership exists.
 
 ## Consequences
 
