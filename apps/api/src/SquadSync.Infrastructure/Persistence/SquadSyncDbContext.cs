@@ -10,6 +10,8 @@ public sealed class SquadSyncDbContext(DbContextOptions<SquadSyncDbContext> opti
 
     public DbSet<Team> Teams => Set<Team>();
 
+    public DbSet<TeamMembership> TeamMemberships => Set<TeamMembership>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SquadSyncDbContext).Assembly);

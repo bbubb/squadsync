@@ -54,19 +54,21 @@ dotnet ef --version
 
 Start PostgreSQL using the existing [Compose workflow](../../infra/docker/README.md) and confirm `docker compose ps` reports healthy. Set `ConnectionStrings__SquadSync` to the local connection string matching the ignored `infra/docker/.env` values, as described above. Use this same configuration key for both EF commands and database tests; do not commit credentials.
 
-The initial `InitialUserTeam` migration and model snapshot are already committed in Infrastructure. For reference, this is the exact generation command used from `apps/api` (do not rerun it on a checkout that already contains the migration):
+The `InitialUserTeam` and `AddTeamMembership` migrations and model snapshot are committed in Infrastructure. For reference, these are the generation commands used from `apps/api` (do not rerun them on a checkout that already contains the migrations):
 
 ```powershell
 dotnet ef migrations add InitialUserTeam --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext --output-dir Persistence/Migrations
+dotnet ef migrations add AddTeamMembership --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext --output-dir Persistence/Migrations
 ```
 
-Before the first update, inspect the local database for pre-existing application tables. Stop if they conflict with `Users`, `Teams`, or the migration history; do not drop data or delete the named volume to resolve a conflict. Apply the committed migration:
+Before the first update, inspect the local database for pre-existing application tables. Stop if they conflict with `Users`, `Teams`, `TeamMemberships`, or the migration history; do not drop data or delete the named volume to resolve a conflict. When upgrading an existing Sprint 3 database, confirm its history contains `InitialUserTeam` and no conflicting membership schema. Review new migrations before applying them. Apply the committed migrations:
 
 ```powershell
 dotnet ef database update --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext
+dotnet ef migrations has-pending-model-changes --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext
 ```
 
-The migration creates only `Users` and `Teams` with their required columns and primary keys, plus EF migration history. Repeating `database update` is safe once the migration is recorded.
+`InitialUserTeam` creates `Users` and `Teams` with their required columns and primary keys, plus EF migration history. `AddTeamMembership` adds only `TeamMemberships` with an application-assigned primary key, required User/Team foreign keys with restrictive deletion, required readable-string `TeamRole`, and a unique `(UserId, TeamId)` index. Repeating `database update` is safe once the migrations are recorded.
 
 Run the real PostgreSQL persistence test explicitly:
 
@@ -78,7 +80,7 @@ Remove-Item Env:ConnectionStrings__SquadSync
 dotnet test
 ```
 
-With opt-in enabled, missing `ConnectionStrings__SquadSync` fails the test with a configuration message. The test does not apply migrations: run the update first. It writes a valid User and Team inside an explicit transaction, clears tracking, queries fresh entities through EF, checks their persisted state, rolls back, and confirms its rows are absent. Transaction disposal also rolls back if an assertion fails. No test rows are committed. Without opt-in, xUnit reports the test as skipped before any database connection is attempted.
+With opt-in enabled, missing `ConnectionStrings__SquadSync` fails the test with a configuration message. The test does not apply migrations: run the update first. It writes a valid User, Team, and TeamMembership inside one explicit transaction, clears tracking, queries fresh entities through EF, and checks their persisted state, including the raw readable-string role. It attempts a second membership with a different Id for the same User/Team pair and requires a `DbUpdateException` caused by PostgreSQL's unique index. After that failure, its next database operation is rollback. It then clears tracking and confirms all validation rows are absent. Transaction disposal also rolls back if an assertion fails. No test rows are committed. Without opt-in, xUnit reports the test as skipped before any database connection is attempted.
 
 ## Run the API
 
@@ -103,7 +105,7 @@ After confirming both health endpoints return HTTP 200, stop PostgreSQL with `do
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `User` and `Team` domain entities, and owns their initial migration. An opt-in integration test proves persistence against local PostgreSQL. Application CRUD workflows and API endpoints are not included yet. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `User`, `Team`, and `TeamMembership` domain entities, and owns their migrations. An opt-in integration test proves persistence and membership uniqueness against local PostgreSQL. Application CRUD workflows and API endpoints are not included yet. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 

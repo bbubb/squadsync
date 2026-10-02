@@ -76,7 +76,7 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public void SquadSyncDbContext_UsesNpgsqlAndMapsSprintThreeEntities()
+    public void SquadSyncDbContext_UsesNpgsqlAndMapsCurrentEntities()
     {
         var services = new ServiceCollection()
             .AddSquadSyncPersistence("Host=localhost;Database=squadsync;Username=test;Password=test")
@@ -87,7 +87,7 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
 
         Assert.Equal("Npgsql.EntityFrameworkCore.PostgreSQL", dbContext.Database.ProviderName);
         Assert.Equal(
-            [nameof(Team), nameof(User)],
+            [nameof(Team), nameof(TeamMembership), nameof(User)],
             model.GetEntityTypes().Select(entityType => entityType.ClrType.Name).OrderBy(name => name));
 
         var user = model.FindEntityType(typeof(User))!;
@@ -103,5 +103,33 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal("Id", team.FindPrimaryKey()!.Properties.Single().Name);
         Assert.Equal(ValueGenerated.Never, team.FindProperty(nameof(Team.Id))!.ValueGenerated);
         Assert.All(team.GetProperties(), property => Assert.False(property.IsNullable));
+
+        var membership = model.FindEntityType(typeof(TeamMembership))!;
+        Assert.Equal(
+            ["Id", "TeamId", "TeamRole", "UserId"],
+            membership.GetProperties().Select(property => property.Name).OrderBy(name => name));
+        Assert.Equal("Id", membership.FindPrimaryKey()!.Properties.Single().Name);
+        Assert.Equal(ValueGenerated.Never, membership.FindProperty(nameof(TeamMembership.Id))!.ValueGenerated);
+        Assert.All(membership.GetProperties(), property => Assert.False(property.IsNullable));
+        Assert.Empty(membership.GetNavigations());
+
+        var foreignKeys = membership.GetForeignKeys().ToArray();
+        Assert.Equal(2, foreignKeys.Length);
+        Assert.All(foreignKeys, foreignKey =>
+        {
+            Assert.True(foreignKey.IsRequired);
+            Assert.Equal(DeleteBehavior.Restrict, foreignKey.DeleteBehavior);
+        });
+        Assert.Contains(foreignKeys, foreignKey =>
+            foreignKey.Properties.Single().Name == nameof(TeamMembership.UserId) &&
+            foreignKey.PrincipalEntityType.ClrType == typeof(User));
+        Assert.Contains(foreignKeys, foreignKey =>
+            foreignKey.Properties.Single().Name == nameof(TeamMembership.TeamId) &&
+            foreignKey.PrincipalEntityType.ClrType == typeof(Team));
+        Assert.Contains(membership.GetIndexes(), index => index.IsUnique &&
+            index.Properties.Select(property => property.Name)
+                .SequenceEqual([nameof(TeamMembership.UserId), nameof(TeamMembership.TeamId)]));
+        Assert.Equal(typeof(string), membership.FindProperty(nameof(TeamMembership.TeamRole))!
+            .GetTypeMapping().Converter!.ProviderClrType);
     }
 }
