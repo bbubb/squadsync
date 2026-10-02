@@ -8,7 +8,7 @@ The project is intentionally scoped to a practical vertical slice: team and rost
 
 SquadSync is in active MVP development.
 
-Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 is complete and established the API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; and console logging. A local PostgreSQL service is available through Docker Compose under `infra/docker/`, and GitHub Actions validates API restore, build, and test. Phase 2 — Core Domain and Persistence — is active. Infrastructure now has an EF Core/Npgsql `DbContext` mapping the current `User` and `Team` entities; migrations and persisted application workflows remain future work.
+Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 is complete and established the API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; and console logging. A local PostgreSQL service is available through Docker Compose under `infra/docker/`, and GitHub Actions validates API restore, build, and test. Phase 2 — Core Domain and Persistence — is active. Infrastructure now has an EF Core/Npgsql `DbContext` and initial migration for the current `User` and `Team` entities, with an opt-in PostgreSQL persistence test. Persisted application workflows remain future work.
 
 Phase 2 / Sprint 3 is the current actual sprint. Issue [#83](https://github.com/bbubb/squadsync/issues/83) records the domain and persistence architecture gate. The represented `User` is distinct from future account identity; `TeamMembership` is the canonical `User`-to-`Team` relationship and carries one constrained `TeamRole`; player-only roster data belongs on a `RosterEntry` attached to a player membership; and EF Core/Npgsql ownership is recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
 
@@ -25,7 +25,7 @@ Canonical planning state and active work are tracked in:
 | API | ASP.NET Core Web API | Planned under `apps/api/` |
 | API language | C# | Modular monolith / Clean Architecture style |
 | Database | PostgreSQL | Local first, cloud-ready later |
-| ORM | Entity Framework Core | Planned persistence layer |
+| ORM | Entity Framework Core | User/Team persistence and migrations |
 | Validation | FluentValidation | Planned request/use-case validation |
 | Logging | Serilog | Planned structured logging |
 | API docs | Swagger / OpenAPI | Development API inspection |
@@ -83,7 +83,7 @@ Start here:
 
 ## Getting Started
 
-The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); database migrations and persisted application workflows, authentication, the frontend, and soccer-subber integration remain later work.
+The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); User/Team migration and opt-in persistence validation commands are documented in the [API README](apps/api/README.md). Persisted application workflows, authentication, the frontend, and soccer-subber integration remain later work.
 
 ## Contributing
 

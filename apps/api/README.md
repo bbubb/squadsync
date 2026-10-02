@@ -21,7 +21,7 @@ dotnet build
 dotnet test
 ```
 
-`dotnet test` runs both the unit-test and in-process health integration-test projects. No database, Docker service, environment variables, secrets, or connection strings are required for the current scaffold.
+`dotnet test` runs both the unit-test and in-process health integration-test projects. The database persistence test is skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
 
 The in-process health tests verify liveness and the unavailable-database readiness response using a test server. They do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
 
@@ -42,6 +42,43 @@ export ConnectionStrings__SquadSync='Host=127.0.0.1;Port=5432;Database=squadsync
 ```
 
 These are example local credentials from `.env.example`, not production credentials. If you changed the local database settings, use the same values here. ASP.NET Core maps the double underscore to the `ConnectionStrings:SquadSync` configuration key.
+
+## EF migrations and database validation
+
+From `apps/api`, restore the repository-local EF CLI tool (pinned to `10.0.0`):
+
+```powershell
+dotnet tool restore
+dotnet ef --version
+```
+
+Start PostgreSQL using the existing [Compose workflow](../../infra/docker/README.md) and confirm `docker compose ps` reports healthy. Set `ConnectionStrings__SquadSync` to the local connection string matching the ignored `infra/docker/.env` values, as described above. Use this same configuration key for both EF commands and database tests; do not commit credentials.
+
+The initial `InitialUserTeam` migration and model snapshot are already committed in Infrastructure. For reference, this is the exact generation command used from `apps/api` (do not rerun it on a checkout that already contains the migration):
+
+```powershell
+dotnet ef migrations add InitialUserTeam --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext --output-dir Persistence/Migrations
+```
+
+Before the first update, inspect the local database for pre-existing application tables. Stop if they conflict with `Users`, `Teams`, or the migration history; do not drop data or delete the named volume to resolve a conflict. Apply the committed migration:
+
+```powershell
+dotnet ef database update --project src/SquadSync.Infrastructure --startup-project src/SquadSync.Api --context SquadSyncDbContext
+```
+
+The migration creates only `Users` and `Teams` with their required columns and primary keys, plus EF migration history. Repeating `database update` is safe once the migration is recorded.
+
+Run the real PostgreSQL persistence test explicitly:
+
+```powershell
+$env:SQUADSYNC_RUN_DATABASE_TESTS = "1"
+dotnet test tests/SquadSync.IntegrationTests --filter "Category=Database"
+Remove-Item Env:SQUADSYNC_RUN_DATABASE_TESTS
+Remove-Item Env:ConnectionStrings__SquadSync
+dotnet test
+```
+
+With opt-in enabled, missing `ConnectionStrings__SquadSync` fails the test with a configuration message. The test does not apply migrations: run the update first. It writes a valid User and Team inside an explicit transaction, clears tracking, queries fresh entities through EF, checks their persisted state, rolls back, and confirms its rows are absent. Transaction disposal also rolls back if an assertion fails. No test rows are committed. Without opt-in, xUnit reports the test as skipped before any database connection is attempted.
 
 ## Run the API
 
@@ -66,7 +103,7 @@ After confirming both health endpoints return HTTP 200, stop PostgreSQL with `do
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql and explicitly maps the current `User` and `Team` domain entities. The API can check PostgreSQL connectivity, but migrations and persisted application workflows are not included yet. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `User` and `Team` domain entities, and owns their initial migration. An opt-in integration test proves persistence against local PostgreSQL. Application CRUD workflows and API endpoints are not included yet. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
