@@ -13,6 +13,7 @@ Generate the first User/Team migration and prove EF materializes the existing im
 - [x] Generate and inspect migration.
 - [x] Inspect existing schema, apply migration, and run database validation.
 - [x] Document commands, run baseline gates, and prepare draft PR handoff.
+- [x] Commit and push the issue branch; open [draft PR #93](https://github.com/bbubb/squadsync/pull/93) for human review.
 
 ## Surprises & Discoveries
 
@@ -20,6 +21,7 @@ Generate the first User/Team migration and prove EF materializes the existing im
 - Docker Desktop was not running at intake; start it before the database gate.
 - The first schema inspection ran before PostgreSQL finished starting. Retry after Compose reports healthy; pass SQL through standard input to preserve quoting on Windows.
 - The first EF update logged a missing migration-history SELECT before creating history and applying successfully; history was verified afterward.
+- Publishing was initially rejected by automatic approval review because remote ownership was unverified. Read-only GitHub checks confirmed public bbubb/squadsync is owned by authenticated bbubb with ADMIN permission; retry was approved.
 
 ## Decision Log
 
@@ -29,7 +31,7 @@ Generate the first User/Team migration and prove EF materializes the existing im
 
 ## Outcomes & Retrospective
 
-Implementation and all validation gates passed. No materialization or tooling architecture blocker occurred. The PostgreSQL container is stopped after validation; its existing named volume and applied schema remain intact. Commit, push, and draft PR are the remaining handoff steps. Manual Docker startup and environment setup remain evidence relevant to deferred Issue #72; no automation was added outside this issue.
+Implementation and all validation gates passed, and draft PR #93 is open for human review. No materialization or tooling architecture blocker occurred. The PostgreSQL container is stopped after validation; its existing named volume and applied schema remain intact. Manual Docker startup and environment setup remain evidence relevant to deferred Issue #72; no automation was added outside this issue.
 
 ## Context and Orientation
 
