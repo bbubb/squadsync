@@ -87,7 +87,7 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
 
         Assert.Equal("Npgsql.EntityFrameworkCore.PostgreSQL", dbContext.Database.ProviderName);
         Assert.Equal(
-            [nameof(Team), nameof(TeamMembership), nameof(User)],
+            [nameof(PlayerProfile), nameof(RosterEntry), nameof(Team), nameof(TeamMembership), nameof(User)],
             model.GetEntityTypes().Select(entityType => entityType.ClrType.Name).OrderBy(name => name));
 
         var user = model.FindEntityType(typeof(User))!;
