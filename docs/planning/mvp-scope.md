@@ -30,7 +30,7 @@ Players and parents may become future user types, but the first MVP centers on t
 
 - Create and manage teams
 - Add represented users to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership
-- Track jersey number and roster status on `RosterEntry`; track preferred positions and dominant side on the person-level `PlayerProfile`
+- Track jersey number and roster status on `RosterEntry`; track dominant foot on the person-level `PlayerProfile`, with preferred positions deferred until the soccer-position/formation/lineup vocabulary is defined (see the [Sprint 5 contract](../architecture/domain-model.md#sprint-5-player-profile-and-roster-implementation-contract))
 - Track match-specific player availability through `PlayerAvailability`
 
 ### Membership and Roles

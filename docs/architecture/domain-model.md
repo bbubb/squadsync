@@ -41,7 +41,7 @@ A constrained MVP value on `TeamMembership`. Its allowed values are exactly `Own
 
 ### PlayerProfile
 
-Person-level soccer attributes associated with a `User`: optional dominant side, height in centimeters, and weight in kilograms. Preferred positions are deferred until the soccer-position/formation/lineup vocabulary is defined. It does not own team-context data such as jersey number or roster status, or match-specific availability.
+Person-level soccer attributes associated with a `User`: optional dominant foot, height in total inches, and weight in pounds. Preferred positions are deferred until the soccer-position/formation/lineup vocabulary is defined. It does not own team-context data such as jersey number or roster status, or match-specific availability.
 
 ### RosterEntry
 
@@ -193,16 +193,18 @@ The minimal persisted shape is exactly:
 PlayerProfile
 - Id: Guid
 - UserId: Guid
-- DominantSide: DominantSide?
-- HeightCentimeters: int?
-- WeightKilograms: decimal?
+- DominantFoot: DominantFoot?
+- HeightInches: int?
+- WeightPounds: decimal?
 ```
 
 - A `User` may have at most one optional `PlayerProfile`.
 - `Id` and `UserId` are application-assigned and must not be `Guid.Empty`.
-- `DominantSide`, when supplied, must be exactly `Left`, `Right`, or `Both`; undefined values are invalid.
+- `DominantFoot`, when supplied, must be exactly `Left`, `Right`, or `Both`; undefined values are invalid. This represents foot dominance, not a player's preferred field side or flank.
 - Optional height and weight values, when supplied, must be greater than zero.
-- Store height and weight in the explicit canonical metric units above. Presentation/UI conversion is outside this slice; do not introduce ambiguous `Height` or `Weight` fields.
+- `HeightInches` stores total inches as an integer (for example, 5 ft 10 in = 70); `WeightPounds` stores pounds as a decimal.
+- These are the canonical MVP storage units for the initial US-first product context. Do not persist duplicate imperial and metric copies of the same measurement or introduce ambiguous `Height` or `Weight` fields.
+- Later measurement-system support should convert at the API/UI boundary so users can enter/view feet+inches/pounds or centimeters/kilograms without creating two competing sources of truth. Implementing conversion is outside this slice.
 - Preferred positions remain deferred until the soccer-position/formation/lineup vocabulary is defined; do not store JSON or string position shortcuts.
 - `PlayerProfile` owns no jersey number, roster status, match availability, team assignment, statistics, or authentication fields.
 
