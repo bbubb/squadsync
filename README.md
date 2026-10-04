@@ -8,9 +8,11 @@ The project is intentionally scoped to a practical vertical slice: team and rost
 
 SquadSync is in active MVP development.
 
-Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 is complete and established the API foundation under `apps/api/`: a .NET 10 solution with the API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; and console logging. A local PostgreSQL service is available through Docker Compose under `infra/docker/`, and GitHub Actions validates API restore, build, and test. Phase 2 — Core Domain and Persistence — is active. Infrastructure now has an EF Core/Npgsql `DbContext` and initial migration for the current `User` and `Team` entities, with an opt-in PostgreSQL persistence test. Persisted application workflows remain future work.
+Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 established the API foundation under `apps/api/`: a .NET 10 solution with API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; console logging; Docker Compose PostgreSQL; and GitHub Actions restore/build/test validation.
 
-Phase 2 / Sprints 3–4 are complete, including `TeamMembership` persistence with one constrained `TeamRole`. Sprint 5 — Player Profile and Roster Foundation — is current under [#102](https://github.com/bbubb/squadsync/issues/102), with the documentation contract gate in [#103](https://github.com/bbubb/squadsync/issues/103). The accepted [domain contract](docs/architecture/domain-model.md#sprint-5-player-profile-and-roster-implementation-contract) separates person-level `PlayerProfile` attributes from `RosterEntry` team-context data; implementation follows in scoped child issues. Authentication/account identity and API/Application use cases remain deferred; EF Core/Npgsql ownership is recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
+Phase 2 — Core Domain and Persistence — is complete through Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)). The Domain now includes represented `User`, `Team`, `TeamMembership` with constrained `TeamRole`, person-level `PlayerProfile`, and team-context `RosterEntry`. Infrastructure owns EF Core/Npgsql mappings and additive migrations with opt-in real-PostgreSQL validation. Application now contains the first concrete use case, `AddPlayerToRoster`, with an Application-owned persistence contract implemented by Infrastructure; the use case enforces that only `Player` memberships can receive roster entries. An explicit Development-only demo seed creates a coherent, idempotent roster scenario without mutating data during ordinary startup.
+
+Authentication/account identity, broader HTTP roster-management behavior, the frontend, match planning, and Soccer-Subber integration remain later work. The next project action is Phase 3 — Roster Management API — planning in the main project-planning workflow. EF Core/Npgsql ownership remains recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
 
 Canonical planning state and active work are tracked in:
 
@@ -83,7 +85,7 @@ Start here:
 
 ## Getting Started
 
-The API scaffold is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); User/Team migration and opt-in persistence validation commands are documented in the [API README](apps/api/README.md). Persisted application workflows, authentication, the frontend, and soccer-subber integration remain later work.
+The API is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); EF migrations, opt-in database validation, the `AddPlayerToRoster` application workflow, and the explicit Development demo-seed command are documented in the [API README](apps/api/README.md). Authentication, the broader Phase 3 HTTP API surface, the frontend, and Soccer-Subber integration remain later work.
 
 ## Contributing
 
