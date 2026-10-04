@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IRosterPersistence, EfRosterPersistence>();
+        services.AddScoped<DevelopmentDemoSeeder>();
         return services;
     }
 }
