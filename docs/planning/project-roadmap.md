@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0 and Phase 1 are complete. Phase 2 / Sprints 3–4 are complete; Phase 2 / Sprint 5 is the current actual sprint under [#102](https://github.com/bbubb/squadsync/issues/102), with the contract gate in [#103](https://github.com/bbubb/squadsync/issues/103). Phase 1 concluded after Sprints 1–2; its example Sprint 3 hardening work was not instantiated because the Phase 1 completion criteria were already met.
+Active. Phase 0, Phase 1, and Phase 2 are complete. Phase 2 concluded through Sprint 6 under [#109](https://github.com/bbubb/squadsync/issues/109), establishing the MVP core domain, PostgreSQL persistence, the first Application use case, and explicit Development demo data. Phase 3 — Roster Management API — is the next planning target; no Phase 3 sprint has been instantiated yet.
 
 ## Purpose
 
@@ -416,10 +416,15 @@ Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https
 
 Phase 1 is complete. A separate Phase 1 Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria.
 
-Phase 2 / Sprint 3 is complete through sprint tracker [#82](https://github.com/bbubb/squadsync/issues/82). Its architecture gate [#83](https://github.com/bbubb/squadsync/issues/83) and implementation established EF-independent `User` and `Team` entities, Infrastructure-owned EF Core/Npgsql persistence, the initial User/Team migration, and real PostgreSQL round-trip validation.
+Phase 2 is complete through Sprints 3–6.
 
-Phase 2 / Sprint 4 — Team Membership Foundation — is complete under sprint tracker [#94](https://github.com/bbubb/squadsync/issues/94). Its [membership contract](../architecture/domain-model.md#sprint-4-membership-implementation-contract) through [#95](https://github.com/bbubb/squadsync/issues/95), Domain implementation through [#96](https://github.com/bbubb/squadsync/issues/96), and Infrastructure mapping/migration through [#97](https://github.com/bbubb/squadsync/issues/97) established `TeamMembership` with one constrained `TeamRole` and real PostgreSQL validation of its foreign keys, uniqueness, and restrictive deletion.
+- Sprint 3 ([#82](https://github.com/bbubb/squadsync/issues/82)) established EF-independent `User` and `Team` domain entities, Infrastructure-owned EF Core/Npgsql persistence, the initial migration, and real PostgreSQL round-trip validation.
+- Sprint 4 ([#94](https://github.com/bbubb/squadsync/issues/94)) added explicit `TeamMembership` with one constrained `TeamRole`, relationship/uniqueness enforcement, and restrictive deletion.
+- Sprint 5 ([#102](https://github.com/bbubb/squadsync/issues/102)) separated person-level `PlayerProfile` from team-context `RosterEntry`, persisted both with additive migrations, and validated their one-to-one structural constraints against PostgreSQL.
+- Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)) added the first real Application workflow, `AddPlayerToRoster`, using an Application-owned persistence contract implemented by Infrastructure. It also added explicit, Development-only, idempotent demo seeding for the complete Phase 2 model.
 
-Phase 2 / Sprint 5 — Player Profile and Roster Foundation — is current under sprint tracker [#102](https://github.com/bbubb/squadsync/issues/102). Architecture gate [#103](https://github.com/bbubb/squadsync/issues/103) records the accepted [player profile and roster contract](../architecture/domain-model.md#sprint-5-player-profile-and-roster-implementation-contract): optional person-level `PlayerProfile` on `User` and optional team-context `RosterEntry` on `TeamMembership`, with explicit one-to-one persistence and restrictive/no-cascade deletion. `TeamMembership` remains the only `User`-to-`Team` relationship; Player-role eligibility belongs to the future Application use case.
+Phase 2 completion criteria are satisfied: core entities persist, relationships match the canonical domain model, an Application use-case path is testable without HTTP, and seed data supports a simple demo scenario.
 
-The next planning action is to create/refine narrow Domain implementation/test and Infrastructure mapping/additive-migration/PostgreSQL-validation child issues after the contract gate is merged. Revalidate each dependent child against merged prerequisites before marking it `agent-ready`. Preferred positions wait for the later soccer-position/formation/lineup vocabulary. Match availability, statistics, `CoachProfile`, authentication/account work, API/Application use cases, and repository abstractions remain outside Sprint 5.
+Open maintenance issues [#72](https://github.com/bbubb/squadsync/issues/72), [#89](https://github.com/bbubb/squadsync/issues/89), and [#100](https://github.com/bbubb/squadsync/issues/100) remain deferred backlog and do not block the phase transition.
+
+The next planning action is to return to the main SquadSync planning thread and define Phase 3 — Roster Management API — sprint scope from the completed Phase 2 baseline. Phase 3 planning should decide the smallest HTTP/use-case surface needed for a coach to create/manage a team and roster without expanding into authentication, frontend, match planning, or other later-phase concerns.
