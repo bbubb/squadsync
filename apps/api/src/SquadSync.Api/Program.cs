@@ -23,6 +23,20 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+if (app.Configuration.GetValue<bool>("seed-demo"))
+{
+    if (!app.Environment.IsDevelopment())
+    {
+        throw new InvalidOperationException("Demo seeding is allowed only in the Development environment.");
+    }
+
+    await using var scope = app.Services.CreateAsyncScope();
+    await scope.ServiceProvider.GetRequiredService<DevelopmentDemoSeeder>().SeedAsync();
+    app.Logger.LogInformation("Development demo seed completed. SquadSync Demo FC is ready for inspection.");
+    await app.DisposeAsync();
+    return;
+}
+
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())

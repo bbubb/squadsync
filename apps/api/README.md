@@ -94,6 +94,25 @@ Infrastructure's `EfRosterPersistence` uses the same scoped `SquadSyncDbContext`
 
 Unit tests exercise the workflow without EF or HTTP. The opt-in `RosterUseCasePersistenceTests` verifies the registered adapter, round trip, and both conflict translations against PostgreSQL in rolled-back transactions. No HTTP endpoint or schema change is introduced.
 
+## Explicit Development demo seed
+
+After starting local PostgreSQL, configuring `ConnectionStrings__SquadSync`, and applying the committed migrations above, intentionally seed the database from `apps/api`:
+
+```powershell
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+dotnet run --project src/SquadSync.Api -- --seed-demo=true
+```
+
+In a POSIX-compatible shell, use `ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/SquadSync.Api -- --seed-demo=true`.
+
+The command persists the scenario and exits without starting the HTTP server. It rejects Production and Staging before database access. Ordinary API startup, migration commands, and ordinary tests do not seed. Missing database configuration or migrations cause failure; the command does not apply migrations, reset the database, delete rows, or update existing data.
+
+The scenario is **SquadSync Demo FC**, with four represented Users (Casey Coach Demo, Morgan Manager Demo, Alex Player Demo, and Sam Player Demo), Coach/Manager/Player memberships, two PlayerProfiles, and two player-only RosterEntries: jersey `007` / Active and `12` / Reserved. Infrastructure constructs Domain entities for the principals and profiles; roster creation invokes Application's `AddPlayerToRoster` eligibility check.
+
+All seed identifiers use the reserved `11100000-0000-0000-0000-` prefix: Team suffix `000000000001`, Users `000000000011`–`000000000014`, memberships `000000000021`–`000000000024`, profiles `000000000031`–`000000000032`, and roster entries `000000000041`–`000000000042`. Inspect these rows using your PostgreSQL client. Running the same command again leaves row counts unchanged. Missing demo rows are added; conflicting existing seed identifiers or unique relationships fail and roll back the command's transaction, preserving existing and unrelated data. Concurrent invocations may encounter a database uniqueness conflict; rerun after the other invocation completes.
+
+The opt-in `DevelopmentDemoSeedTests` verifies first-run contents, rerun idempotence, Player-only roster membership, unrelated-row preservation, conflict rejection, and ordinary startup without seeding. Like the other database tests, it rolls back its transaction and leaves no demo rows behind; only an intentional successful seed command commits the demo scenario. Non-Development rejection is also tested without a database.
+
 ## Run the API
 
 From `apps/api`, start the API in Development on a fixed local port. In PowerShell:
