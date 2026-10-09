@@ -6,7 +6,7 @@ namespace SquadSync.Infrastructure.Persistence;
 public sealed class SquadSyncDbContext(DbContextOptions<SquadSyncDbContext> options)
     : DbContext(options)
 {
-    public DbSet<User> Users => Set<User>();
+    public DbSet<Person> People => Set<Person>();
 
     public DbSet<Team> Teams => Set<Team>();
 

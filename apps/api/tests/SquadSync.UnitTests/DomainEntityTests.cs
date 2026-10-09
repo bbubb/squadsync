@@ -6,39 +6,39 @@ namespace SquadSync.UnitTests;
 public class DomainEntityTests
 {
     [Fact]
-    public void User_StoresIdentifierAndTrimsNames()
+    public void Person_StoresIdentifierAndTrimsNames()
     {
         var id = Guid.NewGuid();
 
-        var user = new User(id, "  Alex ", " Morgan  ");
+        var person = new Person(id, "  Alex ", " Morgan  ");
 
-        Assert.Equal(id, user.Id);
-        Assert.Equal("Alex", user.FirstName);
-        Assert.Equal("Morgan", user.LastName);
+        Assert.Equal(id, person.Id);
+        Assert.Equal("Alex", person.FirstName);
+        Assert.Equal("Morgan", person.LastName);
     }
 
     [Fact]
-    public void User_RejectsEmptyIdentifier()
+    public void Person_RejectsEmptyIdentifier()
     {
-        Assert.Throws<ArgumentException>(() => new User(Guid.Empty, "Alex", "Morgan"));
+        Assert.Throws<ArgumentException>(() => new Person(Guid.Empty, "Alex", "Morgan"));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("  \t ")]
-    public void User_RejectsInvalidFirstName(string? firstName)
+    public void Person_RejectsInvalidFirstName(string? firstName)
     {
-        Assert.ThrowsAny<ArgumentException>(() => new User(Guid.NewGuid(), firstName!, "Morgan"));
+        Assert.ThrowsAny<ArgumentException>(() => new Person(Guid.NewGuid(), firstName!, "Morgan"));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("  \t ")]
-    public void User_RejectsInvalidLastName(string? lastName)
+    public void Person_RejectsInvalidLastName(string? lastName)
     {
-        Assert.ThrowsAny<ArgumentException>(() => new User(Guid.NewGuid(), "Alex", lastName!));
+        Assert.ThrowsAny<ArgumentException>(() => new Person(Guid.NewGuid(), "Alex", lastName!));
     }
 
     [Fact]

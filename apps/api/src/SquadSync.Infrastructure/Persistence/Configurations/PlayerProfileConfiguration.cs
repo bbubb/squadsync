@@ -11,7 +11,7 @@ internal sealed class PlayerProfileConfiguration : IEntityTypeConfiguration<Play
         builder.HasKey(profile => profile.Id);
         builder.Property(profile => profile.Id)
             .ValueGeneratedNever();
-        builder.Property(profile => profile.UserId)
+        builder.Property(profile => profile.PersonId)
             .IsRequired();
         builder.Property(profile => profile.DominantFoot)
             .HasConversion<string>();
@@ -21,11 +21,11 @@ internal sealed class PlayerProfileConfiguration : IEntityTypeConfiguration<Play
         builder.Property(profile => profile.WeightPounds)
             .HasColumnType("numeric");
 
-        builder.HasOne<User>()
+        builder.HasOne<Person>()
             .WithOne()
-            .HasForeignKey<PlayerProfile>(profile => profile.UserId)
+            .HasForeignKey<PlayerProfile>(profile => profile.PersonId)
             .OnDelete(DeleteBehavior.Restrict);
-        builder.HasIndex(profile => profile.UserId)
+        builder.HasIndex(profile => profile.PersonId)
             .IsUnique();
     }
 }

@@ -1,12 +1,12 @@
 namespace SquadSync.Domain;
 
-public sealed class User
+public sealed class Person
 {
-    public User(Guid id, string firstName, string lastName)
+    public Person(Guid id, string firstName, string lastName)
     {
         if (id == Guid.Empty)
         {
-            throw new ArgumentException("User ID cannot be empty.", nameof(id));
+            throw new ArgumentException("Person ID cannot be empty.", nameof(id));
         }
 
         Id = id;

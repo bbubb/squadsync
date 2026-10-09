@@ -10,9 +10,9 @@ SquadSync is in active MVP development.
 
 Phase 0 established architecture, planning, and agentic workflow standards. Phase 1 established the API foundation under `apps/api/`: a .NET 10 solution with API, Application, Domain, Infrastructure, and test projects; liveness and PostgreSQL readiness endpoints; development-only Swagger; console logging; Docker Compose PostgreSQL; and GitHub Actions restore/build/test validation.
 
-Phase 2 — Core Domain and Persistence — is complete through Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)). The Domain now includes represented `User`, `Team`, `TeamMembership` with constrained `TeamRole`, person-level `PlayerProfile`, and team-context `RosterEntry`. Infrastructure owns EF Core/Npgsql mappings and additive migrations with opt-in real-PostgreSQL validation. Application now contains the first concrete use case, `AddPlayerToRoster`, with an Application-owned persistence contract implemented by Infrastructure; the use case enforces that only `Player` memberships can receive roster entries. An explicit Development-only demo seed creates a coherent, idempotent roster scenario without mutating data during ordinary startup.
+Phase 2 — Core Domain and Persistence — is complete through Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)). The Domain now includes represented `Person`, `Team`, `TeamMembership` with constrained `TeamRole`, person-level `PlayerProfile`, and team-context `RosterEntry`. Infrastructure owns EF Core/Npgsql mappings and additive migrations with opt-in real-PostgreSQL validation. Application now contains the first concrete use case, `AddPlayerToRoster`, with an Application-owned persistence contract implemented by Infrastructure; the use case enforces that only `Player` memberships can receive roster entries. An explicit Development-only demo seed creates a coherent, idempotent roster scenario without mutating data during ordinary startup.
 
-Authentication/account identity, broader HTTP roster-management behavior, the frontend, match planning, and Soccer-Subber integration remain later work. Phase 3 Sprint 7 is tracked in [#116](https://github.com/bbubb/squadsync/issues/116). Proposed [ADR 0006](docs/adr/0006-represented-person-identity-api-contract.md) defines the future `Person` vocabulary and initial Development-only HTTP boundary; the current implementation still uses `User` until [#118](https://github.com/bbubb/squadsync/issues/118). EF Core/Npgsql ownership remains recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
+Authentication/account identity, broader HTTP roster-management behavior, the frontend, match planning, and Soccer-Subber integration remain later work. Phase 3 Sprint 7 is tracked in [#116](https://github.com/bbubb/squadsync/issues/116). Accepted [ADR 0006](docs/adr/0006-represented-person-identity-api-contract.md) defines the `Person` vocabulary and planned Development-only HTTP boundary. [Issue #118](https://github.com/bbubb/squadsync/issues/118) applies the naming through a data-preserving schema rename. EF Core/Npgsql ownership remains recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
 
 Canonical planning state and active work are tracked in:
 
@@ -27,7 +27,7 @@ Canonical planning state and active work are tracked in:
 | API | ASP.NET Core Web API | Planned under `apps/api/` |
 | API language | C# | Modular monolith / Clean Architecture style |
 | Database | PostgreSQL | Local first, cloud-ready later |
-| ORM | Entity Framework Core | User/Team persistence and migrations |
+| ORM | Entity Framework Core | Person/Team persistence and migrations |
 | Validation | ASP.NET Core built-in validation | Sprint 7 baseline; FluentValidation deferred until needed |
 | Logging | Serilog | Planned structured logging |
 | API docs | Swagger / OpenAPI | Development API inspection |

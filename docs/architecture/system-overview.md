@@ -157,7 +157,7 @@ PostgreSQL is the target database. The first local version may run through Docke
 
 The initial persistence model should support:
 
-- Represented Users (separate from future authentication/account identities)
+- Represented `Person` entities persisted in `People`, referenced by `PersonId` on memberships and player profiles (separate from future authentication/account identities; see [ADR 0006](../adr/0006-represented-person-identity-api-contract.md))
 - Teams
 - TeamMemberships
 - One constrained TeamRole value per TeamMembership

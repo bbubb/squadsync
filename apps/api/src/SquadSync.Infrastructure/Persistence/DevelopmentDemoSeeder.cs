@@ -16,25 +16,25 @@ public sealed class DevelopmentDemoSeeder(SquadSyncDbContext dbContext, IRosterP
 
         var team = new Team(Id(1), "SquadSync Demo FC");
         await AddIfMissingAsync(team, team.Id, cancellationToken);
-        var users = new[]
+        var people = new[]
         {
-            new User(Id(11), "Casey Coach", "Demo"),
-            new User(Id(12), "Morgan Manager", "Demo"),
-            new User(Id(13), "Alex Player", "Demo"),
-            new User(Id(14), "Sam Player", "Demo")
+            new Person(Id(11), "Casey Coach", "Demo"),
+            new Person(Id(12), "Morgan Manager", "Demo"),
+            new Person(Id(13), "Alex Player", "Demo"),
+            new Person(Id(14), "Sam Player", "Demo")
         };
         var roles = new[] { TeamRole.Coach, TeamRole.Manager, TeamRole.Player, TeamRole.Player };
-        for (var index = 0; index < users.Length; index++)
+        for (var index = 0; index < people.Length; index++)
         {
-            await AddIfMissingAsync(users[index], users[index].Id, cancellationToken);
-            var membership = new TeamMembership(Id(21 + index), users[index].Id, team.Id, roles[index]);
+            await AddIfMissingAsync(people[index], people[index].Id, cancellationToken);
+            var membership = new TeamMembership(Id(21 + index), people[index].Id, team.Id, roles[index]);
             await AddIfMissingAsync(membership, membership.Id, cancellationToken);
         }
 
         var profiles = new[]
         {
-            new PlayerProfile(Id(31), users[2].Id, DominantFoot.Right, 70, 165m),
-            new PlayerProfile(Id(32), users[3].Id, DominantFoot.Left, 68, 150m)
+            new PlayerProfile(Id(31), people[2].Id, DominantFoot.Right, 70, 165m),
+            new PlayerProfile(Id(32), people[3].Id, DominantFoot.Left, 68, 150m)
         };
         foreach (var profile in profiles)
         {

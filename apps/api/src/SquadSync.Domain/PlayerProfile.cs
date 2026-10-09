@@ -2,16 +2,16 @@ namespace SquadSync.Domain;
 
 public sealed class PlayerProfile
 {
-    public PlayerProfile(Guid id, Guid userId, DominantFoot? dominantFoot, int? heightInches, decimal? weightPounds)
+    public PlayerProfile(Guid id, Guid personId, DominantFoot? dominantFoot, int? heightInches, decimal? weightPounds)
     {
         if (id == Guid.Empty)
         {
             throw new ArgumentException("Player profile ID cannot be empty.", nameof(id));
         }
 
-        if (userId == Guid.Empty)
+        if (personId == Guid.Empty)
         {
-            throw new ArgumentException("User ID cannot be empty.", nameof(userId));
+            throw new ArgumentException("Person ID cannot be empty.", nameof(personId));
         }
 
         if (dominantFoot.HasValue && !Enum.IsDefined(dominantFoot.Value))
@@ -30,7 +30,7 @@ public sealed class PlayerProfile
         }
 
         Id = id;
-        UserId = userId;
+        PersonId = personId;
         DominantFoot = dominantFoot;
         HeightInches = heightInches;
         WeightPounds = weightPounds;
@@ -38,7 +38,7 @@ public sealed class PlayerProfile
 
     public Guid Id { get; }
 
-    public Guid UserId { get; }
+    public Guid PersonId { get; }
 
     public DominantFoot? DominantFoot { get; }
 

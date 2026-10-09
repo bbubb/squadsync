@@ -13,12 +13,12 @@ public class PlayerProfileTests
     public void Constructor_PreservesIdentifiersAndApprovedFoot(DominantFoot? dominantFoot)
     {
         var id = Guid.NewGuid();
-        var userId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
 
-        var profile = new PlayerProfile(id, userId, dominantFoot, 70, 165.5m);
+        var profile = new PlayerProfile(id, personId, dominantFoot, 70, 165.5m);
 
         Assert.Equal(id, profile.Id);
-        Assert.Equal(userId, profile.UserId);
+        Assert.Equal(personId, profile.PersonId);
         Assert.Equal(dominantFoot, profile.DominantFoot);
         Assert.Equal(70, profile.HeightInches);
         Assert.Equal(165.5m, profile.WeightPounds);
@@ -34,12 +34,12 @@ public class PlayerProfileTests
     }
 
     [Fact]
-    public void Constructor_RejectsEmptyUserIdentifier()
+    public void Constructor_RejectsEmptyPersonIdentifier()
     {
         var exception = Assert.Throws<ArgumentException>(() =>
             new PlayerProfile(Guid.NewGuid(), Guid.Empty, null, null, null));
 
-        Assert.Equal("userId", exception.ParamName);
+        Assert.Equal("personId", exception.ParamName);
     }
 
     [Theory]

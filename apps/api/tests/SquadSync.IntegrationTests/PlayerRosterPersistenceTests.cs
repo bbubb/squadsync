@@ -13,15 +13,15 @@ public class PlayerRosterPersistenceTests
     public async Task PlayerProfile_RoundTripsAndRejectsDuplicate_WithoutLeavingRows()
     {
         await using var dbContext = CreateDbContext();
-        var user = new User(Guid.NewGuid(), "Profile", "Validation");
-        var profile = new PlayerProfile(Guid.NewGuid(), user.Id, DominantFoot.Both, 71, 165.123456789m);
-        var duplicate = new PlayerProfile(Guid.NewGuid(), user.Id, null, null, null);
-        var otherUser = new User(Guid.NewGuid(), "Optional", "Measurements");
-        var emptyProfile = new PlayerProfile(Guid.NewGuid(), otherUser.Id, null, null, null);
+        var person = new Person(Guid.NewGuid(), "Profile", "Validation");
+        var profile = new PlayerProfile(Guid.NewGuid(), person.Id, DominantFoot.Both, 71, 165.123456789m);
+        var duplicate = new PlayerProfile(Guid.NewGuid(), person.Id, null, null, null);
+        var otherPerson = new Person(Guid.NewGuid(), "Optional", "Measurements");
+        var emptyProfile = new PlayerProfile(Guid.NewGuid(), otherPerson.Id, null, null, null);
 
         await using (var transaction = await dbContext.Database.BeginTransactionAsync())
         {
-            dbContext.Users.AddRange(user, otherUser);
+            dbContext.People.AddRange(person, otherPerson);
             Assert.Equal(2, await dbContext.SaveChangesAsync());
             dbContext.PlayerProfiles.AddRange(profile, emptyProfile);
             Assert.Equal(2, await dbContext.SaveChangesAsync());
@@ -30,13 +30,13 @@ public class PlayerRosterPersistenceTests
             var persisted = await dbContext.PlayerProfiles.SingleAsync(candidate => candidate.Id == profile.Id);
             Assert.NotSame(profile, persisted);
             Assert.Equal(profile.Id, persisted.Id);
-            Assert.Equal(user.Id, persisted.UserId);
+            Assert.Equal(person.Id, persisted.PersonId);
             Assert.Equal(DominantFoot.Both, persisted.DominantFoot);
             Assert.Equal(profile.HeightInches, persisted.HeightInches);
             Assert.Equal(profile.WeightPounds, persisted.WeightPounds);
             var persistedEmpty = await dbContext.PlayerProfiles.SingleAsync(candidate => candidate.Id == emptyProfile.Id);
             Assert.NotSame(emptyProfile, persistedEmpty);
-            Assert.Equal(otherUser.Id, persistedEmpty.UserId);
+            Assert.Equal(otherPerson.Id, persistedEmpty.PersonId);
             Assert.Null(persistedEmpty.DominantFoot);
             Assert.Null(persistedEmpty.HeightInches);
             Assert.Null(persistedEmpty.WeightPounds);
@@ -50,14 +50,14 @@ public class PlayerRosterPersistenceTests
             var exception = await Assert.ThrowsAsync<DbUpdateException>(() => dbContext.SaveChangesAsync());
             var postgresException = Assert.IsType<PostgresException>(exception.InnerException);
             Assert.Equal(PostgresErrorCodes.UniqueViolation, postgresException.SqlState);
-            Assert.Equal("IX_PlayerProfiles_UserId", postgresException.ConstraintName);
+            Assert.Equal("IX_PlayerProfiles_PersonId", postgresException.ConstraintName);
             await transaction.RollbackAsync();
         }
 
         dbContext.ChangeTracker.Clear();
-        Assert.False(await dbContext.Users.AnyAsync(candidate => candidate.Id == user.Id || candidate.Id == otherUser.Id));
+        Assert.False(await dbContext.People.AnyAsync(candidate => candidate.Id == person.Id || candidate.Id == otherPerson.Id));
         Assert.False(await dbContext.PlayerProfiles.AnyAsync(candidate =>
-            candidate.UserId == user.Id || candidate.UserId == otherUser.Id ||
+            candidate.PersonId == person.Id || candidate.PersonId == otherPerson.Id ||
             candidate.Id == profile.Id || candidate.Id == duplicate.Id || candidate.Id == emptyProfile.Id));
     }
 
@@ -66,16 +66,16 @@ public class PlayerRosterPersistenceTests
     public async Task RosterEntry_RoundTripsAndRejectsDuplicate_WithoutLeavingRows()
     {
         await using var dbContext = CreateDbContext();
-        var user = new User(Guid.NewGuid(), "Roster", "Validation");
+        var person = new Person(Guid.NewGuid(), "Roster", "Validation");
         var team = new Team(Guid.NewGuid(), "Roster Persistence Validation");
         // Role eligibility belongs to Application; persistence only enforces structural relationships.
-        var membership = new TeamMembership(Guid.NewGuid(), user.Id, team.Id, TeamRole.AssistantCoach);
+        var membership = new TeamMembership(Guid.NewGuid(), person.Id, team.Id, TeamRole.AssistantCoach);
         var entry = new RosterEntry(Guid.NewGuid(), membership.Id, "007", RosterStatus.Reserved);
         var duplicate = new RosterEntry(Guid.NewGuid(), membership.Id, null, RosterStatus.Active);
 
         await using (var transaction = await dbContext.Database.BeginTransactionAsync())
         {
-            dbContext.Users.Add(user);
+            dbContext.People.Add(person);
             dbContext.Teams.Add(team);
             dbContext.TeamMemberships.Add(membership);
             Assert.Equal(3, await dbContext.SaveChangesAsync());
@@ -103,7 +103,7 @@ public class PlayerRosterPersistenceTests
         }
 
         dbContext.ChangeTracker.Clear();
-        Assert.False(await dbContext.Users.AnyAsync(candidate => candidate.Id == user.Id));
+        Assert.False(await dbContext.People.AnyAsync(candidate => candidate.Id == person.Id));
         Assert.False(await dbContext.Teams.AnyAsync(candidate => candidate.Id == team.Id));
         Assert.False(await dbContext.TeamMemberships.AnyAsync(candidate => candidate.Id == membership.Id));
         Assert.False(await dbContext.RosterEntries.AnyAsync(candidate =>

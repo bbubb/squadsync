@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed for Phase 3 / Sprint 7.
+Accepted for Phase 3 / Sprint 7 through [PR #123](https://github.com/bbubb/squadsync/pull/123).
 
 ## Context
 
@@ -19,7 +19,7 @@ SquadSync represents coaches, players, and managers who may never sign in. Phase
 ## Consequences
 
 - The `User` → `Person` change requires a new **data-preserving** EF Core migration, including the `Users` → `People` table and dependent `UserId` → `PersonId` columns. Existing rows, identifiers, relationships, unique constraints, and restrictive deletion semantics must remain intact. Do not rewrite applied migrations.
-- Until that change is implemented, the current `User` code and documentation remain accurate. The rename issue must update active domain documentation alongside the implementation. Historical migrations, completed issues, and prior ADR decisions remain traceable.
+- Issue #118 applies this naming in code, persistence, and active documentation together. Historical migrations, completed issues, and prior ADR decisions remain traceable.
 - This decision does not introduce an `Account` entity, authentication, account delegation, or RBAC implementation.
 
 ## Alternatives considered

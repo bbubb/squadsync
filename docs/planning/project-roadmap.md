@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0, Phase 1, and Phase 2 are complete. Phase 2 concluded through Sprint 6 under [#109](https://github.com/bbubb/squadsync/issues/109), establishing the MVP core domain, PostgreSQL persistence, the first Application use case, and explicit Development demo data. Phase 3 — Roster Management API — is active in planning through [Sprint 7 tracker #116](https://github.com/bbubb/squadsync/issues/116). Its first architecture gate is [#117](https://github.com/bbubb/squadsync/issues/117); implementation is not yet underway.
+Active. Phase 0, Phase 1, and Phase 2 are complete. Phase 2 concluded through Sprint 6 under [#109](https://github.com/bbubb/squadsync/issues/109), establishing the MVP core domain, PostgreSQL persistence, the first Application use case, and explicit Development demo data. Phase 3 — Roster Management API — is active in planning through [Sprint 7 tracker #116](https://github.com/bbubb/squadsync/issues/116). Its architecture gate [#117](https://github.com/bbubb/squadsync/issues/117) is accepted through [PR #123](https://github.com/bbubb/squadsync/pull/123); issue #118 applies the Person vocabulary.
 
 ## Purpose
 
@@ -133,7 +133,7 @@ Implement the MVP domain model and persistence layer.
 
 ### Primary Outcomes
 
-- Represented `User` entity/model
+- Represented `Person` entity/model (renamed from Phase 2 `User` under ADR 0006)
 - Team entity/model
 - TeamMembership entity/model
 - Constrained `TeamRole` value on each `TeamMembership` (one per membership)
@@ -427,4 +427,4 @@ Phase 2 completion criteria are satisfied: core entities persist, relationships 
 
 Open maintenance issues [#72](https://github.com/bbubb/squadsync/issues/72), [#89](https://github.com/bbubb/squadsync/issues/89), and [#100](https://github.com/bbubb/squadsync/issues/100) remain deferred backlog and do not block the phase transition.
 
-Phase 3 Sprint 7 is planned under [#116](https://github.com/bbubb/squadsync/issues/116). The first review gate, [#117](https://github.com/bbubb/squadsync/issues/117), proposes [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) for the person/account distinction and initial Development-only API boundary. Dependent issues #118–#122 implement and validate the agreed slice after that decision is accepted.
+Phase 3 Sprint 7 is planned under [#116](https://github.com/bbubb/squadsync/issues/116). The completed review gate, [#117](https://github.com/bbubb/squadsync/issues/117), accepted [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) for the person/account distinction and initial Development-only API boundary. Dependent issues #118–#122 implement and validate the agreed slice under that accepted decision.
