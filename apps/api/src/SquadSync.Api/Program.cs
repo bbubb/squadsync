@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SquadSync.Infrastructure;
 using SquadSync.Infrastructure.Persistence;
 using SquadSync.Application.People;
+using SquadSync.Application.Teams;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddScoped<CreatePerson>();
     builder.Services.AddScoped<GetPerson>();
+    builder.Services.AddScoped<CreateTeam>();
+    builder.Services.AddScoped<GetTeam>();
     builder.Services.AddSwaggerGen();
 }
 
