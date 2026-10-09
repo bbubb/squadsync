@@ -11,7 +11,7 @@ internal sealed class TeamMembershipConfiguration : IEntityTypeConfiguration<Tea
         builder.HasKey(membership => membership.Id);
         builder.Property(membership => membership.Id)
             .ValueGeneratedNever();
-        builder.Property(membership => membership.UserId)
+        builder.Property(membership => membership.PersonId)
             .IsRequired();
         builder.Property(membership => membership.TeamId)
             .IsRequired();
@@ -19,16 +19,16 @@ internal sealed class TeamMembershipConfiguration : IEntityTypeConfiguration<Tea
             .HasConversion<string>()
             .IsRequired();
 
-        builder.HasOne<User>()
+        builder.HasOne<Person>()
             .WithMany()
-            .HasForeignKey(membership => membership.UserId)
+            .HasForeignKey(membership => membership.PersonId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne<Team>()
             .WithMany()
             .HasForeignKey(membership => membership.TeamId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(membership => new { membership.UserId, membership.TeamId })
+        builder.HasIndex(membership => new { membership.PersonId, membership.TeamId })
             .IsUnique();
     }
 }

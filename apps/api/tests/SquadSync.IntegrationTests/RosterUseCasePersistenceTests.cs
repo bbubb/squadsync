@@ -26,18 +26,18 @@ public class RosterUseCasePersistenceTests
             var dbContext = scope.ServiceProvider.GetRequiredService<SquadSyncDbContext>();
             var persistence = scope.ServiceProvider.GetRequiredService<IRosterPersistence>();
             var useCase = new AddPlayerToRoster(persistence);
-            var user = new User(Guid.NewGuid(), "Roster", "UseCase");
-            var otherUser = new User(Guid.NewGuid(), "Other", "Player");
+            var person = new Person(Guid.NewGuid(), "Roster", "UseCase");
+            var otherPerson = new Person(Guid.NewGuid(), "Other", "Player");
             var team = new Team(Guid.NewGuid(), "Application Roster Validation");
-            var membership = new TeamMembership(Guid.NewGuid(), user.Id, team.Id, TeamRole.Player);
-            var otherMembership = new TeamMembership(Guid.NewGuid(), otherUser.Id, team.Id, TeamRole.Player);
+            var membership = new TeamMembership(Guid.NewGuid(), person.Id, team.Id, TeamRole.Player);
+            var otherMembership = new TeamMembership(Guid.NewGuid(), otherPerson.Id, team.Id, TeamRole.Player);
             var entryId = Guid.NewGuid();
             var conflictId = duplicateId ? entryId : Guid.NewGuid();
             var conflictMembershipId = duplicateId ? otherMembership.Id : membership.Id;
 
             await using (var transaction = await dbContext.Database.BeginTransactionAsync())
             {
-                dbContext.Users.AddRange(user, otherUser);
+                dbContext.People.AddRange(person, otherPerson);
                 dbContext.Teams.Add(team);
                 dbContext.TeamMemberships.AddRange(membership, otherMembership);
                 await dbContext.SaveChangesAsync();
@@ -59,7 +59,7 @@ public class RosterUseCasePersistenceTests
             }
 
             dbContext.ChangeTracker.Clear();
-            Assert.False(await dbContext.Users.AnyAsync(candidate => candidate.Id == user.Id || candidate.Id == otherUser.Id));
+            Assert.False(await dbContext.People.AnyAsync(candidate => candidate.Id == person.Id || candidate.Id == otherPerson.Id));
             Assert.False(await dbContext.Teams.AnyAsync(candidate => candidate.Id == team.Id));
             Assert.False(await dbContext.TeamMemberships.AnyAsync(candidate => candidate.TeamId == team.Id));
             Assert.False(await dbContext.RosterEntries.AnyAsync(candidate => candidate.Id == entryId || candidate.Id == conflictId));

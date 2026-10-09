@@ -87,16 +87,16 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
 
         Assert.Equal("Npgsql.EntityFrameworkCore.PostgreSQL", dbContext.Database.ProviderName);
         Assert.Equal(
-            [nameof(PlayerProfile), nameof(RosterEntry), nameof(Team), nameof(TeamMembership), nameof(User)],
+            [nameof(Person), nameof(PlayerProfile), nameof(RosterEntry), nameof(Team), nameof(TeamMembership)],
             model.GetEntityTypes().Select(entityType => entityType.ClrType.Name).OrderBy(name => name));
 
-        var user = model.FindEntityType(typeof(User))!;
+        var person = model.FindEntityType(typeof(Person))!;
         Assert.Equal(
             ["FirstName", "Id", "LastName"],
-            user.GetProperties().Select(property => property.Name).OrderBy(name => name));
-        Assert.Equal("Id", user.FindPrimaryKey()!.Properties.Single().Name);
-        Assert.Equal(ValueGenerated.Never, user.FindProperty(nameof(User.Id))!.ValueGenerated);
-        Assert.All(user.GetProperties(), property => Assert.False(property.IsNullable));
+            person.GetProperties().Select(property => property.Name).OrderBy(name => name));
+        Assert.Equal("Id", person.FindPrimaryKey()!.Properties.Single().Name);
+        Assert.Equal(ValueGenerated.Never, person.FindProperty(nameof(Person.Id))!.ValueGenerated);
+        Assert.All(person.GetProperties(), property => Assert.False(property.IsNullable));
 
         var team = model.FindEntityType(typeof(Team))!;
         Assert.Equal(["Id", "Name"], team.GetProperties().Select(property => property.Name).OrderBy(name => name));
@@ -106,7 +106,7 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
 
         var membership = model.FindEntityType(typeof(TeamMembership))!;
         Assert.Equal(
-            ["Id", "TeamId", "TeamRole", "UserId"],
+            ["Id", "PersonId", "TeamId", "TeamRole"],
             membership.GetProperties().Select(property => property.Name).OrderBy(name => name));
         Assert.Equal("Id", membership.FindPrimaryKey()!.Properties.Single().Name);
         Assert.Equal(ValueGenerated.Never, membership.FindProperty(nameof(TeamMembership.Id))!.ValueGenerated);
@@ -121,14 +121,14 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
             Assert.Equal(DeleteBehavior.Restrict, foreignKey.DeleteBehavior);
         });
         Assert.Contains(foreignKeys, foreignKey =>
-            foreignKey.Properties.Single().Name == nameof(TeamMembership.UserId) &&
-            foreignKey.PrincipalEntityType.ClrType == typeof(User));
+            foreignKey.Properties.Single().Name == nameof(TeamMembership.PersonId) &&
+            foreignKey.PrincipalEntityType.ClrType == typeof(Person));
         Assert.Contains(foreignKeys, foreignKey =>
             foreignKey.Properties.Single().Name == nameof(TeamMembership.TeamId) &&
             foreignKey.PrincipalEntityType.ClrType == typeof(Team));
         Assert.Contains(membership.GetIndexes(), index => index.IsUnique &&
             index.Properties.Select(property => property.Name)
-                .SequenceEqual([nameof(TeamMembership.UserId), nameof(TeamMembership.TeamId)]));
+                .SequenceEqual([nameof(TeamMembership.PersonId), nameof(TeamMembership.TeamId)]));
         Assert.Equal(typeof(string), membership.FindProperty(nameof(TeamMembership.TeamRole))!
             .GetTypeMapping().Converter!.ProviderClrType);
     }

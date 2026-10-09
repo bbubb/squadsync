@@ -73,10 +73,10 @@ public class DevelopmentDemoSeedTests
             Assert.Single(memberships, membership => membership.TeamRole == TeamRole.Manager);
             var players = memberships.Where(membership => membership.TeamRole == TeamRole.Player).ToArray();
             Assert.Equal(2, players.Length);
-            var userIds = memberships.Select(membership => membership.UserId).ToArray();
-            Assert.Equal(4, await db.Users.CountAsync(user => userIds.Contains(user.Id) && user.LastName == "Demo"));
-            var playerIds = players.Select(player => player.UserId).ToArray();
-            Assert.Equal(2, await db.PlayerProfiles.CountAsync(profile => playerIds.Contains(profile.UserId)));
+            var personIds = memberships.Select(membership => membership.PersonId).ToArray();
+            Assert.Equal(4, await db.People.CountAsync(person => personIds.Contains(person.Id) && person.LastName == "Demo"));
+            var playerIds = players.Select(player => player.PersonId).ToArray();
+            Assert.Equal(2, await db.PlayerProfiles.CountAsync(profile => playerIds.Contains(profile.PersonId)));
             var membershipIds = memberships.Select(membership => membership.Id).ToArray();
             var entries = await db.RosterEntries.Where(entry => membershipIds.Contains(entry.TeamMembershipId)).ToListAsync();
             Assert.Equal(2, entries.Count);
@@ -106,6 +106,6 @@ public class DevelopmentDemoSeedTests
     }
 
     private static async Task<int[]> RowCountsAsync(SquadSyncDbContext db) =>
-        [await db.Teams.CountAsync(), await db.Users.CountAsync(), await db.TeamMemberships.CountAsync(),
+        [await db.Teams.CountAsync(), await db.People.CountAsync(), await db.TeamMemberships.CountAsync(),
             await db.PlayerProfiles.CountAsync(), await db.RosterEntries.CountAsync()];
 }

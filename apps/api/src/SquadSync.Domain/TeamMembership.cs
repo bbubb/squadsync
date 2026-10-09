@@ -2,16 +2,16 @@ namespace SquadSync.Domain;
 
 public sealed class TeamMembership
 {
-    public TeamMembership(Guid id, Guid userId, Guid teamId, TeamRole teamRole)
+    public TeamMembership(Guid id, Guid personId, Guid teamId, TeamRole teamRole)
     {
         if (id == Guid.Empty)
         {
             throw new ArgumentException("Membership ID cannot be empty.", nameof(id));
         }
 
-        if (userId == Guid.Empty)
+        if (personId == Guid.Empty)
         {
-            throw new ArgumentException("User ID cannot be empty.", nameof(userId));
+            throw new ArgumentException("Person ID cannot be empty.", nameof(personId));
         }
 
         if (teamId == Guid.Empty)
@@ -25,14 +25,14 @@ public sealed class TeamMembership
         }
 
         Id = id;
-        UserId = userId;
+        PersonId = personId;
         TeamId = teamId;
         TeamRole = teamRole;
     }
 
     public Guid Id { get; }
 
-    public Guid UserId { get; }
+    public Guid PersonId { get; }
 
     public Guid TeamId { get; }
 

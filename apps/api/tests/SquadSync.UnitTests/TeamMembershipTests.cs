@@ -15,13 +15,13 @@ public class TeamMembershipTests
     public void Constructor_PreservesIdentifiersAndApprovedRole(TeamRole teamRole)
     {
         var id = Guid.NewGuid();
-        var userId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
         var teamId = Guid.NewGuid();
 
-        var membership = new TeamMembership(id, userId, teamId, teamRole);
+        var membership = new TeamMembership(id, personId, teamId, teamRole);
 
         Assert.Equal(id, membership.Id);
-        Assert.Equal(userId, membership.UserId);
+        Assert.Equal(personId, membership.PersonId);
         Assert.Equal(teamId, membership.TeamId);
         Assert.Equal(teamRole, membership.TeamRole);
     }
@@ -36,12 +36,12 @@ public class TeamMembershipTests
     }
 
     [Fact]
-    public void Constructor_RejectsEmptyUserIdentifier()
+    public void Constructor_RejectsEmptyPersonIdentifier()
     {
         var exception = Assert.Throws<ArgumentException>(() =>
             new TeamMembership(Guid.NewGuid(), Guid.Empty, Guid.NewGuid(), TeamRole.Player));
 
-        Assert.Equal("userId", exception.ParamName);
+        Assert.Equal("personId", exception.ParamName);
     }
 
     [Fact]
