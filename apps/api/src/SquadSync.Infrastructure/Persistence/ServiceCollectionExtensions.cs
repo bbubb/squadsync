@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SquadSync.Application.Rosters;
+using SquadSync.Application.People;
 
 namespace SquadSync.Infrastructure.Persistence;
 
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IRosterPersistence, EfRosterPersistence>();
+        services.AddScoped<IPersonPersistence, EfPersonPersistence>();
         services.AddScoped<DevelopmentDemoSeeder>();
         return services;
     }
