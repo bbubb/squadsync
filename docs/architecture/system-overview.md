@@ -157,7 +157,7 @@ PostgreSQL is the target database. The first local version may run through Docke
 
 The initial persistence model should support:
 
-- Represented Users (separate from future authentication/account identities)
+- Represented people (currently implemented as `User` in Phase 2; proposed `Person`/`People` after the data-preserving Sprint 7 refactor, distinct from future authentication accounts)
 - Teams
 - TeamMemberships
 - One constrained TeamRole value per TeamMembership
@@ -169,7 +169,7 @@ The initial persistence model should support:
 - LineupSlots
 - PlayerAvailability
 
-Authentication/account identity, CoachProfile, and statistics models are deferred. See the [domain model](domain-model.md) and [ADR 0005](../adr/0005-ef-core-npgsql-persistence.md) for the current domain and persistence decisions.
+Authentication/account identity, CoachProfile, and statistics models are deferred. See the [domain model](domain-model.md) and [ADR 0005](../adr/0005-ef-core-npgsql-persistence.md) for implemented relationships and persistence, and proposed [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) for the Phase 3 Person naming, HTTP contract, and interim Development-only management endpoint boundary. An account's authority over a represented person must eventually be verified independently of `TeamRole`.
 
 ## Service Boundaries
 

@@ -12,7 +12,7 @@ Phase 0 established architecture, planning, and agentic workflow standards. Phas
 
 Phase 2 — Core Domain and Persistence — is complete through Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)). The Domain now includes represented `User`, `Team`, `TeamMembership` with constrained `TeamRole`, person-level `PlayerProfile`, and team-context `RosterEntry`. Infrastructure owns EF Core/Npgsql mappings and additive migrations with opt-in real-PostgreSQL validation. Application now contains the first concrete use case, `AddPlayerToRoster`, with an Application-owned persistence contract implemented by Infrastructure; the use case enforces that only `Player` memberships can receive roster entries. An explicit Development-only demo seed creates a coherent, idempotent roster scenario without mutating data during ordinary startup.
 
-Authentication/account identity, broader HTTP roster-management behavior, the frontend, match planning, and Soccer-Subber integration remain later work. The next project action is Phase 3 — Roster Management API — planning in the main project-planning workflow. EF Core/Npgsql ownership remains recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
+Authentication/account identity, broader HTTP roster-management behavior, the frontend, match planning, and Soccer-Subber integration remain later work. Phase 3 Sprint 7 is now planned under [#116](https://github.com/bbubb/squadsync/issues/116), beginning with the [#117](https://github.com/bbubb/squadsync/issues/117) architecture gate: proposed [ADR 0006](docs/adr/0006-represented-person-identity-api-contract.md) distinguishes represented `Person` from future account identity and scopes Development-only person/team HTTP endpoints. The current code and schema still use `User` until the separate, data-preserving refactor in #118. EF Core/Npgsql ownership remains recorded in [ADR 0005](docs/adr/0005-ef-core-npgsql-persistence.md).
 
 Canonical planning state and active work are tracked in:
 
@@ -28,7 +28,7 @@ Canonical planning state and active work are tracked in:
 | API language | C# | Modular monolith / Clean Architecture style |
 | Database | PostgreSQL | Local first, cloud-ready later |
 | ORM | Entity Framework Core | User/Team persistence and migrations |
-| Validation | FluentValidation | Planned request/use-case validation |
+| Validation | ASP.NET Core built-in validation | Sprint 7 baseline; FluentValidation deferred until needed |
 | Logging | Serilog | Planned structured logging |
 | API docs | Swagger / OpenAPI | Development API inspection |
 | Web | Next.js + TypeScript | Planned under `apps/web/` |

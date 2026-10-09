@@ -8,6 +8,12 @@ Active. This document is the current domain-model baseline.
 
 This document defines the initial SquadSync domain model. The model is intentionally soccer-specific so the first implementation remains understandable, testable, and useful for the coach workflow.
 
+## Phase 3 terminology transition (proposed)
+
+[ADR 0006](../adr/0006-represented-person-identity-api-contract.md) proposes renaming the soccer-domain represented `User` to `Person` and the dependent `UserId` references to `PersonId`. The corresponding HTTP resource will be `/api/people`. Authentication accounts remain a separate, unmodeled future identity/access concern; an account may have delegated authority over other people, but no account-to-person relationship has been implemented or decided.
+
+**Implementation status:** Phase 2 code, tables, and the Sprint 4/5 contracts below still use `User`/`UserId`. Issue [#118](https://github.com/bbubb/squadsync/issues/118) owns a data-preserving rename after ADR review. Historical contracts below describe the completed Phase 2 model and must not be mistaken for new work to implement. The `TeamMembership`, `TeamRole`, `PlayerProfile`, and `RosterEntry` relationship rules remain unchanged.
+
 ## Modeling Strategy
 
 The MVP uses explicit domain relationships:
