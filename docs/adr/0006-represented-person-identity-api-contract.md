@@ -1,70 +1,36 @@
-# ADR 0006: Represented People, Identity Boundary, and Initial HTTP Contract
+# ADR 0006: Represent People Separately from Authentication Identity
 
 ## Status
 
-Proposed for Phase 3 / Sprint 7 ([Issue #117](https://github.com/bbubb/squadsync/issues/117)). Requires human PR review and acceptance before implementation. The deployed Phase 2 model still uses `User` and `UserId`; the rename is separately scoped to #118.
+Proposed for Phase 3 / Sprint 7.
 
 ## Context
 
-A SquadSync roster includes people who may never sign in, notably youth players. Phase 2 models these people as `User`, while account identity and authentication are deferred. Exposing a public resource named `users` now would make it harder to distinguish represented people from future login identities. Sprint 7 also needs an explicit HTTP contract and safe boundary for unauthenticated development endpoints.
-
-The accepted `TeamMembership` model (ADR 0003) and Infrastructure-owned persistence (ADR 0005) remain in force.
+SquadSync represents coaches, players, and managers who may never sign in. Phase 2 calls these people `User`, which can be confused with a future login identity. Before adding HTTP contracts, we need consistent business vocabulary and a safe access boundary while authentication remains deferred.
 
 ## Decision
 
-### Soccer-domain identity
+- **Soccer identity:** The represented domain entity will be `Person`, its collection `People`, and its ID `PersonId`. `TeamMembership` continues to associate a person with a team and carries one `TeamRole`. `PlayerProfile` remains person-level; `RosterEntry` remains team-contextual.
+- **Authentication identity:** A future `Account` or identity-provider principal will describe who can sign in, not every person represented in SquadSync. Account-to-person linking, guardian delegation, provider selection, and login storage are deferred. Neither a supplied `PersonId` nor a `TeamRole` proves caller authority. Future authorization must combine authenticated identity, verified authority over a person, and team/resource-specific policy.
+- **HTTP boundary:** The first API resources use `/api/people` and `/api/teams`, each with `POST` and `GET /{id}`. Creation uses Application-generated GUIDs and returns `201 Created` with a `Location` header; retrieval returns `200` or `404`. Use ASP.NET Core controllers, Application use cases, built-in validation, and standard ProblemDetails for invalid and failed requests. No generic repository or FluentValidation dependency is required yet.
+- **Interim security:** Until authentication exists, these management endpoints are available **only in Development** and only on a trusted local environment. They must not be mapped in Staging or Production. Environment restrictions are not a substitute for authentication or authorization.
+- **Team creation:** Creating a person or team does not automatically establish an authenticated owner or create a team membership. Those workflows require later explicit design.
 
-- Rename the represented Domain `User` entity to `Person`; use `PersonId` in `TeamMembership` and `PlayerProfile`. Name the EF Core collection `People` and the corresponding HTTP resource `/api/people`.
-- Preserve one `TeamMembership` per person/team pair, one constrained `TeamRole` per membership, and player-only roster details attached to player memberships. This is a vocabulary change, not a new relationship or authorization model.
-- A `Person` does not need an account or the ability to sign in. `Account`, `IdentityUser`, or an identity-provider principal is a *future* identity/access concept. No login schema, identity provider, account-person cardinality, or delegation model is chosen by this ADR.
-- The future authorization flow must establish the authenticated principal, verify its authority to act for a particular `Person`, then evaluate team/resource-specific permissions. `TeamRole` is soccer-domain participation data, not authentication and not automatically a global security permission. Client-supplied IDs or role values never prove caller authority.
-- Future identity/access responsibilities may remain a bounded module of the modular monolith; a separate authentication service is not required.
+## Consequences
 
-### Initial Phase 3 HTTP contract
-
-Use thin ASP.NET Core controllers backed by Application use cases and Application-owned persistence ports (ADR 0005). The minimal Sprint 7 resources are:
-
-| Method | Route | Success |
-|---|---|---|
-| POST | `/api/people` | `201 Created`, response body and resource `Location` |
-| GET | `/api/people/{id}` | `200 OK` or `404 Not Found` |
-| POST | `/api/teams` | `201 Created`, response body and resource `Location` |
-| GET | `/api/teams/{id}` | `200 OK` or `404 Not Found` |
-
-- The Application layer generates entity GUIDs. Clients do not assign creation IDs. Initial contracts contain person first/last name or team name, respectively, and return normalized values and ID.
-- Invalid input returns standard HTTP `400` validation details. Missing resources return `404` ProblemDetails. Unexpected failures must not expose credentials, database details, or stack traces. Use ASP.NET Core's built-in validation and ProblemDetails; defer FluentValidation until complex validation actually warrants it. Do not add a custom envelope, API versioning, MediatR, or generic repositories.
-- Person and Team creation are independent in Sprint 7. Creating a Team does **not** prove caller ownership or automatically create an Owner `TeamMembership`. Membership/role assignment, roster endpoints, updates, and authentication are later work.
-
-### Interim access boundary
-
-Without authentication, management endpoints are **Development-only** and must not be mapped in Staging or Production. Development use assumes a trusted local environment and no public exposure. Environment gating is a temporary safety restriction, **not** authentication or authorization. Preserve existing environment-independent health/readiness endpoints. Public deployment of management routes requires a separate, reviewed access-control design.
-
-## Implementation boundary and migration safety
-
-Issue #117 changes documentation only. Issue #118 owns the code/schema transition:
-
-- Rename Domain `User` and dependent `UserId` identifiers in current application code, tests, EF configurations and development seed to `Person`/`PersonId`.
-- Add a **new**, reviewed, data-preserving EF Core migration from `Users` to `People` and from dependent `UserId` columns to `PersonId`, including necessary foreign-key/index/constraint names. Keep all existing GUIDs, row data, one-to-one/unique constraints, and restrictive delete behavior intact.
-- Do not rewrite historical, already-applied Phase 2 migrations or drop/recreate populated tables. Validate upgrade on existing related records, including demo seed behavior, and review/test rollback on disposable data.
-- Until #118 is merged, documentation referencing the *implemented* Phase 2 `User` entity, `Users` table, and `UserId` fields remains factually correct. Historical sprint contracts and accepted decisions retain their original terminology with this ADR as the forward-looking naming decision.
-
-Issue #119 owns HTTP safety/validation wiring; #120–#122 own API operations and tests. No runtime, schema, authentication, or RBAC code is included here.
+- The `User` → `Person` change requires a new **data-preserving** EF Core migration, including the `Users` → `People` table and dependent `UserId` → `PersonId` columns. Existing rows, identifiers, relationships, unique constraints, and restrictive deletion semantics must remain intact. Do not rewrite applied migrations.
+- Until that change is implemented, the current `User` code and documentation remain accurate. The rename issue must update active domain documentation alongside the implementation. Historical migrations, completed issues, and prior ADR decisions remain traceable.
+- This decision does not introduce an `Account` entity, authentication, account delegation, or RBAC implementation.
 
 ## Alternatives considered
 
-- **Keep `User` throughout the soccer domain and HTTP:** valid technically, but misleading for rostered people who never use the app and ambiguous when account identity arrives.
-- **Use `Person` for HTTP but retain `User` internally:** a permissible boundary translation, but unnecessary vocabulary friction while the codebase is small.
-- **Create an `Account` entity and permissions framework now:** rejected as premature; no authenticated use case exists yet.
-
-## Consequences and review triggers
-
-The rename requires a carefully reviewed schema migration and updates to existing dependent code/tests; its cost is justified before HTTP clients depend on resource names. Revisit identity/account linking, delegated guardianship, authorization policies, and role-to-permission rules when a real authenticated workflow is scoped. Do not infer those future structures from this ADR.
+- **Keep `User` for represented people:** Technically valid, but ambiguous for rostered people who never access the software.
+- **Expose `/api/people` while retaining `User` internally:** Possible, but adds unnecessary vocabulary translation before the API is established.
+- **Implement accounts and permissions now:** Adds complexity without a current authenticated workflow.
 
 ## References
 
-- [Domain model](../architecture/domain-model.md)
-- [System overview](../architecture/system-overview.md)
-- [MVP scope](../planning/mvp-scope.md)
-- [ADR 0003](0003-use-explicit-membership-model.md)
-- [ADR 0005](0005-ef-core-npgsql-persistence.md)
-- [Sprint 7 tracker #116](https://github.com/bbubb/squadsync/issues/116)
+- [Explicit membership model (ADR 0003)](0003-use-explicit-membership-model.md)
+- [EF Core persistence boundary (ADR 0005)](0005-ef-core-npgsql-persistence.md)
+- [Current domain model](../architecture/domain-model.md)
+- [Phase 3 roadmap](../planning/project-roadmap.md)

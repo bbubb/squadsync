@@ -29,7 +29,7 @@ Players and parents may become future user types, but the first MVP centers on t
 ### Team and Roster Management
 
 - Create and manage teams
-- Add represented people to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership (the current Phase 2 entity is named `User`, proposed to become `Person` in Sprint 7)
+- Add represented users to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership
 - Track jersey number and roster status on `RosterEntry`; track dominant foot on the person-level `PlayerProfile`, with preferred positions deferred until the soccer-position/formation/lineup vocabulary is defined (see the [Sprint 5 contract](../architecture/domain-model.md#sprint-5-player-profile-and-roster-implementation-contract))
 - Track match-specific player availability through `PlayerAvailability`
 
@@ -39,7 +39,7 @@ Players and parents may become future user types, but the first MVP centers on t
 - Assign one constrained `TeamRole` per membership, such as Coach, AssistantCoach, Manager, Player, or Viewer
 - Keep authorization simple for the MVP
 
-Authentication/account identity is deferred and remains separate from represented people. The planned Phase 3 terminology and HTTP boundary are documented in proposed [ADR 0006](../adr/0006-represented-person-identity-api-contract.md); the code currently uses `User` until issue #118. A `TeamRole` describes participation, not proof of an authenticated caller's authority. `CoachProfile` and statistics models are also deferred. See the [domain model](../architecture/domain-model.md).
+Authentication/account identity is deferred and remains separate from represented `User` people. `CoachProfile` and statistics models are also deferred. See the [domain model](../architecture/domain-model.md).
 
 ### Match Planning
 

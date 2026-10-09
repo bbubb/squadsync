@@ -4,7 +4,7 @@
 
 Accepted for Sprint 0 foundation.
 
-Sprint 4 implementation clarification preserves the accepted membership relationship. Proposed [ADR 0006](0006-represented-person-identity-api-contract.md) changes the *name* of the represented `User` to `Person` in Phase 3, after a data-preserving refactor; it does not change the accepted membership relationship, its team-role semantics, or this historical Sprint 4 contract.
+Sprint 4 implementation clarification preserves the accepted membership relationship.
 
 ## Context
 
