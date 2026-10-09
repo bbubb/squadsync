@@ -11,6 +11,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext());
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 var connectionString = builder.Configuration.GetConnectionString("SquadSync");
 builder.Services.AddSquadSyncPersistence(connectionString);
 builder.Services.AddHealthChecks()
@@ -38,11 +39,15 @@ if (app.Configuration.GetValue<bool>("seed-demo"))
 }
 
 app.UseSerilogRequestLogging();
+// Use safe standard errors in Development too; never return the developer exception page.
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    // All MVC controllers are management endpoints until an authenticated boundary is approved.
+    app.MapControllers();
 }
 
 app.MapHealthChecks("/health", new HealthCheckOptions
@@ -50,7 +55,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     Predicate = _ => false
 });
 app.MapHealthChecks("/health/ready");
-app.MapControllers();
 
 app.Run();
 

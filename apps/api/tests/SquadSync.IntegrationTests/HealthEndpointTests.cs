@@ -1,7 +1,4 @@
 using System.Net;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +8,12 @@ using Xunit;
 
 namespace SquadSync.IntegrationTests;
 
-public class HealthEndpointTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public class HealthEndpointTests
 {
     [Fact]
     public async Task GetHealth_ReturnsOk()
     {
+        await using var factory = new ApiTestFactory();
         using var client = factory.CreateClient();
 
         var response = await client.GetAsync("/health");
@@ -27,12 +24,8 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
     [Fact]
     public async Task GetHealth_RemainsOkWhenPostgresIsUnavailable()
     {
-        await using var unavailableDatabaseFactory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["ConnectionStrings:SquadSync"] = "Host=127.0.0.1;Port=1;Database=squadsync;Username=test;Password=test;Timeout=1;"
-                })));
+        await using var unavailableDatabaseFactory = new ApiTestFactory(
+            connectionString: "Host=127.0.0.1;Port=1;Database=squadsync;Username=test;Password=test;Timeout=1;");
         using var client = unavailableDatabaseFactory.CreateClient();
 
         var response = await client.GetAsync("/health");
@@ -43,12 +36,7 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
     [Fact]
     public async Task GetHealth_RemainsOkWhenPostgresIsNotConfigured()
     {
-        await using var unconfiguredDatabaseFactory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["ConnectionStrings:SquadSync"] = string.Empty
-                })));
+        await using var unconfiguredDatabaseFactory = new ApiTestFactory();
         using var client = unconfiguredDatabaseFactory.CreateClient();
 
         var livenessResponse = await client.GetAsync("/health");
@@ -61,12 +49,8 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
     [Fact]
     public async Task GetReady_ReturnsServiceUnavailableWhenPostgresIsUnavailable()
     {
-        await using var unavailableDatabaseFactory = factory.WithWebHostBuilder(builder =>
-            builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["ConnectionStrings:SquadSync"] = "Host=127.0.0.1;Port=1;Database=squadsync;Username=test;Password=test;Timeout=1;"
-                })));
+        await using var unavailableDatabaseFactory = new ApiTestFactory(
+            connectionString: "Host=127.0.0.1;Port=1;Database=squadsync;Username=test;Password=test;Timeout=1;");
         using var client = unavailableDatabaseFactory.CreateClient();
 
         var response = await client.GetAsync("/health/ready");

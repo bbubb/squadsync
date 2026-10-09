@@ -21,9 +21,9 @@ dotnet build
 dotnet test
 ```
 
-`dotnet test` runs both the unit-test and in-process health integration-test projects. The database persistence test is skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
+`dotnet test` runs both the unit-test and in-process HTTP integration-test projects. The database persistence test is skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
 
-The in-process health tests verify liveness and the unavailable-database readiness response using a test server. They do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
+The in-process HTTP tests verify liveness, unavailable-database readiness, Development-only controller mapping, built-in request validation, and safe errors using a test server. The shared HTTP factory fixes database and demo-seed configuration before service registration, so machine-level connection strings do not affect these tests. Probe controllers live only in the test assembly and are explicitly registered by probe tests; they never ship in the API. These tests do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
 
 ## Local PostgreSQL smoke check
 
@@ -135,6 +135,14 @@ When running in Development, use:
 Swagger is enabled only in the Development environment. Serilog writes structured logs to the console only.
 
 After confirming both health endpoints return HTTP 200, stop PostgreSQL with `docker compose down` in `infra/docker/` and check again: `/health` remains HTTP 200 while `/health/ready` returns HTTP 503. Start PostgreSQL again and readiness should return HTTP 200. This is a manual, database-backed smoke check; it is separate from `dotnet test`.
+
+## HTTP conventions and local access boundary
+
+MVC controllers are mapped only inside the Development environment gate in `Program.cs`. This applies to the upcoming Person/Team management controllers; no product CRUD endpoints are implemented yet. Staging and Production expose no controller routes. `/health` and `/health/ready` remain mapped in every environment, and Swagger remains Development-only.
+
+Management endpoints are anonymous until an authentication and authorization design is implemented. Run them only in a trusted local environment, bind to localhost, and do not expose them on public networks. The environment gate is an interim route restriction, not a production security mechanism. A `PersonId` or `TeamRole` does not establish caller authority; see [ADR 0006](../../docs/adr/0006-represented-person-identity-api-contract.md).
+
+Future controllers should use `[ApiController]` and request validation attributes. MVC automatically returns HTTP 400 `ValidationProblemDetails` for malformed JSON and invalid models. Return `NotFound()` when the Application use case indicates an absent resource; MVC supplies standard HTTP 404 `ProblemDetails`. Unexpected exceptions use the built-in exception handler and `AddProblemDetails` in every environment, including Development, returning a generic HTTP 500 response without exception details, stack traces, or credentials. Aborted requests follow ASP.NET Core's cancellation handling rather than being converted into HTTP 500 errors. Health responses retain their existing format.
 
 ## Not included yet
 
