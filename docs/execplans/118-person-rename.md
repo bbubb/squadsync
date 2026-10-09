@@ -12,7 +12,7 @@ Use Person/PersonId/People throughout the current model while retaining every ex
 - [x] Verified disposable migration upgrade/rollback/re-upgrade, all row values, object identities, and constraints.
 - [x] Applied live upgrade after identical before/after data and object fingerprints; twice reran seed and repeated update without changes.
 - [x] Validated baseline, PostgreSQL regressions, docs, and applied-history integrity.
-- [ ] Open draft PR for human review.
+- [x] Opened [draft PR #124](https://github.com/bbubb/squadsync/pull/124) for human review.
 
 ## Surprises & Discoveries
 - Command sandbox failed initialization; commands run through reviewed escalation.
