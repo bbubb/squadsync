@@ -23,7 +23,7 @@ dotnet test
 
 `dotnet test` runs both the unit-test and in-process HTTP integration-test projects. The database persistence test is skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
 
-The in-process HTTP tests verify liveness, unavailable-database readiness, Development-only controller mapping, built-in request validation, and safe errors using a test server. People endpoint tests exercise the real controller and Application use cases with a controlled persistence adapter registered only in the test host. The shared HTTP factory fixes database and demo-seed configuration before service registration, so machine-level connection strings do not affect these tests. Probe controllers live only in the test assembly and are explicitly registered by probe tests; they never ship in the API. These tests do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
+The in-process HTTP tests verify liveness, unavailable-database readiness, Development-only controller mapping, built-in request validation, and safe errors using a test server. People and Team endpoint tests exercise the real controllers and Application use cases with controlled persistence adapters registered only in the test host. The shared HTTP factory fixes database and demo-seed configuration before service registration, so machine-level connection strings do not affect these tests. Probe controllers live only in the test assembly and are explicitly registered by probe tests; they never ship in the API. These tests do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
 
 ## Local PostgreSQL smoke check
 
@@ -138,7 +138,7 @@ After confirming both health endpoints return HTTP 200, stop PostgreSQL with `do
 
 ## HTTP conventions and local access boundary
 
-MVC controllers are mapped only inside the Development environment gate in `Program.cs`, including the People controller. Staging and Production expose no controller routes. `/health` and `/health/ready` remain mapped in every environment, and Swagger remains Development-only.
+MVC controllers are mapped only inside the Development environment gate in `Program.cs`, including the People and Teams controllers. Staging and Production expose no controller routes. `/health` and `/health/ready` remain mapped in every environment, and Swagger remains Development-only.
 
 Management endpoints are anonymous until an authentication and authorization design is implemented. Run them only in a trusted local environment, bind to localhost, and do not expose them on public networks. The environment gate is an interim route restriction, not a production security mechanism. A `PersonId` or `TeamRole` does not establish caller authority; see [ADR 0006](../../docs/adr/0006-represented-person-identity-api-contract.md).
 
@@ -152,9 +152,17 @@ With local PostgreSQL configured and committed migrations applied, `POST /api/pe
 
 Application unit tests use a fake port without HTTP or EF. Ordinary People HTTP tests use test-only persistence across requests; they prove orchestration and the Development boundary, not a PostgreSQL round trip. Real HTTP-to-PostgreSQL validation remains deferred to [#122](https://github.com/bbubb/squadsync/issues/122). Creation establishes no account, membership, or owner authority.
 
+## Development-only Team API
+
+With local PostgreSQL configured and committed migrations applied, `POST /api/teams` accepts `{"name":"SquadSync FC"}`. Application's `CreateTeam` generates a GUID and constructs a Domain `Team`, which trims the name. Infrastructure's scoped `EfTeamPersistence` saves it through the Application-owned `ITeamPersistence` port. The response is HTTP 201 with `{"id":"<generated-guid>","name":"SquadSync FC"}` and a `Location` pointing to `/api/teams/<generated-guid>`.
+
+`GET /api/teams/{id}` invokes `GetTeam` and returns the same response shape with HTTP 200, or standard HTTP 404 ProblemDetails when absent. Missing, null, empty, or whitespace-only names, malformed JSON, incorrect field types, and malformed GUIDs return HTTP 400 ValidationProblemDetails. Domain owns name validation and normalization; Application translates Domain name failures to `TeamValidationException`, which the controller maps to a validation problem. Persistence failures propagate to the existing exception handler.
+
+Application unit tests run without HTTP or EF. Ordinary Team HTTP tests exercise the real controller and use cases with test-only persistence and verify that both routes return 404 in Staging and Production while health endpoints remain mapped. Real HTTP-to-PostgreSQL validation remains deferred to [#122](https://github.com/bbubb/squadsync/issues/122). Creation establishes no membership or owner authority and leaves the existing Team schema unchanged.
+
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People create/read use cases described above; broader team/roster HTTP endpoints and other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People and Team create/read use cases described above; broader team/roster HTTP endpoints and other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
