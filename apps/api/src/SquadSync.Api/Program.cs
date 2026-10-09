@@ -2,6 +2,7 @@ using Serilog;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SquadSync.Infrastructure;
 using SquadSync.Infrastructure.Persistence;
+using SquadSync.Application.People;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddHealthChecks()
 
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddScoped<CreatePerson>();
+    builder.Services.AddScoped<GetPerson>();
     builder.Services.AddSwaggerGen();
 }
 
