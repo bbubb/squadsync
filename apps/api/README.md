@@ -4,11 +4,14 @@ The initial SquadSync API foundation is an ASP.NET Core modular-monolith solutio
 
 ## Prerequisite
 
-Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Confirm it is available:
+Install the stable [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). The repository-root [`global.json`](../../global.json) requires SDK `10.0.100` or a newer stable **10.0** feature band/patch (`latestFeature`); it does not permit .NET 8, .NET 9, or .NET 11 to substitute for .NET 10. The SDK requirement is independent of the projects' `net10.0` target framework. From this repository, verify your selected and installed SDKs:
 
 ```bash
 dotnet --version
+dotnet --list-sdks
 ```
+
+If SDK selection fails, install a stable .NET 10 SDK, then rerun these commands. A newer 10.0 SDK (for example, `10.0.4xx`) is compatible; an exact `10.0.100` patch installation is **not** required.
 
 ## Local setup and validation
 
