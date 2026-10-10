@@ -21,7 +21,7 @@ dotnet build
 dotnet test
 ```
 
-`dotnet test` runs both the unit-test and in-process HTTP integration-test projects. The database persistence test is skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
+`dotnet test` runs both the unit-test and in-process HTTP integration-test projects. Database tests are skipped unless `SQUADSYNC_RUN_DATABASE_TESTS=1`, so ordinary validation requires no database, Docker service, environment variables, secrets, or connection strings.
 
 The in-process HTTP tests verify liveness, unavailable-database readiness, Development-only controller mapping, built-in request validation, and safe errors using a test server. People and Team endpoint tests exercise the real controllers and Application use cases with controlled persistence adapters registered only in the test host. The shared HTTP factory fixes database and demo-seed configuration before service registration, so machine-level connection strings do not affect these tests. Probe controllers live only in the test assembly and are explicitly registered by probe tests; they never ship in the API. These tests do not require a running PostgreSQL instance. The separate manual local smoke check below verifies connectivity to the Compose database.
 
@@ -150,7 +150,7 @@ With local PostgreSQL configured and committed migrations applied, `POST /api/pe
 
 `GET /api/people/{id}` invokes `GetPerson` and returns the same response shape with HTTP 200, or standard HTTP 404 ProblemDetails when absent. Missing, null, empty, or whitespace-only names, malformed JSON, incorrect field types, and malformed GUIDs return HTTP 400 ValidationProblemDetails. Request attributes enforce required input; Domain remains the owner of name invariants and normalization. Application translates Domain name failures to `PersonValidationException`, which the controller maps to a validation problem without catching persistence failures.
 
-Application unit tests use a fake port without HTTP or EF. Ordinary People HTTP tests use test-only persistence across requests; they prove orchestration and the Development boundary, not a PostgreSQL round trip. Real HTTP-to-PostgreSQL validation remains deferred to [#122](https://github.com/bbubb/squadsync/issues/122). Creation establishes no account, membership, or owner authority.
+Application unit tests use a fake port without HTTP or EF. Ordinary People HTTP tests use test-only persistence across requests; they prove orchestration and the Development boundary. The [opt-in HTTP database tests](#http-to-postgresql-validation) add real PostgreSQL round trips. Creation establishes no account, membership, or owner authority.
 
 ## Development-only Team API
 
@@ -158,7 +158,44 @@ With local PostgreSQL configured and committed migrations applied, `POST /api/te
 
 `GET /api/teams/{id}` invokes `GetTeam` and returns the same response shape with HTTP 200, or standard HTTP 404 ProblemDetails when absent. Missing, null, empty, or whitespace-only names, malformed JSON, incorrect field types, and malformed GUIDs return HTTP 400 ValidationProblemDetails. Domain owns name validation and normalization; Application translates Domain name failures to `TeamValidationException`, which the controller maps to a validation problem. Persistence failures propagate to the existing exception handler.
 
-Application unit tests run without HTTP or EF. Ordinary Team HTTP tests exercise the real controller and use cases with test-only persistence and verify that both routes return 404 in Staging and Production while health endpoints remain mapped. Real HTTP-to-PostgreSQL validation remains deferred to [#122](https://github.com/bbubb/squadsync/issues/122). Creation establishes no membership or owner authority and leaves the existing Team schema unchanged.
+Application unit tests run without HTTP or EF. Ordinary Team HTTP tests exercise the real controller and use cases with test-only persistence and verify that both routes return 404 in Staging and Production while health endpoints remain mapped. The [opt-in HTTP database tests](#http-to-postgresql-validation) add real PostgreSQL round trips. Creation establishes no membership or owner authority and leaves the existing Team schema unchanged.
+
+## Local People and Team requests
+
+Configure the local connection, apply the committed migrations, and start the API in Development on `http://localhost:5050` using the commands above. There is **no authentication or authorization**; bind to localhost and use only a trusted local environment. Swagger at `/swagger` describes both resources and their 201/200/400/404 responses.
+
+In PowerShell:
+
+```powershell
+$person = Invoke-WebRequest http://localhost:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"  Alex ","lastName":" Player "}'
+$person.StatusCode # 201
+$person.Headers.Location # http://localhost:5050/api/people/<generated-guid>
+Invoke-RestMethod $person.Headers.Location
+# { "id": "<generated-guid>", "firstName": "Alex", "lastName": "Player" }
+
+$team = Invoke-WebRequest http://localhost:5050/api/teams -Method Post -ContentType 'application/json' -Body '{"name":"  SquadSync FC "}'
+$team.StatusCode # 201
+Invoke-RestMethod $team.Headers.Location
+# { "id": "<generated-guid>", "name": "SquadSync FC" }
+```
+
+GET returns HTTP 200. A missing GUID returns 404 ProblemDetails, for example `{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not Found","status":404}` (additional fields may be present). Malformed JSON or whitespace-only required names returns 400 ValidationProblemDetails with an `errors` object. Manual successful POST requests **persist records**; use intentional development data. They do not create memberships or login accounts.
+
+## HTTP-to-PostgreSQL validation
+
+Use a local database with **all four committed migrations already applied**, ending in `20261009150000_RenameUserToPerson`, and the expected `public` schema. The tests fail before HTTP writes on unexpected migration history or mapped columns/types/nullability. They never apply migrations or reset schema. Set `ConnectionStrings__SquadSync` to the ignored local configuration and run from `apps/api`:
+
+```powershell
+$env:SQUADSYNC_RUN_DATABASE_TESTS = "1"
+dotnet test tests/SquadSync.IntegrationTests --filter "Category=Database"
+Remove-Item Env:SQUADSYNC_RUN_DATABASE_TESTS
+Remove-Item Env:ConnectionStrings__SquadSync
+dotnet test
+```
+
+`PeopleTeamsHttpPersistenceTests` supplies the explicit connection to the Development test host and retains the real `EfPersonPersistence`/`EfTeamPersistence` registrations. Each sequential POST and GET uses a distinct scoped EF context enlisted in one test-owned connection/transaction. A separate connection verifies server writes remain uncommitted. The host is disposed and the transaction rolls back in `finally`, including after an injected assertion failure. Complete ordered-row SHA-256 fingerprints verify all five application tables and migration history are unchanged after success and failure; invalid requests also leave those fingerprints unchanged inside the transaction. Existing/demo records need not be absent and are never edited or deleted.
+
+Run against an idle local database: this test collection runs separately from other xUnit collections and briefly locks application tables against concurrent writes, failing after five seconds if a lock cannot be acquired. Do not run manual writes or migrations concurrently. No test commits records, uses reserved demo IDs, truncates tables, or removes volumes. Ordinary tests remain database-independent; `SwaggerEndpointTests` verifies the Development OpenAPI routes and documented responses without PostgreSQL.
 
 ## Not included yet
 
