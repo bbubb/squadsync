@@ -163,6 +163,16 @@ With local PostgreSQL configured and committed migrations applied, `POST /api/te
 
 Application unit tests run without HTTP or EF. Ordinary Team HTTP tests exercise the real controller and use cases with test-only persistence and verify that both routes return 404 in Staging and Production while health endpoints remain mapped. The [opt-in HTTP database tests](#http-to-postgresql-validation) add real PostgreSQL round trips. Creation establishes no membership or owner authority and leaves the existing Team schema unchanged.
 
+## Development-only Membership API
+
+The accepted [Sprint 8 contract](../../docs/architecture/membership-roster-http-contract.md) defines `POST /api/teams/{teamId}/memberships` with `{"personId":"<existing-person-guid>","teamRole":"Player"}`. Both the Team and Person must already exist. Supply exactly one canonical role name: `Owner`, `Coach`, `AssistantCoach`, `Manager`, `Player`, or `Viewer`. Application generates the membership GUID and validates the references through the existing Team/Person persistence ports; Domain enforces identifier and role invariants.
+
+POST returns typed HTTP 201 with `{ id, teamId, person: { id, firstName, lastName }, teamRole }`. Its Location points to `GET /api/teams/{teamId}/memberships/{membershipId}`, which returns the same representation. Infrastructure joins the existing Person data and scopes the lookup by both Team and membership IDs; missing and wrong-Team memberships return 404. Roles use JSON strings on these endpoints without changing global enum serialization.
+
+Malformed/missing/empty IDs, malformed JSON, missing roles, numeric roles and noncanonical names return 400 ValidationProblemDetails. Missing references return 404; duplicate Person/Team associations return 409 ProblemDetails. `EfMembershipPersistence` translates only the known PostgreSQL association uniqueness and reference foreign-key constraints, including write races. Unrelated failures and cancellation propagate to the existing safe HTTP conventions. No schema change is required. Caller-owned transactions must roll back after failed writes.
+
+Application tests use fake ports. Membership HTTP tests exercise real controllers and use cases with controlled persistence, including cancellation, sanitized failures and Staging/Production route absence. Database-independent EF tests verify the existing unique mapping and exercise exception filters through a SaveChanges interceptor. An opt-in `MembershipPersistenceTests` round trip verifies the real adapter's projection, team scoping and duplicate translation in a rolled-back transaction. Membership list GET remains separate under #133; roster HTTP workflows remain separate under #135/#136.
+
 ## Local People and Team requests
 
 Configure the local connection, apply the committed migrations, and start the API in Development on `http://localhost:5050` using the commands above. There is **no authentication or authorization**; bind to localhost and use only a trusted local environment. Swagger at `/swagger` describes both resources and their 201/200/400/404 responses.
@@ -202,7 +212,7 @@ Run against an idle local database: this test collection runs separately from ot
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People and Team create/read use cases described above; broader team/roster HTTP endpoints and other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team and Membership create/read use cases described above; membership list, roster HTTP endpoints and other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
