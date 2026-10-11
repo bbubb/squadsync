@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. Phase 0, Phase 1, and Phase 2 are complete. Phase 2 concluded through Sprint 6 under [#109](https://github.com/bbubb/squadsync/issues/109), establishing the MVP core domain, PostgreSQL persistence, the first Application use case, and explicit Development demo data. Phase 3 — Roster Management API — is active in planning through [Sprint 7 tracker #116](https://github.com/bbubb/squadsync/issues/116). Its architecture gate [#117](https://github.com/bbubb/squadsync/issues/117) is accepted through [PR #123](https://github.com/bbubb/squadsync/pull/123); issue #118 applies the Person vocabulary.
+Active. Phase 0, Phase 1 and Phase 2 are complete. Phase 3 — Roster Management API — is active. Sprint 7 ([#116](https://github.com/bbubb/squadsync/issues/116)) is completed through merged PRs #123–#128, establishing Development-only Person/Team APIs and real opt-in PostgreSQL HTTP validation. Sprint 8 ([#129](https://github.com/bbubb/squadsync/issues/129)) focuses on team memberships and player roster HTTP workflows with a contract-approval gate under [#131](https://github.com/bbubb/squadsync/issues/131) before feature implementation.
 
 ## Purpose
 
@@ -425,6 +425,8 @@ Phase 2 is complete through Sprints 3–6.
 
 Phase 2 completion criteria are satisfied: core entities persist, relationships match the canonical domain model, an Application use-case path is testable without HTTP, and seed data supports a simple demo scenario.
 
-Open maintenance issues [#72](https://github.com/bbubb/squadsync/issues/72), [#89](https://github.com/bbubb/squadsync/issues/89), and [#100](https://github.com/bbubb/squadsync/issues/100) remain deferred backlog and do not block the phase transition.
+Maintenance #100 (.NET 10 SDK selection) is complete through PR #130. Open issues [#72](https://github.com/bbubb/squadsync/issues/72) (local smoke automation) and [#89](https://github.com/bbubb/squadsync/issues/89) (Codex lifecycle investigation) remain deferred and do not block Sprint 8.
 
-Phase 3 Sprint 7 is planned under [#116](https://github.com/bbubb/squadsync/issues/116). The completed review gate, [#117](https://github.com/bbubb/squadsync/issues/117), accepted [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) for the person/account distinction and initial Development-only API boundary. Dependent issues #118–#122 implement and validate the agreed slice under that accepted decision.
+Phase 3 Sprint 7 is **complete** under [#116](https://github.com/bbubb/squadsync/issues/116) (merged PRs #123–#128). It established represented `Person` naming, Development-only management routing, thin Person/Team create-read controllers, Application-owned persistence ports, and safe real HTTP→PostgreSQL tests. [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) defines the identity and interim access boundary.
+
+**Sprint 8 [#129](https://github.com/bbubb/squadsync/issues/129)** — membership and player roster workflows. The [HTTP contract gate #131](https://github.com/bbubb/squadsync/issues/131) governs implementation issue readiness for #132–#137; see the [membership/roster HTTP contract](../architecture/membership-roster-http-contract.md), which becomes authoritative only upon human approval/merge of its documentation PR. Issue #133 is an owner-authored full read vertical slice; issue #134 is its independent comparison review. Anonymous management endpoints remain restricted to trusted Development.
