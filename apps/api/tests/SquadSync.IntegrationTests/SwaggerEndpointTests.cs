@@ -16,7 +16,8 @@ public sealed class SwaggerEndpointTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var document = await response.Content.ReadFromJsonAsync<JsonElement>();
         var paths = document.GetProperty("paths");
-        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/teams", "/api/teams/{id}" },
+        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/teams", "/api/teams/{id}",
+                "/api/teams/{teamId}/memberships", "/api/teams/{teamId}/memberships/{membershipId}" },
             paths.EnumerateObject().Select(path => path.Name).Order().ToArray());
         foreach (var route in new[] { "/api/people", "/api/teams" })
         {
@@ -29,5 +30,13 @@ public sealed class SwaggerEndpointTests
             Assert.Equal(new[] { "200", "400", "404" }, read.GetProperty("get").GetProperty("responses")
                 .EnumerateObject().Select(status => status.Name).Order().ToArray());
         }
+        var membership = paths.GetProperty("/api/teams/{teamId}/memberships");
+        Assert.Equal("post", Assert.Single(membership.EnumerateObject()).Name);
+        Assert.Equal(new[] { "201", "400", "404", "409" }, membership.GetProperty("post").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        var membershipRead = paths.GetProperty("/api/teams/{teamId}/memberships/{membershipId}");
+        Assert.Equal("get", Assert.Single(membershipRead.EnumerateObject()).Name);
+        Assert.Equal(new[] { "200", "400", "404" }, membershipRead.GetProperty("get").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
     }
 }
