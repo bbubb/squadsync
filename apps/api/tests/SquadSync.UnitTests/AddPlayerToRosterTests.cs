@@ -96,6 +96,53 @@ public class AddPlayerToRosterTests
         Assert.Equal(1, persistence.SaveCalls);
     }
 
+    [Theory]
+    [InlineData(TeamRole.Player)]
+    [InlineData(TeamRole.Coach)]
+    public async Task TeamScope_WrongTeamFailsBeforeRoleCheckAndWrite(TeamRole role)
+    {
+        var fake = new FakeRosterPersistence(CreateMembership(role));
+        await Assert.ThrowsAsync<RosterMembershipNotFoundException>(() => new AddPlayerToRoster(fake)
+            .ExecuteForTeamAsync(Guid.NewGuid(), fake.Membership!.Id, "007", RosterStatus.Active));
+        Assert.Equal(0, fake.SaveCalls);
+    }
+
+    [Fact]
+    public async Task TeamScope_GeneratesIdAndReusesPlayerWorkflow()
+    {
+        var fake = new FakeRosterPersistence(CreateMembership(TeamRole.Player));
+        var entry = await new AddPlayerToRoster(fake).ExecuteForTeamAsync(
+            fake.Membership!.TeamId, fake.Membership.Id, "007", RosterStatus.Suspended);
+        Assert.NotEqual(Guid.Empty, entry.Id);
+        Assert.Equal("007", entry.JerseyNumber);
+        Assert.Equal(RosterStatus.Suspended, entry.RosterStatus);
+        Assert.Same(entry, fake.SavedEntry);
+        Assert.Equal(1, fake.SaveCalls);
+    }
+
+    [Fact]
+    public async Task TeamScope_EmptyTeamRejectedBeforeLookup()
+    {
+        var fake = new FakeRosterPersistence(CreateMembership(TeamRole.Player));
+        var error = await Assert.ThrowsAsync<RosterValidationException>(() => new AddPlayerToRoster(fake)
+            .ExecuteForTeamAsync(Guid.Empty, fake.Membership!.Id, null, RosterStatus.Active));
+        Assert.Equal("teamId", error.Field);
+        Assert.Equal(Guid.Empty, fake.RequestedMembershipId);
+        Assert.Equal(0, fake.SaveCalls);
+    }
+
+    [Fact]
+    public async Task TeamScope_CancelledRequestDoesNotAccessPersistence()
+    {
+        var fake = new FakeRosterPersistence(CreateMembership(TeamRole.Player));
+        var token = new CancellationToken(canceled: true);
+        var error = await Assert.ThrowsAsync<OperationCanceledException>(() => new AddPlayerToRoster(fake)
+            .ExecuteForTeamAsync(fake.Membership!.TeamId, fake.Membership.Id, null, RosterStatus.Active, token));
+        Assert.Equal(token, error.CancellationToken);
+        Assert.Equal(Guid.Empty, fake.RequestedMembershipId);
+        Assert.Equal(0, fake.SaveCalls);
+    }
+
     private static TeamMembership CreateMembership(TeamRole role)
         => new(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), role);
 

@@ -5,6 +5,7 @@ using SquadSync.Infrastructure.Persistence;
 using SquadSync.Application.People;
 using SquadSync.Application.Teams;
 using SquadSync.Application.Memberships;
+using SquadSync.Application.Rosters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,9 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddScoped<CreateMembership>();
     builder.Services.AddScoped<GetMembership>();
     builder.Services.AddScoped<GetTeamMemberships>();
+    builder.Services.AddScoped<AddPlayerToRoster>();
+    builder.Services.AddScoped<CreateRosterEntry>();
+    builder.Services.AddScoped<GetRosterEntry>();
     builder.Services.AddSwaggerGen();
 }
 
