@@ -114,29 +114,32 @@ public class MembershipPersistenceTests
         var teamA = new Team(Guid.NewGuid(), "Team A");
         var teamB = new Team(Guid.NewGuid(), "Team B");
         var person1 = new Person(Guid.NewGuid(), "Chris", "Delta");
-        var person2 = new Person(Guid.NewGuid(), "Dana", "Echo");
+        var person2 = new Person(Guid.NewGuid(), "Aaron", "Echo");
         var person3 = new Person(Guid.NewGuid(), "Alice", "Bravo");
         var person4 = new Person(Guid.NewGuid(), "Chris", "Delta");
+        var person5 = new Person(Guid.NewGuid(), "Alex", "Delta");
         var membership1 = new TeamMembership(Guid.Parse("a0000000-0000-0000-0000-000000000002"), person1.Id, teamA.Id, TeamRole.Player);
         var membership2 = new TeamMembership(Guid.NewGuid(), person2.Id, teamA.Id, TeamRole.AssistantCoach);
         var membership3 = new TeamMembership(Guid.NewGuid(), person3.Id, teamB.Id, TeamRole.Player);
         var membership4 = new TeamMembership(Guid.Parse("a0000000-0000-0000-0000-000000000001"), person4.Id, teamA.Id, TeamRole.Player);
+        var membership5 = new TeamMembership(Guid.Parse("f0000000-0000-0000-0000-000000000001"), person5.Id, teamA.Id, TeamRole.Player);
         await using (var transaction = await context.Database.BeginTransactionAsync())
         {
-            context.People.AddRange(person1, person2, person3, person4);
+            context.People.AddRange(person1, person2, person3, person4, person5);
             context.Teams.AddRange(teamA, teamB);
-            context.TeamMemberships.AddRange(membership1, membership2, membership3, membership4);
+            context.TeamMemberships.AddRange(membership1, membership2, membership3, membership4, membership5);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
             var adapter = new EfMembershipPersistence(context);
             var teamAMemberships = await adapter.GetByTeamIdAsync(teamA.Id);
-            var expected = new MembershipDetails(membership2.Id, teamA.Id, new MembershipPerson(person2.Id, "Dana", "Echo"), TeamRole.AssistantCoach);
+            var expected = new MembershipDetails(membership2.Id, teamA.Id, new MembershipPerson(person2.Id, "Aaron", "Echo"), TeamRole.AssistantCoach);
             var actual = teamAMemberships.Single(m => m.Id == membership2.Id);
             Assert.Equal(expected, actual);
-            Assert.Equal(3, teamAMemberships.Count);
-            Assert.Equal(new[] { membership4.Id, membership1.Id, membership2.Id }, teamAMemberships.Select(m => m.Id));
+            Assert.Equal(4, teamAMemberships.Count);
+            Assert.Equal(new[] { membership5.Id, membership4.Id, membership1.Id, membership2.Id }, teamAMemberships.Select(m => m.Id));
             Assert.All(teamAMemberships, m => Assert.Equal(teamA.Id, m.TeamId));
-            Assert.Equal(new[] { "Delta", "Delta", "Echo" }, teamAMemberships.Select(m => m.Person.LastName));
+            Assert.Equal(new[] { "Delta", "Delta", "Delta", "Echo" }, teamAMemberships.Select(m => m.Person.LastName));
+            Assert.Equal(new[] { "Alex", "Chris", "Chris", "Aaron" }, teamAMemberships.Select(m => m.Person.FirstName));
             Assert.DoesNotContain(teamAMemberships, m => m.Id == membership3.Id);
             await transaction.RollbackAsync();
         }
