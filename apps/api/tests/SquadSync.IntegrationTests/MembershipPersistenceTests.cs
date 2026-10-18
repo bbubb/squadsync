@@ -144,9 +144,9 @@ public class MembershipPersistenceTests
             await transaction.RollbackAsync();
         }
         context.ChangeTracker.Clear();
-        Assert.False(await context.People.AnyAsync(entry => entry.Id == person1.Id || entry.Id == person2.Id || entry.Id == person3.Id || entry.Id == person4.Id));
+        Assert.False(await context.People.AnyAsync(entry => entry.Id == person1.Id || entry.Id == person2.Id || entry.Id == person3.Id || entry.Id == person4.Id || entry.Id == person5.Id));
         Assert.False(await context.Teams.AnyAsync(entry => entry.Id == teamA.Id || entry.Id == teamB.Id));
-        Assert.False(await context.TeamMemberships.AnyAsync(entry => entry.Id == membership1.Id || entry.Id == membership2.Id || entry.Id == membership3.Id || entry.Id == membership4.Id));
+        Assert.False(await context.TeamMemberships.AnyAsync(entry => entry.Id == membership1.Id || entry.Id == membership2.Id || entry.Id == membership3.Id || entry.Id == membership4.Id || entry.Id == membership5.Id));
     }
 
     private static DbUpdateException DatabaseFailure(string code, string constraint)
