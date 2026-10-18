@@ -28,6 +28,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddScoped<GetTeam>();
     builder.Services.AddScoped<CreateMembership>();
     builder.Services.AddScoped<GetMembership>();
+    builder.Services.AddScoped<GetTeamMemberships>();
     builder.Services.AddSwaggerGen();
 }
 

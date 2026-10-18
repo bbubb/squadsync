@@ -6,7 +6,7 @@ namespace SquadSync.Api.Memberships;
 
 [ApiController]
 [Route("api/teams/{teamId}/memberships")]
-public sealed class MembershipsController(CreateMembership createMembership, GetMembership getMembership) : ControllerBase
+public sealed class MembershipsController(CreateMembership createMembership, GetMembership getMembership, GetTeamMemberships getTeamMemberships) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<MembershipResponse>(StatusCodes.Status201Created)]
@@ -58,6 +58,29 @@ public sealed class MembershipsController(CreateMembership createMembership, Get
         {
             ModelState.AddModelError(exception.Field, "A non-empty identifier is required.");
             return ValidationProblem(ModelState);
+        }
+    }
+
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyList<MembershipResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<MembershipResponse>>> GetByTeamId(
+        Guid teamId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var memberships = await getTeamMemberships.ExecuteAsync(teamId, cancellationToken);
+            return Ok(memberships.Select(MembershipResponse.From).ToList());
+        }
+        catch (MembershipValidationException exception)
+        {
+            ModelState.AddModelError(exception.Field, "A non-empty identifier is required.");
+            return ValidationProblem(ModelState);
+        }
+        catch (MembershipReferenceNotFoundException)
+        {
+            return NotFound();
         }
     }
 }
