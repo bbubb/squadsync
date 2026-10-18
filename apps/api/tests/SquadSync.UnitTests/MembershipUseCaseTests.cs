@@ -125,6 +125,7 @@ public class MembershipUseCaseTests
         Assert.Empty(fake.Tokens);
     }
 
+
     private sealed class Persistence : IMembershipPersistence, ITeamPersistence, IPersonPersistence
     {
         public Person Person { get; } = new(Guid.NewGuid(), "Alex", "Player");
@@ -170,5 +171,8 @@ public class MembershipUseCaseTests
 
         public Task AddAsync(Team team, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task AddAsync(Person person, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
+        public Task<IReadOnlyList<MembershipDetails>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default)
+        => throw new NotSupportedException("This query is not used by these tests.");
     }
 }

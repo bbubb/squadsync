@@ -104,6 +104,51 @@ public class MembershipPersistenceTests
         Assert.False(await context.TeamMemberships.AnyAsync(entry => entry.PersonId == person.Id || entry.Id == membership.Id));
     }
 
+    [DatabaseFact]
+    [Trait("Category", "Database")]
+    public async Task GetByTeamId_ReturnsOnlyTeamMembershipsInExpectedOrder()
+    {
+        var connection = Environment.GetEnvironmentVariable("ConnectionStrings__SquadSync");
+        Assert.False(string.IsNullOrWhiteSpace(connection), "Opt-in database tests require ConnectionStrings__SquadSync.");
+        await using var context = new SquadSyncDbContext(new DbContextOptionsBuilder<SquadSyncDbContext>().UseNpgsql(connection).Options);
+        var teamA = new Team(Guid.NewGuid(), "Team A");
+        var teamB = new Team(Guid.NewGuid(), "Team B");
+        var person1 = new Person(Guid.NewGuid(), "Chris", "Delta");
+        var person2 = new Person(Guid.NewGuid(), "Aaron", "Echo");
+        var person3 = new Person(Guid.NewGuid(), "Alice", "Bravo");
+        var person4 = new Person(Guid.NewGuid(), "Chris", "Delta");
+        var person5 = new Person(Guid.NewGuid(), "Alex", "Delta");
+        var membership1 = new TeamMembership(Guid.Parse("a0000000-0000-0000-0000-000000000002"), person1.Id, teamA.Id, TeamRole.Player);
+        var membership2 = new TeamMembership(Guid.NewGuid(), person2.Id, teamA.Id, TeamRole.AssistantCoach);
+        var membership3 = new TeamMembership(Guid.NewGuid(), person3.Id, teamB.Id, TeamRole.Player);
+        var membership4 = new TeamMembership(Guid.Parse("a0000000-0000-0000-0000-000000000001"), person4.Id, teamA.Id, TeamRole.Player);
+        var membership5 = new TeamMembership(Guid.Parse("f0000000-0000-0000-0000-000000000001"), person5.Id, teamA.Id, TeamRole.Player);
+        await using (var transaction = await context.Database.BeginTransactionAsync())
+        {
+            context.People.AddRange(person1, person2, person3, person4, person5);
+            context.Teams.AddRange(teamA, teamB);
+            context.TeamMemberships.AddRange(membership1, membership2, membership3, membership4, membership5);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+            var adapter = new EfMembershipPersistence(context);
+            var teamAMemberships = await adapter.GetByTeamIdAsync(teamA.Id);
+            var expected = new MembershipDetails(membership2.Id, teamA.Id, new MembershipPerson(person2.Id, "Aaron", "Echo"), TeamRole.AssistantCoach);
+            var actual = teamAMemberships.Single(m => m.Id == membership2.Id);
+            Assert.Equal(expected, actual);
+            Assert.Equal(4, teamAMemberships.Count);
+            Assert.Equal(new[] { membership5.Id, membership4.Id, membership1.Id, membership2.Id }, teamAMemberships.Select(m => m.Id));
+            Assert.All(teamAMemberships, m => Assert.Equal(teamA.Id, m.TeamId));
+            Assert.Equal(new[] { "Delta", "Delta", "Delta", "Echo" }, teamAMemberships.Select(m => m.Person.LastName));
+            Assert.Equal(new[] { "Alex", "Chris", "Chris", "Aaron" }, teamAMemberships.Select(m => m.Person.FirstName));
+            Assert.DoesNotContain(teamAMemberships, m => m.Id == membership3.Id);
+            await transaction.RollbackAsync();
+        }
+        context.ChangeTracker.Clear();
+        Assert.False(await context.People.AnyAsync(entry => entry.Id == person1.Id || entry.Id == person2.Id || entry.Id == person3.Id || entry.Id == person4.Id || entry.Id == person5.Id));
+        Assert.False(await context.Teams.AnyAsync(entry => entry.Id == teamA.Id || entry.Id == teamB.Id));
+        Assert.False(await context.TeamMemberships.AnyAsync(entry => entry.Id == membership1.Id || entry.Id == membership2.Id || entry.Id == membership3.Id || entry.Id == membership4.Id || entry.Id == membership5.Id));
+    }
+
     private static DbUpdateException DatabaseFailure(string code, string constraint)
         => new("private-provider-detail", new PostgresException("private-provider-detail", "ERROR", "ERROR", code, constraintName: constraint));
 
