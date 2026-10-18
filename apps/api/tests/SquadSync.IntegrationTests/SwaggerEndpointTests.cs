@@ -31,9 +31,15 @@ public sealed class SwaggerEndpointTests
                 .EnumerateObject().Select(status => status.Name).Order().ToArray());
         }
         var membership = paths.GetProperty("/api/teams/{teamId}/memberships");
-        Assert.Equal("post", Assert.Single(membership.EnumerateObject()).Name);
+        Assert.Equal(new[] { "get", "post" }, membership.EnumerateObject().Select(method => method.Name).Order().ToArray());
         Assert.Equal(new[] { "201", "400", "404", "409" }, membership.GetProperty("post").GetProperty("responses")
             .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        Assert.Equal(new[] { "200", "400", "404" }, membership.GetProperty("get").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        var schema = membership.GetProperty("get").GetProperty("responses").GetProperty("200").GetProperty("content")
+            .GetProperty("application/json").GetProperty("schema");
+        Assert.Equal("array", schema.GetProperty("type").GetString());
+        Assert.Equal("#/components/schemas/MembershipResponse", schema.GetProperty("items").GetProperty("$ref").GetString());
         var membershipRead = paths.GetProperty("/api/teams/{teamId}/memberships/{membershipId}");
         Assert.Equal("get", Assert.Single(membershipRead.EnumerateObject()).Name);
         Assert.Equal(new[] { "200", "400", "404" }, membershipRead.GetProperty("get").GetProperty("responses")

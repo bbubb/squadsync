@@ -94,6 +94,7 @@ public class MembershipsEndpointTests
             new { personId = fake.Person.Id, teamRole = "Player" }), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync($"/api/teams/{id}/memberships/{Guid.NewGuid()}"), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync($"{Route(fake.Team.Id)}/{id}"), HttpStatusCode.BadRequest);
+        await AssertProblem(await client.GetAsync($"/api/teams/{id}/memberships"), HttpStatusCode.BadRequest);
         Assert.Equal(0, fake.Calls);
     }
 
@@ -161,8 +162,56 @@ public class MembershipsEndpointTests
         Assert.Equal(HttpStatusCode.NotFound, (await client.PostAsJsonAsync(Route(fake.Team.Id),
             new { personId = fake.Person.Id, teamRole = "Player" })).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"{Route(fake.Team.Id)}/{Guid.NewGuid()}")).StatusCode);
-        Assert.Equal(0, fake.Calls);
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync(Route(fake.Team.Id))).StatusCode);
+        Assert.Equal(0, fake.Calls);
+    }
+
+    [Fact]
+    public async Task GetByTeamId_MissingTeam_Returns404()
+    {
+        var fake = new Persistence();
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync(Route(Guid.NewGuid()));
+        await AssertProblem(response, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetByTeamId_ExistingTeamWithoutMemberships_ReturnsEmptyArray()
+    {
+        var fake = new Persistence();
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var memberships = await response.Content.ReadFromJsonAsync<IReadOnlyList<MembershipResponse>>();
+        Assert.NotNull(memberships);
+        Assert.Empty(memberships);
+    }
+
+    [Fact]
+    public async Task GetByTeamId_ExistingTeamWithMemberships_ReturnsMembershipsResponses()
+    {
+        var fake = new Persistence();
+        var membership1 = new TeamMembership(Guid.NewGuid(), fake.Person.Id, fake.Team.Id, TeamRole.Coach);
+        fake.Memberships.TryAdd(membership1.Id, membership1);
+        var otherMembership = new TeamMembership(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), TeamRole.Player); // Different person/team, should not be returned
+        Assert.True(fake.Memberships.TryAdd(otherMembership.Id, otherMembership));
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var memberships = await response.Content.ReadFromJsonAsync<IReadOnlyList<MembershipResponse>>();
+        Assert.NotNull(memberships);
+        Assert.Single(memberships);
+        var membershipResponse = memberships[0];
+        Assert.Equal(membership1.Id, membershipResponse.Id);
+        Assert.Equal(membership1.TeamId, membershipResponse.TeamId);
+        Assert.Equal(membership1.PersonId, membershipResponse.Person.Id);
+        Assert.Equal("Alex", membershipResponse.Person.FirstName);
+        Assert.Equal("Player", membershipResponse.Person.LastName);
+        Assert.Equal(membership1.TeamRole.ToString(), membershipResponse.TeamRole);
     }
 
     private static string Route(Guid teamId) => $"/api/teams/{teamId}/memberships";
@@ -242,6 +291,17 @@ public class MembershipsEndpointTests
                     new MembershipPerson(Person.Id, Person.FirstName, Person.LastName), membership.TeamRole));
         }
 
+        public Task<IReadOnlyList<MembershipDetails>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default)
+        {
+            Visit(cancellationToken, fail: true);
+            var memberships = Memberships.Values
+                .Where(m => m.TeamId == teamId)
+                .Select(m => new MembershipDetails(m.Id, m.TeamId,
+                    new MembershipPerson(Person.Id, Person.FirstName, Person.LastName), m.TeamRole))
+                .ToList();
+            return Task.FromResult<IReadOnlyList<MembershipDetails>>(memberships);
+        }
+
         Task<Person?> IPersonPersistence.GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             Visit(cancellationToken);
@@ -256,5 +316,6 @@ public class MembershipsEndpointTests
 
         public Task AddAsync(Person person, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task AddAsync(Team team, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
     }
 }
