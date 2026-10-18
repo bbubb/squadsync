@@ -97,7 +97,15 @@ With opt-in enabled, missing `ConnectionStrings__SquadSync` fails the tests with
 
 Infrastructure's `EfRosterPersistence` uses the same scoped `SquadSyncDbContext` for the lookup and atomic `SaveChangesAsync` write. `AddSquadSyncPersistence` registers the adapter as scoped. Memberships are read without tracking to avoid one-to-one relationship fixup changing an existing roster entry. The accepted membership contract is immutable; database foreign keys and unique constraints protect the insertion. Both duplicate membership and duplicate roster-entry Id constraints become Application's `RosterEntryConflictException`; unrelated database errors and cancellation propagate. Successful and conflicting inserts are detached so repeated attempts use database constraints rather than EF identity tracking. When a caller supplies an explicit transaction, it owns rollback/disposal after a persistence failure.
 
-Unit tests exercise the workflow without EF or HTTP. The opt-in `RosterUseCasePersistenceTests` verifies the registered adapter, round trip, and both conflict translations against PostgreSQL in rolled-back transactions. No HTTP endpoint or schema change is introduced.
+Unit tests exercise the workflow without EF or HTTP. The opt-in `RosterUseCasePersistenceTests` verifies the registered adapter, round trip, and both conflict translations against PostgreSQL in rolled-back transactions. The HTTP workflow below reuses this behavior; no schema change is introduced.
+
+## Development-only roster creation and individual read
+
+`POST /api/teams/{teamId}/roster` accepts an existing `teamMembershipId`, nullable `jerseyNumber` (otherwise 1–3 ASCII digits, preserving leading zeros), and canonical string `rosterStatus`: `Active`, `Reserved`, or `Suspended`. Application generates the entry ID and enforces that the membership belongs to the route Team before the shared `AddPlayerToRoster` eligibility/write workflow runs. The original non-HTTP use case remains available.
+
+Creation returns `201 Created` with a Location for `GET /api/teams/{teamId}/roster/{rosterEntryId}`. Both return `{ id, teamMembershipId, person: { id, firstName, lastName }, jerseyNumber, rosterStatus }`. The EF read projection includes only Player memberships belonging to the route Team; it adds no persisted relationship or name columns. Invalid input returns `400 ValidationProblemDetails`; missing references and wrong-Team resources return safe `404 ProblemDetails`; non-Players and duplicates return safe `409 ProblemDetails`. The known membership foreign-key race becomes `RosterMembershipNotFoundException`; unrelated failures and cancellation propagate.
+
+These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. Roster collection GET is deferred to #136; full HTTP/PostgreSQL validation and demo instructions remain #137.
 
 ## Explicit Development demo seed
 

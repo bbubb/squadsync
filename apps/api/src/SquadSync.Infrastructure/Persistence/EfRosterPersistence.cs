@@ -5,8 +5,17 @@ using SquadSync.Domain;
 
 namespace SquadSync.Infrastructure.Persistence;
 
-public sealed class EfRosterPersistence(SquadSyncDbContext dbContext) : IRosterPersistence
+public sealed class EfRosterPersistence(SquadSyncDbContext dbContext) : IRosterPersistence, IRosterQueries
 {
+    public Task<RosterDetails?> GetByIdAsync(Guid teamId, Guid rosterEntryId, CancellationToken cancellationToken = default)
+        => (from entry in dbContext.RosterEntries.AsNoTracking()
+            join membership in dbContext.TeamMemberships.AsNoTracking() on entry.TeamMembershipId equals membership.Id
+            join person in dbContext.People.AsNoTracking() on membership.PersonId equals person.Id
+            where entry.Id == rosterEntryId && membership.TeamId == teamId && membership.TeamRole == TeamRole.Player
+            select new RosterDetails(entry.Id, membership.Id,
+                new RosterPerson(person.Id, person.FirstName, person.LastName), entry.JerseyNumber, entry.RosterStatus))
+            .SingleOrDefaultAsync(cancellationToken);
+
     public Task<TeamMembership?> GetMembershipAsync(Guid membershipId, CancellationToken cancellationToken = default)
         => dbContext.TeamMemberships.AsNoTracking()
             .SingleOrDefaultAsync(membership => membership.Id == membershipId, cancellationToken);
@@ -30,6 +39,15 @@ public sealed class EfRosterPersistence(SquadSyncDbContext dbContext) : IRosterP
         {
             dbContext.Entry(entry).State = EntityState.Detached;
             throw new RosterEntryConflictException(entry.Id, entry.TeamMembershipId, exception);
+        }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException
+        {
+            SqlState: PostgresErrorCodes.ForeignKeyViolation,
+            ConstraintName: "FK_RosterEntries_TeamMemberships_TeamMembershipId"
+        })
+        {
+            dbContext.Entry(entry).State = EntityState.Detached;
+            throw new RosterMembershipNotFoundException(entry.TeamMembershipId, exception);
         }
     }
 }
