@@ -16,10 +16,21 @@ public sealed class SwaggerEndpointTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var document = await response.Content.ReadFromJsonAsync<JsonElement>();
         var paths = document.GetProperty("paths");
-        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/teams", "/api/teams/{id}",
+        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/people/{personId}/player-profile", "/api/teams", "/api/teams/{id}",
                 "/api/teams/{teamId}/memberships", "/api/teams/{teamId}/memberships/{membershipId}",
                 "/api/teams/{teamId}/roster", "/api/teams/{teamId}/roster/{rosterEntryId}" },
             paths.EnumerateObject().Select(path => path.Name).Order().ToArray());
+        var profile = paths.GetProperty("/api/people/{personId}/player-profile");
+        Assert.Equal(new[] { "get", "post" }, profile.EnumerateObject().Select(method => method.Name).Order().ToArray());
+        Assert.Equal(new[] { "201", "400", "404", "409" }, profile.GetProperty("post").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        Assert.Equal(new[] { "200", "400", "404" }, profile.GetProperty("get").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        foreach (var (method, status) in new[] { ("post", "201"), ("get", "200") })
+        {
+            Assert.Equal("#/components/schemas/PlayerProfileResponse", profile.GetProperty(method).GetProperty("responses")
+                .GetProperty(status).GetProperty("content").GetProperty("application/json").GetProperty("schema").GetProperty("$ref").GetString());
+        }
         foreach (var route in new[] { "/api/people", "/api/teams" })
         {
             var create = paths.GetProperty(route);

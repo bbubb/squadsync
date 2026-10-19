@@ -4,6 +4,7 @@ using SquadSync.Application.Rosters;
 using SquadSync.Application.People;
 using SquadSync.Application.Teams;
 using SquadSync.Application.Memberships;
+using SquadSync.Application.PlayerProfiles;
 
 namespace SquadSync.Infrastructure.Persistence;
 
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
             }
         });
 
+        services.AddScoped<IPlayerProfilePersistence, EfPlayerProfilePersistence>();
         services.AddScoped<IRosterPersistence, EfRosterPersistence>();
         services.AddScoped<IRosterQueries, EfRosterPersistence>();
         services.AddScoped<IMembershipPersistence, EfMembershipPersistence>();
