@@ -6,8 +6,32 @@ namespace SquadSync.Api.Rosters;
 
 [ApiController]
 [Route("api/teams/{teamId}/roster")]
-public sealed class RostersController(CreateRosterEntry createRosterEntry, GetRosterEntry getRosterEntry) : ControllerBase
+public sealed class RostersController(CreateRosterEntry createRosterEntry, GetRosterEntry getRosterEntry,
+    GetTeamRoster getTeamRoster) : ControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyList<RosterEntryResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<RosterEntryResponse>>> GetByTeamId(
+        Guid teamId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var entries = await getTeamRoster.ExecuteAsync(teamId, cancellationToken);
+            return Ok(entries.Select(RosterEntryResponse.From).ToArray());
+        }
+        catch (RosterValidationException exception)
+        {
+            ModelState.AddModelError(exception.Field, "A non-empty identifier is required.");
+            return ValidationProblem(ModelState);
+        }
+        catch (RosterTeamNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
     [HttpPost]
     [ProducesResponseType<RosterEntryResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]

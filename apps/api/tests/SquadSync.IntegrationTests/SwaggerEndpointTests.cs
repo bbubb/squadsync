@@ -32,7 +32,13 @@ public sealed class SwaggerEndpointTests
                 .EnumerateObject().Select(status => status.Name).Order().ToArray());
         }
         var roster = paths.GetProperty("/api/teams/{teamId}/roster");
-        Assert.Equal("post", Assert.Single(roster.EnumerateObject()).Name);
+        Assert.Equal(new[] { "get", "post" }, roster.EnumerateObject().Select(method => method.Name).Order().ToArray());
+        Assert.Equal(new[] { "200", "400", "404" }, roster.GetProperty("get").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        var rosterSchema = roster.GetProperty("get").GetProperty("responses").GetProperty("200").GetProperty("content")
+            .GetProperty("application/json").GetProperty("schema");
+        Assert.Equal("array", rosterSchema.GetProperty("type").GetString());
+        Assert.Equal("#/components/schemas/RosterEntryResponse", rosterSchema.GetProperty("items").GetProperty("$ref").GetString());
         Assert.Equal(new[] { "201", "400", "404", "409" }, roster.GetProperty("post").GetProperty("responses")
             .EnumerateObject().Select(status => status.Name).Order().ToArray());
         var rosterRead = paths.GetProperty("/api/teams/{teamId}/roster/{rosterEntryId}");

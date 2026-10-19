@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using SquadSync.Api.Rosters;
 using SquadSync.Application.Memberships;
 using SquadSync.Application.Rosters;
+using SquadSync.Application.Teams;
 using SquadSync.Domain;
 using Xunit;
 
@@ -92,6 +93,7 @@ public class RostersEndpointTests
             new { teamMembershipId = fake.Membership.Id, rosterStatus = "Active" }), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync($"/api/teams/{id}/roster/{Guid.NewGuid()}"), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync($"{Route(fake.Team.Id)}/{id}"), HttpStatusCode.BadRequest);
+        await AssertProblem(await client.GetAsync($"/api/teams/{id}/roster"), HttpStatusCode.BadRequest);
         Assert.Equal(0, fake.Calls);
     }
 
@@ -200,7 +202,7 @@ public class RostersEndpointTests
     }
 
     [Fact]
-    public async Task NullableJersey_IsAcceptedAndCollectionIsNotImplemented()
+    public async Task NullableJersey_IsAcceptedAndListed()
     {
         var fake = new Persistence();
         await using var factory = CreateFactory(fake);
@@ -209,7 +211,79 @@ public class RostersEndpointTests
             new { teamMembershipId = fake.Membership.Id, jerseyNumber = (string?)null, rosterStatus = "Active" });
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.Null((await response.Content.ReadFromJsonAsync<RosterEntryResponse>())!.JerseyNumber);
-        Assert.Equal(HttpStatusCode.MethodNotAllowed, (await client.GetAsync(Route(fake.Team.Id))).StatusCode);
+        var entries = (await client.GetFromJsonAsync<RosterEntryResponse[]>(Route(fake.Team.Id)))!;
+        Assert.Null(Assert.Single(entries).JerseyNumber);
+    }
+
+    [Fact]
+    public async Task Collection_EmptyAndMissingTeamsAreDistinct()
+    {
+        var fake = new Persistence();
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var empty = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(HttpStatusCode.OK, empty.StatusCode);
+        Assert.Equal("[]", await empty.Content.ReadAsStringAsync());
+        await AssertProblem(await client.GetAsync(Route(Guid.NewGuid())), HttpStatusCode.NotFound);
+    }
+
+    [Theory]
+    [InlineData("Active")]
+    [InlineData("Reserved")]
+    [InlineData("Suspended")]
+    public async Task Collection_ReturnsExistingTypedRepresentation(string status)
+    {
+        var fake = new Persistence();
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var created = await client.PostAsJsonAsync(Route(fake.Team.Id),
+            new { teamMembershipId = fake.Membership.Id, jerseyNumber = "007", rosterStatus = status });
+        Assert.Equal(HttpStatusCode.Created, created.StatusCode);
+        var entry = (await created.Content.ReadFromJsonAsync<RosterEntryResponse>())!;
+        var response = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(entry, Assert.Single((await response.Content.ReadFromJsonAsync<RosterEntryResponse[]>())!));
+        await AssertProblem(await client.GetAsync(Route(Guid.NewGuid())), HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Collection_PreservesQueryOrderAndMapsEveryProjection()
+    {
+        var fake = new Persistence
+        {
+            CollectionResults = [
+                new(Guid.Parse("b0000000-0000-0000-0000-000000000001"), Guid.NewGuid(), new(Guid.NewGuid(), "Chris", "Delta"), null, RosterStatus.Reserved),
+                new(Guid.Parse("b0000000-0000-0000-0000-000000000002"), Guid.NewGuid(), new(Guid.NewGuid(), "Chris", "Delta"), "007", RosterStatus.Active),
+                new(Guid.NewGuid(), Guid.NewGuid(), new(Guid.NewGuid(), "Aaron", "Echo"), "12", RosterStatus.Suspended)
+            ]
+        };
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var entries = (await response.Content.ReadFromJsonAsync<RosterEntryResponse[]>())!;
+        Assert.Equal(fake.CollectionResults.Select(RosterEntryResponse.From), entries);
+        Assert.Equal(2, fake.Calls);
+    }
+
+    [Fact]
+    public async Task Collection_UnexpectedFailureIsSanitized()
+    {
+        var fake = new Persistence { Failure = "failure" };
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        await AssertProblem(await client.GetAsync(Route(fake.Team.Id)), HttpStatusCode.InternalServerError);
+    }
+
+    [Fact]
+    public async Task Collection_AbortedRequestRemainsCancellation()
+    {
+        var fake = new Persistence { Failure = "cancel" };
+        await using var factory = CreateFactory(fake);
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync(Route(fake.Team.Id));
+        Assert.Equal(499, (int)response.StatusCode);
+        Assert.Equal(string.Empty, await response.Content.ReadAsStringAsync());
     }
 
     private static string Route(Guid teamId) => $"/api/teams/{teamId}/roster";
@@ -221,13 +295,19 @@ public class RostersEndpointTests
             services.RemoveAll<IMembershipPersistence>();
             services.RemoveAll<IRosterPersistence>();
             services.RemoveAll<IRosterQueries>();
+            services.RemoveAll<ITeamPersistence>();
             services.AddHttpContextAccessor();
             services.AddSingleton<IRosterPersistence>(provider =>
             {
                 fake.ContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
                 return fake;
             });
-            services.AddSingleton<IRosterQueries>(fake);
+            services.AddSingleton<IRosterQueries>(provider =>
+            {
+                fake.ContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                return fake;
+            });
+            services.AddSingleton<ITeamPersistence>(fake);
             services.AddSingleton<IMembershipPersistence>(fake);
         }));
 
@@ -244,7 +324,7 @@ public class RostersEndpointTests
         Assert.DoesNotContain("Exception", problem.GetRawText());
     }
 
-    private sealed class Persistence : IRosterPersistence, IRosterQueries, IMembershipPersistence
+    private sealed class Persistence : IRosterPersistence, IRosterQueries, IMembershipPersistence, ITeamPersistence
     {
         public Person Person { get; } = new(Guid.NewGuid(), "Alex", "Player");
         public Team Team { get; } = new(Guid.NewGuid(), "Local FC");
@@ -252,6 +332,7 @@ public class RostersEndpointTests
         public ConcurrentDictionary<Guid, RosterEntry> Entries { get; } = new();
         public int Calls { get; private set; }
         public string? Failure { get; init; }
+        public IReadOnlyList<RosterDetails>? CollectionResults { get; init; }
         public IHttpContextAccessor? ContextAccessor { get; set; }
 
         public Persistence(TeamRole role = TeamRole.Player)
@@ -307,6 +388,23 @@ public class RostersEndpointTests
                 : new MembershipDetails(Membership.Id, Team.Id,
                     new MembershipPerson(Person.Id, Person.FirstName, Person.LastName), Membership.TeamRole));
         }
+
+        public Task<Team?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            Visit(cancellationToken);
+            return Task.FromResult(id == Team.Id ? Team : null);
+        }
+
+        Task<IReadOnlyList<RosterDetails>> IRosterQueries.GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken)
+        {
+            Visit(cancellationToken, fail: true);
+            IReadOnlyList<RosterDetails> result = teamId != Team.Id || Membership.TeamRole != TeamRole.Player ? []
+                : CollectionResults ?? Entries.Values.Select(entry => new RosterDetails(entry.Id, entry.TeamMembershipId,
+                    new RosterPerson(Person.Id, Person.FirstName, Person.LastName), entry.JerseyNumber, entry.RosterStatus)).ToArray();
+            return Task.FromResult(result);
+        }
+
+        public Task AddAsync(Team team, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
         public Task AddAsync(TeamMembership membership, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<MembershipDetails>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default) => throw new NotSupportedException();

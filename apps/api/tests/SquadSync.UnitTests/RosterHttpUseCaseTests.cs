@@ -127,6 +127,8 @@ public class RosterHttpUseCaseTests
                 : new RosterDetails(id, Membership.Id, new RosterPerson(Membership.PersonId, "Alex", "Player"), Saved.JerseyNumber, Saved.RosterStatus));
         }
 
+        Task<IReadOnlyList<RosterDetails>> IRosterQueries.GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public Task AddAsync(TeamMembership membership, CancellationToken cancellationToken = default) => throw new NotSupportedException();
         public Task<IReadOnlyList<MembershipDetails>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }

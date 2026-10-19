@@ -7,6 +7,16 @@ namespace SquadSync.Infrastructure.Persistence;
 
 public sealed class EfRosterPersistence(SquadSyncDbContext dbContext) : IRosterPersistence, IRosterQueries
 {
+    public async Task<IReadOnlyList<RosterDetails>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default)
+        => await (from entry in dbContext.RosterEntries.AsNoTracking()
+            join membership in dbContext.TeamMemberships.AsNoTracking() on entry.TeamMembershipId equals membership.Id
+            join person in dbContext.People.AsNoTracking() on membership.PersonId equals person.Id
+            where membership.TeamId == teamId && membership.TeamRole == TeamRole.Player
+            orderby person.LastName, person.FirstName, entry.Id
+            select new RosterDetails(entry.Id, membership.Id,
+                new RosterPerson(person.Id, person.FirstName, person.LastName), entry.JerseyNumber, entry.RosterStatus))
+            .ToListAsync(cancellationToken);
+
     public Task<RosterDetails?> GetByIdAsync(Guid teamId, Guid rosterEntryId, CancellationToken cancellationToken = default)
         => (from entry in dbContext.RosterEntries.AsNoTracking()
             join membership in dbContext.TeamMemberships.AsNoTracking() on entry.TeamMembershipId equals membership.Id
