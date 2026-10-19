@@ -109,7 +109,7 @@ Creation returns `201 Created` with a Location for `GET /api/teams/{teamId}/rost
 
 The Docker-independent `TeamRosterQueryTests` checks Npgsql translation of the Team/Player filters, joins and ordering without opening a database connection. Its opt-in PostgreSQL collection test verifies projection, all three statuses, exclusions, cross-Team isolation and identical-name ties with opposing membership/roster ID order. It rolls back every insert and verifies its rows are absent; run it with the database opt-in configuration above using `dotnet test --filter FullyQualifiedName~TeamRosterQueryTests`.
 
-These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. Full HTTP/PostgreSQL validation and demo instructions remain #137.
+These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. See the [complete local workflow](#local-person-to-roster-workflow) and [HTTP/PostgreSQL validation](#http-to-postgresql-validation) below.
 
 ## Explicit Development demo seed
 
@@ -183,11 +183,13 @@ POST returns typed HTTP 201 with `{ id, teamId, person: { id, firstName, lastNam
 
 Malformed/missing/empty IDs, malformed JSON, missing roles, numeric roles and noncanonical names return 400 ValidationProblemDetails. Missing references return 404; duplicate Person/Team associations return 409 ProblemDetails. `EfMembershipPersistence` translates only the known PostgreSQL association uniqueness and reference foreign-key constraints, including write races. Unrelated failures and cancellation propagate to the existing safe HTTP conventions. No schema change is required. Caller-owned transactions must roll back after failed writes.
 
-Application tests use fake ports. Membership HTTP tests exercise real controllers and use cases with controlled persistence, including cancellation, sanitized failures and Staging/Production route absence. Database-independent EF tests verify the existing unique mapping and exercise exception filters through a SaveChanges interceptor. An opt-in `MembershipPersistenceTests` round trip verifies the real adapter's projection, team scoping and duplicate translation in a rolled-back transaction. Membership list GET remains separate under #133; roster HTTP workflows remain separate under #135/#136.
+`GET /api/teams/{teamId}/memberships` returns all memberships, including staff and unrostered Players, ordered by Person last name, first name, then membership ID. An existing Team with no memberships returns `200 []`; a missing Team returns 404. The roster list includes only Players with an existing RosterEntry.
 
-## Local People and Team requests
+Application tests use fake ports. Membership HTTP tests exercise real controllers and use cases with controlled persistence, including cancellation, sanitized failures and Staging/Production route absence. Database-independent EF tests verify the existing unique mapping and exercise exception filters through a SaveChanges interceptor. Opt-in adapter and [HTTP database tests](#http-to-postgresql-validation) verify real projection, team scoping and duplicate translation in rolled-back transactions.
 
-Configure the local connection, apply the committed migrations, and start the API in Development on `http://localhost:5050` using the commands above. There is **no authentication or authorization**; bind to localhost and use only a trusted local environment. Swagger at `/swagger` describes both resources and their 201/200/400/404 responses.
+## Local Person-to-roster workflow
+
+**Development on trusted localhost only.** There is no authentication or authorization. Configure `ConnectionStrings__SquadSync` using your ignored local settings, confirm the four committed migrations are already applied, then start the API with the Development/localhost command above. Swagger at `/swagger` describes People, Teams, memberships and roster routes, including their response contracts. Do not expose this listener on a public network.
 
 In PowerShell:
 
@@ -202,9 +204,26 @@ $team = Invoke-WebRequest http://localhost:5050/api/teams -Method Post -ContentT
 $team.StatusCode # 201
 Invoke-RestMethod $team.Headers.Location
 # { "id": "<generated-guid>", "name": "SquadSync FC" }
+
+$personId = ($person.Content | ConvertFrom-Json).id
+$teamId = ($team.Content | ConvertFrom-Json).id
+$membershipBody = @{ personId = $personId; teamRole = 'Player' } | ConvertTo-Json
+$membership = Invoke-WebRequest "http://localhost:5050/api/teams/$teamId/memberships" -Method Post -ContentType 'application/json' -Body $membershipBody
+$membership.StatusCode # 201
+Invoke-RestMethod $membership.Headers.Location # 200, includes Person and teamRole: Player
+
+$membershipId = ($membership.Content | ConvertFrom-Json).id
+$rosterBody = @{ teamMembershipId = $membershipId; jerseyNumber = '007'; rosterStatus = 'Active' } | ConvertTo-Json
+$entry = Invoke-WebRequest "http://localhost:5050/api/teams/$teamId/roster" -Method Post -ContentType 'application/json' -Body $rosterBody
+$entry.StatusCode # 201
+Invoke-RestMethod $entry.Headers.Location # 200, jerseyNumber remains the string '007'
+Invoke-RestMethod "http://localhost:5050/api/teams/$teamId/memberships" # 200, all roles
+Invoke-RestMethod "http://localhost:5050/api/teams/$teamId/roster" # 200, rostered Players only
 ```
 
-GET returns HTTP 200. A missing GUID returns 404 ProblemDetails, for example `{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not Found","status":404}` (additional fields may be present). Malformed JSON or whitespace-only required names returns 400 ValidationProblemDetails with an `errors` object. Manual successful POST requests **persist records**; use intentional development data. They do not create memberships or login accounts.
+Each POST returns 201 and a retrievable Location; individual and list GETs return 200. Manual successful POST requests **persist records**; use intentional development data. No login account or automatic Owner membership is created. A Player membership without a RosterEntry appears only in the membership list. Staff memberships such as Coach cannot be rostered. Roster statuses are exactly `Active`, `Reserved`, or `Suspended`; jersey numbers are null or strings of 1–3 ASCII digits.
+
+Repeating either membership or roster POST returns safe 409 ProblemDetails, as does rostering a non-Player. Wrong-Team membership/roster reads or roster creation return 404; malformed IDs, noncanonical status names (for example `active`), numeric statuses and invalid jerseys return 400 ValidationProblemDetails with an `errors` object. Failed requests leave data unchanged. Use the opt-in tests below to verify these cases without leaving demo records.
 
 ## HTTP-to-PostgreSQL validation
 
@@ -218,7 +237,9 @@ Remove-Item Env:ConnectionStrings__SquadSync
 dotnet test
 ```
 
-`PeopleTeamsHttpPersistenceTests` supplies the explicit connection to the Development test host and retains the real `EfPersonPersistence`/`EfTeamPersistence` registrations. Each sequential POST and GET uses a distinct scoped EF context enlisted in one test-owned connection/transaction. A separate connection verifies server writes remain uncommitted. The host is disposed and the transaction rolls back in `finally`, including after an injected assertion failure. Complete ordered-row SHA-256 fingerprints verify all five application tables and migration history are unchanged after success and failure; invalid requests also leave those fingerprints unchanged inside the transaction. Existing/demo records need not be absent and are never edited or deleted.
+`PeopleTeamsHttpPersistenceTests` and `MembershipRosterHttpPersistenceTests` supply the explicit local connection to an in-process Development test host, retaining the real Person/Team/Membership/Roster persistence adapters. Each sequential POST and GET uses a distinct scoped EF context enlisted in one test-owned connection/transaction. The membership/roster flow covers retrievable Locations, both ordered collections, all statuses, leading-zero/nullable jerseys, staff eligibility, unrostered Players and cross-Team isolation. Each rejected 400/404/409 request is checked for safe ProblemDetails and unchanged complete-row fingerprints inside the transaction, including real duplicate inserts.
+
+A separate connection verifies server writes remain uncommitted. The host is disposed and the transaction rolls back in `finally`, including after deliberately injected assertion failures in both workflows. Complete ordered-row SHA-256 fingerprints verify all five application tables and migration history are unchanged after success and failure. Existing/demo records need not be absent and are never edited or deleted by these HTTP tests. The complete `Category=Database` suite also includes the existing isolated migration, seed and adapter tests; use the full command above, not only the new class filter.
 
 Run against an idle local database: this test collection runs separately from other xUnit collections and briefly locks application tables against concurrent writes, failing after five seconds if a lock cannot be acquired. Do not run manual writes or migrations concurrently. No test commits records, uses reserved demo IDs, truncates tables, or removes volumes. Ordinary tests remain database-independent; `SwaggerEndpointTests` verifies the Development OpenAPI routes and documented responses without PostgreSQL.
 
