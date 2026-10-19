@@ -6,6 +6,7 @@ using SquadSync.Application.People;
 using SquadSync.Application.Teams;
 using SquadSync.Application.Memberships;
 using SquadSync.Application.Rosters;
+using SquadSync.Application.PlayerProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddHealthChecks()
 
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddScoped<CreatePlayerProfile>();
+    builder.Services.AddScoped<GetPlayerProfile>();
     builder.Services.AddScoped<CreatePerson>();
     builder.Services.AddScoped<GetPerson>();
     builder.Services.AddScoped<CreateTeam>();

@@ -111,6 +111,14 @@ The Docker-independent `TeamRosterQueryTests` checks Npgsql translation of the T
 
 These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. See the [complete local workflow](#local-person-to-roster-workflow) and [HTTP/PostgreSQL validation](#http-to-postgresql-validation) below.
 
+## Development-only PlayerProfile API
+
+`POST /api/people/{personId}/player-profile` explicitly creates one optional profile for an existing Person, without requiring a TeamMembership. Send `{}` for a blank profile or optional `dominantFoot` (`Left`, `Right`, `Both` or null), `heightInches` (positive integer or null) and `weightPounds` (positive decimal JSON number or null). Omitted fields remain null; IDs come from Application and the route. Client-supplied identity fields and quoted numbers are rejected.
+
+Creation returns `201 Created` with `{ id, personId, dominantFoot, heightInches, weightPounds }` and a Location for `GET /api/people/{personId}/player-profile`. GET returns the same typed representation or safe `404 ProblemDetails` for a missing Person/profile. Invalid input returns `400 ValidationProblemDetails`; duplicate creation, including the known PostgreSQL unique-index race, returns safe `409 ProblemDetails`. The known Person foreign-key race returns 404; unrelated errors and cancellation propagate through existing safe HTTP conventions.
+
+These routes are mapped only in Development for trusted localhost use, following the [accepted PlayerProfile contract](../../docs/architecture/player-profile-http-contract.md). Profiles are never created automatically by Person, membership or roster workflows. PUT remains deferred. Application, real-controller HTTP and intercepted Npgsql adapter tests run without PostgreSQL; complete HTTP-to-PostgreSQL profile workflow validation belongs to the final Sprint 9 slice.
+
 ## Explicit Development demo seed
 
 After starting local PostgreSQL, configuring `ConnectionStrings__SquadSync`, and applying the committed migrations above, intentionally seed the database from `apps/api`:
@@ -245,7 +253,7 @@ Run against an idle local database: this test collection runs separately from ot
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team, Membership and Roster create/read use cases described above, including team membership and roster lists; other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team, Membership, Roster and PlayerProfile create/read use cases described above, including team membership and roster lists; other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposed for owner review in [Issue #146](https://github.com/bbubb/squadsync/issues/146).** After human approval and merge, this will be the accepted Phase 3/Sprint 9 PlayerProfile HTTP contract. Implementation issues require separate readiness reviews.
+**Accepted via [Issue #146](https://github.com/bbubb/squadsync/issues/146) and [PR #147](https://github.com/bbubb/squadsync/pull/147).** This is the accepted Phase 3/Sprint 9 PlayerProfile HTTP contract. Implementation issues require separate readiness reviews.
 
 ## Purpose and ownership
 
