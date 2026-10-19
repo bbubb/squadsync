@@ -33,6 +33,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddScoped<AddPlayerToRoster>();
     builder.Services.AddScoped<CreateRosterEntry>();
     builder.Services.AddScoped<GetRosterEntry>();
+    builder.Services.AddScoped<GetTeamRoster>();
     builder.Services.AddSwaggerGen();
 }
 

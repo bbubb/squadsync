@@ -99,13 +99,17 @@ Infrastructure's `EfRosterPersistence` uses the same scoped `SquadSyncDbContext`
 
 Unit tests exercise the workflow without EF or HTTP. The opt-in `RosterUseCasePersistenceTests` verifies the registered adapter, round trip, and both conflict translations against PostgreSQL in rolled-back transactions. The HTTP workflow below reuses this behavior; no schema change is introduced.
 
-## Development-only roster creation and individual read
+## Development-only roster creation and reads
 
 `POST /api/teams/{teamId}/roster` accepts an existing `teamMembershipId`, nullable `jerseyNumber` (otherwise 1–3 ASCII digits, preserving leading zeros), and canonical string `rosterStatus`: `Active`, `Reserved`, or `Suspended`. Application generates the entry ID and enforces that the membership belongs to the route Team before the shared `AddPlayerToRoster` eligibility/write workflow runs. The original non-HTTP use case remains available.
 
 Creation returns `201 Created` with a Location for `GET /api/teams/{teamId}/roster/{rosterEntryId}`. Both return `{ id, teamMembershipId, person: { id, firstName, lastName }, jerseyNumber, rosterStatus }`. The EF read projection includes only Player memberships belonging to the route Team; it adds no persisted relationship or name columns. Invalid input returns `400 ValidationProblemDetails`; missing references and wrong-Team resources return safe `404 ProblemDetails`; non-Players and duplicates return safe `409 ProblemDetails`. The known membership foreign-key race becomes `RosterMembershipNotFoundException`; unrelated failures and cancellation propagate.
 
-These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. Roster collection GET is deferred to #136; full HTTP/PostgreSQL validation and demo instructions remain #137.
+`GET /api/teams/{teamId}/roster` returns a `200 OK` array using the same `RosterEntryResponse` representation. It includes only persisted roster entries attached to Player memberships in the requested Team, including Active, Reserved and Suspended entries. Unrostered Player memberships and non-Players are excluded. Results are ordered by Person last name, first name, then roster-entry ID. Nullable jersey numbers and leading zeros are preserved. Application checks Team existence separately: an existing Team with no roster entries returns `200 []`, a missing Team returns safe `404 ProblemDetails`, and a malformed or empty Team GUID returns `400 ValidationProblemDetails` before persistence access.
+
+The Docker-independent `TeamRosterQueryTests` checks Npgsql translation of the Team/Player filters, joins and ordering without opening a database connection. Its opt-in PostgreSQL collection test verifies projection, all three statuses, exclusions, cross-Team isolation and identical-name ties with opposing membership/roster ID order. It rolls back every insert and verifies its rows are absent; run it with the database opt-in configuration above using `dotnet test --filter FullyQualifiedName~TeamRosterQueryTests`.
+
+These controllers are mapped only in Development on trusted localhost, following the [accepted contract](../../docs/architecture/membership-roster-http-contract.md). Ordinary tests exercise real controllers with controlled persistence and EF error translation without PostgreSQL. The opt-in adapter projection test rolls back all writes. Full HTTP/PostgreSQL validation and demo instructions remain #137.
 
 ## Explicit Development demo seed
 
@@ -220,7 +224,7 @@ Run against an idle local database: this test collection runs separately from ot
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team and Membership create/read use cases described above; membership list, roster HTTP endpoints and other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team, Membership and Roster create/read use cases described above, including team membership and roster lists; other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
