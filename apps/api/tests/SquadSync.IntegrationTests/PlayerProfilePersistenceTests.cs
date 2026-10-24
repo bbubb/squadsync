@@ -114,6 +114,137 @@ public class PlayerProfilePersistenceTests
         Assert.Null(await new EfPlayerProfilePersistence(context).GetByPersonIdAsync(Guid.NewGuid()));
     }
 
+    [Fact]
+    public async Task GetForUpdateAsync_ReturnsTrackedPlayerProfile()
+    {
+        var id = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var reader = new ProfileReader(id, personId, "Both", entityShape: true);
+
+        await using var context = new SquadSyncDbContext(
+            new DbContextOptionsBuilder<SquadSyncDbContext>()
+                .UseNpgsql("Host=localhost;Database=unused")
+                .AddInterceptors(new SuppressConnection(), reader)
+                .Options);
+
+        var adapter = new EfPlayerProfilePersistence(context);
+
+        var result = await adapter.GetForUpdateAsync(personId);
+
+        Assert.NotNull(result);
+        Assert.Equal(id, result.Id);
+        Assert.Equal(personId, result.PersonId);
+        Assert.Equal(DominantFoot.Both, result.DominantFoot);
+
+        Assert.Equal(EntityState.Unchanged, context.Entry(result).State);
+    }
+
+    [Fact]
+    public async Task GetForUpdateAsync_ReturnsNullWhenProfileIsMissing()
+    {
+        var id = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var reader = new ProfileReader(id, personId, null, empty: true);
+
+        await using var context = new SquadSyncDbContext(
+            new DbContextOptionsBuilder<SquadSyncDbContext>()
+                .UseNpgsql("Host=localhost;Database=unused")
+                .AddInterceptors(new SuppressConnection(), reader)
+                .Options);
+
+        var adapter = new EfPlayerProfilePersistence(context);
+
+        var result = await adapter.GetForUpdateAsync(Guid.NewGuid());
+
+        Assert.Null(result);
+        Assert.Empty(context.ChangeTracker.Entries<PlayerProfile>());
+    }
+
+    [DatabaseFact]
+    public async Task UpdateAsync_PersistsChangesAndPreservesIdentity()
+    {
+        var connection = Environment.GetEnvironmentVariable("ConnectionStrings__SquadSync");
+        Assert.False(string.IsNullOrWhiteSpace(connection), "Opt-in database tests require ConnectionStrings_SquadSync");
+        await using var context = new SquadSyncDbContext(
+            new DbContextOptionsBuilder<SquadSyncDbContext>().UseNpgsql(connection).Options);
+        var person = new Person(Guid.NewGuid(), "Alex", "ProfileUpdate");
+        var id = Guid.NewGuid();
+        var expectedPersonId = person.Id;
+        var profile = new PlayerProfile(id, person.Id, DominantFoot.Left, 70, 150.5m);
+
+        await using (var transaction = await context.Database.BeginTransactionAsync())
+        {
+            context.People.Add(person);
+            context.PlayerProfiles.Add(profile);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            // Load Existing Tracked Profile, Update/Modify, Save, Reload, Test
+            var adapter = new EfPlayerProfilePersistence(context);
+            var trackedProfile = await adapter.GetForUpdateAsync(person.Id);
+            Assert.NotNull(trackedProfile);
+
+            trackedProfile.Update(DominantFoot.Right, 75, 165.25m);
+            await adapter.UpdateAsync(trackedProfile);
+            context.ChangeTracker.Clear();
+
+            var expected = new PlayerProfile(id, expectedPersonId, DominantFoot.Right, 75, 165.25m);
+            var actual = await adapter.GetForUpdateAsync(person.Id);
+            Assert.NotNull(actual);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.PersonId, actual.PersonId);
+            Assert.Equal(expected.DominantFoot, actual.DominantFoot);
+            Assert.Equal(expected.HeightInches, actual.HeightInches);
+            Assert.Equal(expected.WeightPounds, actual.WeightPounds);
+            await transaction.RollbackAsync();
+        }
+        context.ChangeTracker.Clear();
+        Assert.False(await context.People.AnyAsync(entry => entry.Id == person.Id));
+        Assert.False(await context.PlayerProfiles.AnyAsync(entry => entry.Id == profile.Id));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_PropagatesCancellation()
+    {
+        using var source = new CancellationTokenSource();
+        var failure = new OperationCanceledException(source.Token);
+        var interceptor = new FailingSave(failure);
+
+        await using var context = CreateContext(interceptor);
+
+        var profile = new PlayerProfile(Guid.NewGuid(), Guid.NewGuid(), DominantFoot.Left, 70, 150.5m);
+
+        context.PlayerProfiles.Attach(profile);
+        profile.Update(DominantFoot.Right, 72, 175.25m);
+
+        Assert.Same(failure, await Assert.ThrowsAsync<OperationCanceledException>(
+            () => new EfPlayerProfilePersistence(context)
+            .UpdateAsync(new PlayerProfile(Guid.NewGuid(), Guid.NewGuid(), DominantFoot.Both, 70, 150.5m),
+                source.Token)));
+        Assert.Equal(source.Token, interceptor.Token);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_PropagatesUnexpectedSaveFailure()
+    {
+        var failure = new DbUpdateException(
+            "private-provider-detail",
+            new InvalidOperationException());
+
+        await using var context = CreateContext(new FailingSave(failure));
+
+        var profile = new PlayerProfile(
+            Guid.NewGuid(), Guid.NewGuid(), DominantFoot.Left, 70, 150.5m);
+
+        context.PlayerProfiles.Attach(profile);
+        profile.Update(DominantFoot.Right, 72, 175.25m);
+
+        var exception = await Assert.ThrowsAsync<DbUpdateException>(
+            () => new EfPlayerProfilePersistence(context).UpdateAsync(profile));
+
+        Assert.Same(failure, exception);
+    }
+
     private sealed class SuppressConnection : DbConnectionInterceptor
     {
         public override ValueTask<InterceptionResult> ConnectionOpeningAsync(DbConnection connection,
@@ -122,7 +253,12 @@ public class PlayerProfilePersistenceTests
     }
 
     // Return provider-shaped rows through the real EF/Npgsql query pipeline without a socket.
-    private sealed class ProfileReader(Guid id, Guid personId, string? foot, bool empty = false) : DbCommandInterceptor
+    private sealed class ProfileReader(
+        Guid id,
+        Guid personId,
+        string? foot,
+        bool empty = false,
+        bool entityShape = false) : DbCommandInterceptor
     {
         public string Sql { get; private set; } = "";
         public object?[] Parameters { get; private set; } = [];
@@ -133,15 +269,42 @@ public class PlayerProfilePersistenceTests
             Sql = command.CommandText;
             Parameters = command.Parameters.Cast<DbParameter>().Select(parameter => parameter.Value).ToArray();
             Token = cancellationToken;
+
             var table = new DataTable();
             table.Columns.Add("Id", typeof(Guid));
-            table.Columns.Add("PersonId", typeof(Guid));
-            table.Columns.Add("DominantFoot", typeof(string));
-            table.Columns.Add("HeightInches", typeof(int));
+
+            if (entityShape)
+            {
+                // Order used by the tracked-entity query
+                table.Columns.Add("DominantFoot", typeof(string));
+                table.Columns.Add("HeightInches", typeof(int));
+                table.Columns.Add("PersonId", typeof(Guid));
+            }
+            else
+            {
+                // Order used by the existing DTO projection
+                table.Columns.Add("PersonId", typeof(Guid));
+                table.Columns.Add("DominantFoot", typeof(string));
+                table.Columns.Add("HeightInches", typeof(int));
+            }
+
             table.Columns.Add("WeightPounds", typeof(decimal));
-            if (!empty) table.Rows.Add(id, personId, (object?)foot ?? DBNull.Value,
-                foot is null ? DBNull.Value : 70, foot is null ? DBNull.Value : 152.5123m);
-            return ValueTask.FromResult(InterceptionResult<DbDataReader>.SuppressWithResult(table.CreateDataReader()));
+
+            if (!empty)
+            {
+                var storedFoot = (object?)foot ?? DBNull.Value;
+                var height = foot is null ? (object)DBNull.Value : 70;
+                var weight = foot is null ? (object)DBNull.Value : 152.5123m;
+
+                if (entityShape)
+                    table.Rows.Add(id, storedFoot, height, personId, weight);
+                else
+                    table.Rows.Add(id, personId, storedFoot, height, weight);
+            }
+
+            return ValueTask.FromResult(
+                InterceptionResult<DbDataReader>.SuppressWithResult(
+                    table.CreateDataReader()));
         }
     }
 
