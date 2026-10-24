@@ -62,7 +62,13 @@ public class PlayerProfileUseCaseTests
         var token = new CancellationToken(true);
         await Assert.ThrowsAsync<OperationCanceledException>(() => new CreatePlayerProfile(fake, fake)
             .ExecuteAsync(fake.Person.Id, null, null, null, token));
-        await Assert.ThrowsAsync<OperationCanceledException>(() => new GetPlayerProfile(fake).ExecuteAsync(fake.Person.Id, token));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => new GetPlayerProfile(fake)
+            .ExecuteAsync(fake.Person.Id, token));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => new UpdatePlayerProfile(fake)
+            .ExecuteAsync(fake.Person.Id, null, null, null, token));
+        Assert.Equal(0, fake.UpdateLookups);
+        Assert.Equal(0, fake.Writes);
+        Assert.Equal(0, fake.UpdateWrites);
         Assert.Empty(fake.Tokens);
     }
 
@@ -86,31 +92,206 @@ public class PlayerProfileUseCaseTests
         Assert.Null(fake.Profile);
     }
 
+    [Fact]
+    public async Task SuccessfulUpdate_ReplacesAttributesAndPreservesIdentity()
+    {
+        var fake = new Persistence();
+        using var source = new CancellationTokenSource();
+
+        fake.Profile = new PlayerProfile(
+            id: Guid.NewGuid(),
+            personId: fake.Person.Id,
+            dominantFoot: DominantFoot.Left,
+            heightInches: 70,
+            weightPounds: 150.5m);
+
+        var originalId = fake.Profile.Id;
+        var originalPersonId = fake.Profile.PersonId;
+
+        var result = await new UpdatePlayerProfile(fake).ExecuteAsync(
+            fake.Person.Id,
+            DominantFoot.Right,
+            72,
+            175.25m,
+            source.Token);
+
+        Assert.NotNull(result);
+        Assert.Equal(originalId, result.Id);
+        Assert.Equal(originalPersonId, result.PersonId);
+        Assert.Equal(DominantFoot.Right, result.DominantFoot);
+        Assert.Equal(72, result.HeightInches);
+        Assert.Equal(175.25m, result.WeightPounds);
+        Assert.Equal(1, fake.UpdateLookups);
+        Assert.Equal(1, fake.UpdateWrites);
+        Assert.Equal(0, fake.Writes);
+        Assert.All(fake.Tokens, token => Assert.Equal(source.Token, token));
+    }
+
+    [Fact]
+    public async Task MissingProfile_DoesNotUpdate()
+    {
+        var fake = new Persistence();
+
+        var result = await new UpdatePlayerProfile(fake)
+            .ExecuteAsync(fake.Person.Id, DominantFoot.Right, 72, 180m);
+
+        Assert.Null(result);
+        Assert.Equal(1, fake.UpdateLookups);
+        Assert.Equal(0, fake.UpdateWrites);
+        Assert.Equal(0, fake.Writes);
+    }
+
+    [Theory]
+    [InlineData("personId")]
+    [InlineData("dominantFoot")]
+    [InlineData("heightInches")]
+    [InlineData("weightPounds")]
+    public async Task InvalidUpdate_DoesNotSave(string field)
+    {
+        var fake = new Persistence();
+        fake.Profile = new PlayerProfile(
+            id: Guid.NewGuid(),
+            personId: fake.Person.Id,
+            dominantFoot: DominantFoot.Left,
+            heightInches: 70,
+            weightPounds: 150.5m);
+        var originalId = fake.Profile.Id;
+        var originalPersonId = fake.Profile.PersonId;
+
+        var exception = await Assert.ThrowsAsync<PlayerProfileValidationException>(() =>
+            new UpdatePlayerProfile(fake)
+            .ExecuteAsync(
+                field == "personId" ? Guid.Empty : fake.Person.Id,
+                field == "dominantFoot" ? (DominantFoot)99 : null,
+                field == "heightInches" ? 0 : null,
+                field == "weightPounds" ? -1 : null));
+        Assert.Equal(field, exception.Field);
+        Assert.Equal(originalId, fake.Profile.Id);
+        Assert.Equal(originalPersonId, fake.Profile.PersonId);
+        Assert.Equal(DominantFoot.Left, fake.Profile.DominantFoot);
+        Assert.Equal(70, fake.Profile.HeightInches);
+        Assert.Equal(150.5m, fake.Profile.WeightPounds);
+        Assert.Equal(field == "personId" ? 0 : 1, fake.UpdateLookups);
+        Assert.Equal(0, fake.UpdateWrites);
+        Assert.Equal(0, fake.Writes);
+    }
+
+    [Fact]
+    public async Task NullUpdate_ClearsOptionalAttributes()
+    {
+        var fake = new Persistence();
+        fake.Profile = new PlayerProfile(
+            id: Guid.NewGuid(),
+            personId: fake.Person.Id,
+            dominantFoot: DominantFoot.Left,
+            heightInches: 70,
+            weightPounds: 150.5m);
+        var originalId = fake.Profile.Id;
+        var originalPersonId = fake.Profile.PersonId;
+
+        var result = await new UpdatePlayerProfile(fake)
+            .ExecuteAsync(fake.Profile.PersonId, null, null, null);
+
+        Assert.NotNull(result);
+        Assert.Equal(originalId, result.Id);
+        Assert.Equal(originalPersonId, result.PersonId);
+        Assert.Null(result.DominantFoot);
+        Assert.Null(result.HeightInches);
+        Assert.Null(result.WeightPounds);
+        Assert.Equal(1, fake.UpdateLookups);
+        Assert.Equal(1, fake.UpdateWrites);
+        Assert.Equal(0, fake.Writes);
+    }
+
+    [Fact]
+    public async Task UpdateFailure_PropagatesUnchanged()
+    {
+        var failure = new InvalidOperationException("Simulated save failure.");
+        var fake = new Persistence { Failure = failure };
+
+        fake.Profile = new PlayerProfile(
+            id: Guid.NewGuid(),
+            personId: fake.Person.Id,
+            dominantFoot: DominantFoot.Left,
+            heightInches: 70,
+            weightPounds: 150.5m);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            new UpdatePlayerProfile(fake).ExecuteAsync(
+                fake.Person.Id,
+                DominantFoot.Right,
+                72,
+                175.25m));
+
+        Assert.Same(failure, exception);
+        Assert.Equal(1, fake.UpdateLookups);
+        Assert.Equal(0, fake.UpdateWrites);
+        Assert.Equal(0, fake.Writes);
+    }
+
+    // Fake Persistence
     private sealed class Persistence : IPlayerProfilePersistence, IPersonPersistence
     {
         public Person Person { get; } = new(Guid.NewGuid(), "Alex", "Player");
-        public PlayerProfileDetails? Profile { get; private set; }
+        public PlayerProfile? Profile { get; set; }
         public List<CancellationToken> Tokens { get; } = [];
         public int Writes { get; private set; }
+        public int UpdateWrites { get; private set; }
+        public int UpdateLookups { get; private set; }
         public Exception? Failure { get; init; }
-        public Task<PlayerProfileDetails?> GetByPersonIdAsync(Guid personId, CancellationToken cancellationToken = default)
+
+        public Task<PlayerProfileDetails?> GetByPersonIdAsync(
+            Guid personId,
+            CancellationToken cancellationToken = default)
         {
             Tokens.Add(cancellationToken);
-            return Task.FromResult(Profile?.PersonId == personId ? Profile : null);
+
+            return Task.FromResult<PlayerProfileDetails?>(
+                Profile is { } profile && profile.PersonId == personId
+                ? PlayerProfileDetails.From(profile)
+                : null);
         }
-        public Task AddAsync(PlayerProfile profile, CancellationToken cancellationToken = default)
+        public Task AddAsync(
+            PlayerProfile profile,
+            CancellationToken cancellationToken = default)
         {
             Tokens.Add(cancellationToken);
             if (Failure is not null) throw Failure;
             Writes++;
-            Profile = PlayerProfileDetails.From(profile);
+            Profile = profile;
             return Task.CompletedTask;
         }
-        public Task<Person?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public Task<Person?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
         {
             Tokens.Add(cancellationToken);
             return Task.FromResult(id == Person.Id ? Person : null);
         }
-        public Task AddAsync(Person person, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public Task AddAsync(
+            Person person,
+            CancellationToken cancellationToken = default)
+                => throw new NotSupportedException();
+        public Task<PlayerProfile?> GetForUpdateAsync(
+            Guid personId,
+            CancellationToken cancellationToken = default)
+        {
+            UpdateLookups++;
+            Tokens.Add(cancellationToken);
+            return Task.FromResult(
+                Profile?.PersonId == personId
+                ? Profile
+                : null);
+        }
+        public Task UpdateAsync(
+            PlayerProfile profile,
+            CancellationToken cancellationToken = default)
+        {
+            Tokens.Add(cancellationToken);
+
+            if (Failure is not null) throw Failure;
+            UpdateWrites++;
+            return Task.CompletedTask;
+        }
     }
 }

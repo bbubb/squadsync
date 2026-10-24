@@ -256,5 +256,15 @@ public class PlayerProfilesEndpointTests
             return Task.FromResult(id == Person.Id ? Person : null);
         }
         public Task AddAsync(Person person, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
+        public Task<PlayerProfile?> GetForUpdateAsync(
+            Guid personId,
+            CancellationToken cancellationToken = default)
+                => throw new NotSupportedException();
+
+        public Task UpdateAsync(
+            PlayerProfile profile,
+            CancellationToken cancellationToken = default)
+                => throw new NotSupportedException();
     }
 }

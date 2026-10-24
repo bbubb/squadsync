@@ -39,4 +39,13 @@ public sealed class EfPlayerProfilePersistence(SquadSyncDbContext dbContext) : I
             throw new PlayerProfilePersonNotFoundException(exception);
         }
     }
+
+    public async Task UpdateAsync(PlayerProfile profile, CancellationToken cancellationToken = default)
+        => await dbContext.SaveChangesAsync(cancellationToken);
+
+    public Task<PlayerProfile?> GetForUpdateAsync(Guid personId, CancellationToken cancellationToken = default)
+        => dbContext.PlayerProfiles
+        .SingleOrDefaultAsync(
+            profile => profile.PersonId == personId,
+             cancellationToken);
 }

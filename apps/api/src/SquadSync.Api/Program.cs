@@ -24,6 +24,7 @@ builder.Services.AddHealthChecks()
 
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddScoped<UpdatePlayerProfile>();
     builder.Services.AddScoped<CreatePlayerProfile>();
     builder.Services.AddScoped<GetPlayerProfile>();
     builder.Services.AddScoped<CreatePerson>();

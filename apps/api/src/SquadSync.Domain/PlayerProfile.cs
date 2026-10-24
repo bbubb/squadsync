@@ -14,6 +14,37 @@ public sealed class PlayerProfile
             throw new ArgumentException("Person ID cannot be empty.", nameof(personId));
         }
 
+        ValidateAttributes(dominantFoot, heightInches, weightPounds);
+
+        Id = id;
+        PersonId = personId;
+        DominantFoot = dominantFoot;
+        HeightInches = heightInches;
+        WeightPounds = weightPounds;
+    }
+
+    public Guid Id { get; }
+
+    public Guid PersonId { get; }
+
+    public DominantFoot? DominantFoot { get; private set; }
+
+    public int? HeightInches { get; private set; }
+
+    public decimal? WeightPounds { get; private set; }
+
+    public void Update(DominantFoot? dominantFoot, int? heightInches, decimal? weightPounds)
+    {
+        ValidateAttributes(dominantFoot, heightInches, weightPounds);
+
+        DominantFoot = dominantFoot;
+        HeightInches = heightInches;
+        WeightPounds = weightPounds;
+
+    }
+
+    private static void ValidateAttributes(DominantFoot? dominantFoot, int? heightInches, decimal? weightPounds)
+    {
         if (dominantFoot.HasValue && !Enum.IsDefined(dominantFoot.Value))
         {
             throw new ArgumentOutOfRangeException(nameof(dominantFoot), dominantFoot, "Dominant foot must be a defined value.");
@@ -28,21 +59,5 @@ public sealed class PlayerProfile
         {
             throw new ArgumentOutOfRangeException(nameof(weightPounds), weightPounds, "Weight in pounds must be greater than zero.");
         }
-
-        Id = id;
-        PersonId = personId;
-        DominantFoot = dominantFoot;
-        HeightInches = heightInches;
-        WeightPounds = weightPounds;
     }
-
-    public Guid Id { get; }
-
-    public Guid PersonId { get; }
-
-    public DominantFoot? DominantFoot { get; }
-
-    public int? HeightInches { get; }
-
-    public decimal? WeightPounds { get; }
 }
