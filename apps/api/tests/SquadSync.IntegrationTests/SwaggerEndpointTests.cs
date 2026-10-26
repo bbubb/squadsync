@@ -21,12 +21,14 @@ public sealed class SwaggerEndpointTests
                 "/api/teams/{teamId}/roster", "/api/teams/{teamId}/roster/{rosterEntryId}" },
             paths.EnumerateObject().Select(path => path.Name).Order().ToArray());
         var profile = paths.GetProperty("/api/people/{personId}/player-profile");
-        Assert.Equal(new[] { "get", "post" }, profile.EnumerateObject().Select(method => method.Name).Order().ToArray());
+        Assert.Equal(new[] { "get", "post", "put" }, profile.EnumerateObject().Select(method => method.Name).Order().ToArray());
         Assert.Equal(new[] { "201", "400", "404", "409" }, profile.GetProperty("post").GetProperty("responses")
             .EnumerateObject().Select(status => status.Name).Order().ToArray());
         Assert.Equal(new[] { "200", "400", "404" }, profile.GetProperty("get").GetProperty("responses")
             .EnumerateObject().Select(status => status.Name).Order().ToArray());
-        foreach (var (method, status) in new[] { ("post", "201"), ("get", "200") })
+        Assert.Equal(new[] { "200", "400", "404" }, profile.GetProperty("put").GetProperty("responses")
+            .EnumerateObject().Select(status => status.Name).Order().ToArray());
+        foreach (var (method, status) in new[] { ("post", "201"), ("get", "200"), ("put", "200") })
         {
             Assert.Equal("#/components/schemas/PlayerProfileResponse", profile.GetProperty(method).GetProperty("responses")
                 .GetProperty(status).GetProperty("content").GetProperty("application/json").GetProperty("schema").GetProperty("$ref").GetString());
