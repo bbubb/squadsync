@@ -164,7 +164,7 @@ public class PlayerProfilePersistenceTests
     public async Task UpdateAsync_PersistsChangesAndPreservesIdentity()
     {
         var connection = Environment.GetEnvironmentVariable("ConnectionStrings__SquadSync");
-        Assert.False(string.IsNullOrWhiteSpace(connection), "Opt-in database tests require ConnectionStrings_SquadSync");
+        Assert.False(string.IsNullOrWhiteSpace(connection), "Opt-in database tests require ConnectionStrings__SquadSync");
         await using var context = new SquadSyncDbContext(
             new DbContextOptionsBuilder<SquadSyncDbContext>().UseNpgsql(connection).Options);
         var person = new Person(Guid.NewGuid(), "Alex", "ProfileUpdate");
@@ -219,8 +219,7 @@ public class PlayerProfilePersistenceTests
 
         Assert.Same(failure, await Assert.ThrowsAsync<OperationCanceledException>(
             () => new EfPlayerProfilePersistence(context)
-            .UpdateAsync(new PlayerProfile(Guid.NewGuid(), Guid.NewGuid(), DominantFoot.Both, 70, 150.5m),
-                source.Token)));
+            .UpdateAsync(profile, source.Token)));
         Assert.Equal(source.Token, interceptor.Token);
     }
 
@@ -243,6 +242,27 @@ public class PlayerProfilePersistenceTests
             () => new EfPlayerProfilePersistence(context).UpdateAsync(profile));
 
         Assert.Same(failure, exception);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ConcurrencyFailure_MapsToProfileNotFound()
+    {
+        var failure = new DbUpdateConcurrencyException(
+            "private-provider-detail");
+
+        await using var context = CreateContext(new FailingSave(failure));
+
+        var profile = new PlayerProfile(
+            Guid.NewGuid(), Guid.NewGuid(), DominantFoot.Left, 70, 150.5m);
+
+        context.PlayerProfiles.Attach(profile);
+        profile.Update(DominantFoot.Right, 72, 175.25m);
+
+        var exception = await Assert.ThrowsAsync<PlayerProfileNotFoundException>(
+            () => new EfPlayerProfilePersistence(context).UpdateAsync(profile));
+
+        Assert.Same(failure, exception.InnerException);
+        Assert.DoesNotContain("private-provider-detail", exception.Message);
     }
 
     private sealed class SuppressConnection : DbConnectionInterceptor

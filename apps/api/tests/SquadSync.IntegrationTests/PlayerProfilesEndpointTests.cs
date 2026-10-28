@@ -1,11 +1,9 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http.Json;
-using System.Runtime;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SquadSync.Api.PlayerProfiles;
@@ -88,6 +86,7 @@ public class PlayerProfilesEndpointTests
         using var client = factory.CreateClient();
         var route = $"/api/people/{id}/player-profile";
         await AssertProblem(await Post(client, route, "{}"), HttpStatusCode.BadRequest);
+        await AssertProblem(await Put(client, route, "{}"), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync(route), HttpStatusCode.BadRequest);
         Assert.Equal(0, fake.Calls);
     }

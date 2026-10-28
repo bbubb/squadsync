@@ -40,8 +40,17 @@ public sealed class EfPlayerProfilePersistence(SquadSyncDbContext dbContext) : I
         }
     }
 
-    public async Task UpdateAsync(PlayerProfile profile, CancellationToken cancellationToken = default)
-        => await dbContext.SaveChangesAsync(cancellationToken);
+    public async Task UpdateAsync(PlayerProfile profile,CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException exception)
+        {
+            throw new PlayerProfileNotFoundException(exception);
+        }
+    }
 
     public Task<PlayerProfile?> GetForUpdateAsync(Guid personId, CancellationToken cancellationToken = default)
         => dbContext.PlayerProfiles

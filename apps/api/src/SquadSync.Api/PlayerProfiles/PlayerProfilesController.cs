@@ -83,6 +83,10 @@ public sealed class PlayerProfilesController(CreatePlayerProfile createProfile, 
         {
             return NotFound();
         }
+        catch (PlayerProfileNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet]
