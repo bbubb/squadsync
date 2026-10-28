@@ -86,7 +86,7 @@ public class PlayerProfilesEndpointTests
         using var client = factory.CreateClient();
         var route = $"/api/people/{id}/player-profile";
         await AssertProblem(await Post(client, route, "{}"), HttpStatusCode.BadRequest);
-        await AssertProblem(await Put(client, route, "{}"), HttpStatusCode.BadRequest);
+        await AssertProblem(await Put(client, route, """{"dominantFoot":null,"heightInches":null,"weightPounds":null}"""), HttpStatusCode.BadRequest);
         await AssertProblem(await client.GetAsync(route), HttpStatusCode.BadRequest);
         Assert.Equal(0, fake.Calls);
     }
