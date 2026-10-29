@@ -117,7 +117,28 @@ These controllers are mapped only in Development on trusted localhost, following
 
 Creation returns `201 Created` with `{ id, personId, dominantFoot, heightInches, weightPounds }` and a Location for `GET /api/people/{personId}/player-profile`. GET returns the same typed representation or safe `404 ProblemDetails` for a missing Person/profile. Invalid input returns `400 ValidationProblemDetails`; duplicate creation, including the known PostgreSQL unique-index race, returns safe `409 ProblemDetails`. The known Person foreign-key race returns 404; unrelated errors and cancellation propagate through existing safe HTTP conventions.
 
-These routes are mapped only in Development for trusted localhost use, following the [accepted PlayerProfile contract](../../docs/architecture/player-profile-http-contract.md). Profiles are never created automatically by Person, membership or roster workflows. PUT remains deferred. Application, real-controller HTTP and intercepted Npgsql adapter tests run without PostgreSQL; complete HTTP-to-PostgreSQL profile workflow validation belongs to the final Sprint 9 slice.
+`PUT /api/people/{personId}/player-profile` fully replaces the three attributes on an existing profile and returns `200 OK` with the same `id` and `personId`. All three JSON property names are required; null explicitly clears a value. Missing properties or invalid values return 400; an absent Person/profile returns 404 without creating anything.
+
+These routes are mapped only in Development for trusted localhost use, following the [accepted PlayerProfile contract](../../docs/architecture/player-profile-http-contract.md). Profiles are never created automatically by Person, membership or roster workflows. Application, real-controller HTTP and intercepted Npgsql adapter tests run without PostgreSQL; the opt-in [HTTP/PostgreSQL tests](#http-to-postgresql-validation) verify the persisted workflow.
+
+### Local Person-to-profile workflow
+
+Configure the existing local database connection and start the API in Development at `http://localhost:5050` using the setup above. These anonymous routes are for trusted localhost only. Swagger at `/swagger` describes POST/GET/PUT and their responses. **Successful manual POST and PUT requests persist changes**; use intentional development data. The automated tests below roll back their writes.
+
+```powershell
+$person = Invoke-RestMethod http://localhost:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"Alex","lastName":"Profile"}'
+$profileUrl = "http://localhost:5050/api/people/$($person.id)/player-profile"
+# GET here returns 404: creating a Person does not create a profile.
+$created = Invoke-WebRequest $profileUrl -Method Post -ContentType 'application/json' -Body '{"dominantFoot":"Right","heightInches":70,"weightPounds":152.5}'
+$created.StatusCode # 201
+$original = Invoke-RestMethod $created.Headers.Location # 200
+$updated = Invoke-RestMethod $profileUrl -Method Put -ContentType 'application/json' -Body '{"dominantFoot":null,"heightInches":71,"weightPounds":null}'
+$current = Invoke-RestMethod $profileUrl # 200; foot and weight are null, height is 71
+$current.id -eq $original.id # True
+$current.personId -eq $person.id # True
+```
+
+A second profile POST returns 409 without changing the profile. POST `{}` explicitly creates a blank profile; PUT `{}` returns 400 because all property names are required. PUT never creates a missing profile. No membership is required, and memberships on multiple Teams share this single Person-level profile; jersey numbers and roster status stay on each Team's roster entry.
 
 ## Explicit Development demo seed
 
@@ -245,15 +266,15 @@ Remove-Item Env:ConnectionStrings__SquadSync
 dotnet test
 ```
 
-`PeopleTeamsHttpPersistenceTests` and `MembershipRosterHttpPersistenceTests` supply the explicit local connection to an in-process Development test host, retaining the real Person/Team/Membership/Roster persistence adapters. Each sequential POST and GET uses a distinct scoped EF context enlisted in one test-owned connection/transaction. The membership/roster flow covers retrievable Locations, both ordered collections, all statuses, leading-zero/nullable jerseys, staff eligibility, unrostered Players and cross-Team isolation. Each rejected 400/404/409 request is checked for safe ProblemDetails and unchanged complete-row fingerprints inside the transaction, including real duplicate inserts.
+`PeopleTeamsHttpPersistenceTests`, `MembershipRosterHttpPersistenceTests` and `PlayerProfileHttpPersistenceTests` supply the explicit local connection to an in-process Development test host, retaining the real Person/Team/Membership/Roster/Profile persistence adapters. Each sequential POST, GET and PUT uses a distinct scoped EF context enlisted in one test-owned connection/transaction. The membership/roster flow covers retrievable Locations, both ordered collections, all statuses, leading-zero/nullable jerseys, staff eligibility, unrostered Players and cross-Team isolation. The profile flow covers explicit blank creation without membership, full replacement, decimal precision, selective/all-null clearing, stable identity, two-Team sharing, and absence of automatic profiles or duplicate roster entries. Each rejected 400/404/409 request is checked for safe ProblemDetails and unchanged complete-row fingerprints inside the transaction, including real duplicate inserts in the membership/roster tests.
 
-A separate connection verifies server writes remain uncommitted. The host is disposed and the transaction rolls back in `finally`, including after deliberately injected assertion failures in both workflows. Complete ordered-row SHA-256 fingerprints verify all five application tables and migration history are unchanged after success and failure. Existing/demo records need not be absent and are never edited or deleted by these HTTP tests. The complete `Category=Database` suite also includes the existing isolated migration, seed and adapter tests; use the full command above, not only the new class filter.
+A separate connection verifies server writes remain uncommitted. The host is disposed and the transaction rolls back in `finally`, including after deliberately injected assertion failures in all three workflows. Complete ordered-row SHA-256 fingerprints verify all five application tables and migration history are unchanged after success and failure. Existing/demo records need not be absent and are never edited or deleted by these HTTP tests. The complete `Category=Database` suite also includes the existing isolated migration, seed and adapter tests; use the full command above, not only the new class filter.
 
 Run against an idle local database: this test collection runs separately from other xUnit collections and briefly locks application tables against concurrent writes, failing after five seconds if a lock cannot be acquired. Do not run manual writes or migrations concurrently. No test commits records, uses reserved demo IDs, truncates tables, or removes volumes. Ordinary tests remain database-independent; `SwaggerEndpointTests` verifies the Development OpenAPI routes and documented responses without PostgreSQL.
 
 ## Not included yet
 
-Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team, Membership, Roster and PlayerProfile create/read use cases described above, including team membership and roster lists; other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
+Infrastructure uses EF Core with Npgsql, explicitly maps the current `Person`, `Team`, `TeamMembership`, `PlayerProfile`, and `RosterEntry` domain entities, and owns their migrations. Opt-in integration tests prove persistence and structural uniqueness against local PostgreSQL. Application includes AddPlayerToRoster and the People, Team, Membership, Roster and PlayerProfile create/read use cases described above, PlayerProfile updates, and team membership and roster lists; other CRUD workflows remain future work. PostgreSQL and Compose provide a local development dependency only. Authentication, a frontend, and soccer-subber integration are not included yet.
 
 ## References
 
