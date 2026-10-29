@@ -161,6 +161,7 @@ public class PlayerProfilePersistenceTests
     }
 
     [DatabaseFact]
+    [Trait("Category", "Database")]
     public async Task UpdateAsync_PersistsChangesAndPreservesIdentity()
     {
         var connection = Environment.GetEnvironmentVariable("ConnectionStrings__SquadSync");

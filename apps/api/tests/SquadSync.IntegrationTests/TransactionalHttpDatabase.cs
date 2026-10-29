@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using SquadSync.Application.Memberships;
 using SquadSync.Application.People;
+using SquadSync.Application.PlayerProfiles;
 using SquadSync.Application.Rosters;
 using SquadSync.Application.Teams;
 using SquadSync.Infrastructure.Persistence;
@@ -75,6 +76,7 @@ internal sealed class TransactionalHttpDatabase
                     .GetConnectionString("SquadSync"), StringComparison.Ordinal),
                     "The HTTP host must receive the opted-in database configuration.");
                 Assert.IsType<EfPersonPersistence>(scope.ServiceProvider.GetRequiredService<IPersonPersistence>());
+                Assert.IsType<EfPlayerProfilePersistence>(scope.ServiceProvider.GetRequiredService<IPlayerProfilePersistence>());
                 Assert.IsType<EfTeamPersistence>(scope.ServiceProvider.GetRequiredService<ITeamPersistence>());
                 Assert.IsType<EfMembershipPersistence>(scope.ServiceProvider.GetRequiredService<IMembershipPersistence>());
                 Assert.IsType<EfRosterPersistence>(scope.ServiceProvider.GetRequiredService<IRosterPersistence>());
