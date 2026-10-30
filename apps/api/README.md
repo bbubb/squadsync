@@ -30,6 +30,20 @@ The in-process HTTP tests verify liveness, unavailable-database readiness, Devel
 
 ## Local PostgreSQL smoke check
 
+With Docker Desktop running in Linux-container mode, Docker Compose v2, Windows PowerShell 5.1+ and .NET 10 available, run this from the repository root:
+
+```powershell
+powershell -NoProfile -File apps/api/scripts/Test-LocalSmoke.ps1
+```
+
+First create the ignored `infra/docker/.env` using the [Compose setup](../../infra/docker/README.md). The script privately resolves those settings, builds the API, starts PostgreSQL and a loopback API, then verifies `/health` and `/health/ready` return **200/200**, **200/503** with PostgreSQL stopped, and **200/200** after restart. No schema, migrations or database tests are needed. Ordinary `dotnet test` remains Docker-independent. Options: `-ApiPort 5051` and `-TimeoutSeconds 120` (defaults: 5050 and 90 seconds per command/transition).
+
+The command refuses existing Compose PostgreSQL containers (even stopped), containers using the data volume, and occupied API/database ports. Their owner must deliberately make these resources available first. A uniquely labelled Compose one-off container uses the existing volume. `finally` stops only the launched API process and removes only the owned container, including after failures; the data volume and shared Compose network remain intact. Credentials are never printed or passed as command-line arguments, and the caller's environment is unchanged.
+
+Failures exit nonzero; Docker/Desktop access blockers are distinguished from build and health failures. Native logs are suppressed to protect credentials. If sandbox access is blocked, run directly on the approved Windows host and confirm all transitions and cleanup. Force-closing PowerShell prevents `finally` cleanup.
+
+For manual API sessions, configure the connection string separately as follows.
+
 Start PostgreSQL using [`infra/docker/README.md`](../../infra/docker/README.md). With the example `.env` values, configure the API connection string as follows.
 
 In PowerShell, from `apps/api`:
