@@ -8,82 +8,74 @@
 | Date | 2026-10-31 |
 | Owner | Brandon Bunch |
 | Status | Draft |
-| Change Summary | Phase 4 first coach journey, responsive navigation, and local UI behavior. |
+| Change Summary | Phase 4 experience, adaptable navigation structure, and design-versus-delivery conventions. |
 
 ## Purpose
 
-Capture the smallest usable coach-centered web experience and recurring UX principles. This is the public MVP UI direction, not an account/product-authority design or an extensive design system. The implementation boundary is established by [ADR 0007](../adr/0007-web-foundation-architecture.md) once accepted.
+Establish a cohesive coach-facing experience that can guide design exploration and successive MVP slices. **A UX concept or mockup may show more than the current implementation delivers.** Functional delivery remains governed by approved phase/issue scope; technical implementation choices belong to [ADR 0007](../adr/0007-web-foundation-architecture.md).
 
-## UX Goal
+## Experience Goal
 
-SquadSync should feel like a practical coaching workspace, not a generic admin dashboard.
+SquadSync should feel like a modern, organized coaching workspace, not a generic administrative dashboard. It should help coaches find their Team, understand the roster, and act quickly. Later MVP work extends this toward availability, match preparation, and lineup planning.
 
-The MVP should help coaches quickly answer:
+Principles:
 
-- Who is on my roster?
-- Who is available?
-- What match am I planning for?
-- What lineup am I building?
-- What needs attention before game time?
+- Clear context and navigation hierarchy, especially when moving between Teams.
+- Calm, distinctive visual hierarchy with purposeful emphasis; avoid visual noise without sacrificing personality.
+- Fast common actions, progressive disclosure of detail, and predictable return paths.
+- Responsive, keyboard-accessible, touch-usable interactions with visible focus and useful feedback.
+- Component and layout flexibility so later capabilities can fit naturally without dictating their implementation today.
 
-## UX Principles
+## Working Application Shell
 
-- Prioritize clarity over visual complexity and make common coaching tasks quick.
-- Use natural soccer language, a clear active Team context, and predictable back navigation.
-- Prefer progressive disclosure over dense screens.
-- Expose functionality through accessible buttons, labeled controls, keyboard navigation and visible focus states; do not rely on color or hover alone.
-- Keep initial page and component patterns adaptable to desktop and narrow-screen use without committing to a native mobile application.
+The initial design direction separates workspace scope from selected-Team navigation:
 
-## Phase 4 First Journey (Development-only)
+| Region | Intended UX responsibility |
+|---|---|
+| **Global/top region** | Product identity, Team/workspace selection, and a predictable place for app-level utilities such as settings |
+| **Team navigation** | Contextual sections for the selected Team, in a left sidebar on roomy screens |
+| **Main workspace** | Current screen and primary coaching tasks |
+| **Contextual detail** | Player information in a desktop side panel when useful, or a full-page route on smaller screens |
 
-The local demonstration follows this path:
+The Team selector may use names, initials, compact symbols, or a horizontally scrollable presentation; compare actual usability and density before settling on one. Distinctive components and visual assets are welcome when they improve this experience. Avoid tying navigation to an icon field that the backend does not provide.
 
-1. **Workspace landing:** display available Teams or a useful empty state with a Create Team action. There is no sign-in or personalized home state in Phase 4.
-2. **Select or create Team:** show the selected Team context in navigation and provide a direct way to reach its roster.
-3. **Roster:** display rostered players with available name, jersey number and status; support loading, no-players and API failure states.
-4. **Add Player:** explicitly choose **Select Existing Person** or **Create New Person**. Selection is limited to a narrow local Development-only lookup, not a public identity search. Creation and selection then use the existing Person → TeamMembership (Player) → RosterEntry API workflow. Explain conflicts and incomplete steps without inventing or bypassing server-side business rules.
-5. **Player details:** show represented Person information, team-context roster data, and optional person-level PlayerProfile data. Allow deliberate PlayerProfile creation or editing using existing API fields; never create a profile automatically because a Person or roster entry was created.
+For narrow screens, adapt the same information hierarchy into a compact Team selector and accessible navigation/menu pattern. Player details must have a stable navigable route; the desktop side panel is a convenient presentation of that detail, not a second independent content model.
 
-All management actions are Development-only capability demonstrations. Their visibility does not assert authenticated permissions, identity verification, account ownership, or future entitlement rules.
+This is an initial UX direction, not a requirement to implement every shell region or hypothetical navigation level in Phase 4.
 
-## Desktop and Responsive Navigation
+## First Functional Journey — Phase 4
 
-Use a lightweight separation of context:
+1. **Workspace:** find an existing Team or create one; provide a useful empty state.
+2. **Team:** enter the selected Team's overview or roster, maintaining clear context.
+3. **Roster:** see player names, jersey numbers and roster statuses.
+4. **Add Player:** choose **Select Existing Person** or **Create New Person**, then complete the supported Team membership and roster workflow.
+5. **Player details:** see relevant Person, roster, and optional person-level PlayerProfile information; explicitly create or edit the existing PlayerProfile fields when needed.
 
-- **Workspace/top region:** product identity, current Team, and an accessible Team switcher. Represent Teams with readable labels or initials until real assets exist. A constrained, scrollable selection pattern is acceptable if there are many Teams, but text must remain discoverable without relying exclusively on icon recognition.
-- **Team navigation/sidebar:** contextual sections such as Overview and Roster, with a clear active state. Avoid empty navigation items for unimplemented features.
-- **Main workspace:** selected Team page, roster and forms; reserve space for useful content, not decorative cards.
-- **Player details:** use a stable navigable detail route as the source of truth. On roomy desktop screens, the same detail content can appear in a side panel so the roster remains visible; on narrow screens it becomes a full page. Closing the desktop panel should return focus to the selected roster row where practical.
-- **Narrow screen:** replace persistent dense navigation with a compact Team selector and a menu/drawer; give forms and Player details the screen width they need. Preserve keyboard and touch accessibility.
+The current API provides Development-only management capabilities without authenticated user permissions. The functional UI demonstrates these operations; it does not define who will be authorized to perform them later. Refer to the domain model and API contracts for underlying behavior.
 
-This describes a user mental model, not an authorization or nested-organization structure. Do not build speculative multi-level organization navigation in Phase 4.
+## Design Exploration Versus Shipped Behavior
 
-## States and Feedback
+- **Mockups and prototypes:** may include anticipated structural elements—such as a settings affordance or future navigation area—to test layout and discoverability. Mark features without implemented behavior as conceptual.
+- **Running MVP:** controls should represent real actions. If a deliberately retained placeholder helps orientation, make its unavailable state clear and accessible; otherwise omit it from the functional UI until its behavior exists. Do not route users into empty, apparently functional pages.
+- **Evolution:** preserve sensible layout slots, tokens, reusable components and navigation boundaries rather than constructing inactive feature systems in advance.
 
-Each connected view should demonstrate:
+This approach permits a coherent product vision without increasing the current functional scope.
 
-- **Loading:** clear pending state or skeleton without flashing misleading empty content.
-- **Empty:** a meaningful next action, such as Create Team or Add Player.
-- **Error:** explain failed loading or mutation in plain language; keep the user's valid form entries available for correction. Do not expose raw database diagnostics.
-- **Success:** confirm the action, update the relevant Team/roster view, and avoid duplicate submissions.
-- **Validation:** labeled fields, required/optional indicators, inline field errors and appropriate server error summaries. Backend validation remains authoritative.
-- **Navigation:** a selected Team and back/close behavior that preserve orientation; deep-linked detail routes should remain usable when opened directly.
+## UI States and Accessibility
 
-## Early Screen Areas
+Connected views and forms need meaningful loading, empty, error, validation, and success feedback. Preserve submitted information when correcting errors, prevent accidental repeated actions, and update the visible roster after a successful mutation.
 
-Phase 4: workspace landing, Team overview/selection, roster, Add Player, Player details and optional PlayerProfile form.
+Design forms with labels, appropriate keyboard behavior, clear focus order, screen-reader announcements where needed, and touch targets appropriate to narrow layouts. A desktop detail panel should have discoverable close/back behavior and return focus sensibly.
 
-Later MVP phases may add match planning, availability, manual lineup builder, and lineup review; do not create nonfunctional navigation for them now.
+## Visual Language
 
-## Visual Direction and Tokens
+Use consistent typography, spacing, color roles, surfaces and iconography with room for custom SquadSync components and refinements. Accessible primitives from a toolkit can accelerate quality; they are not a cap on layout, branding or interaction sophistication.
 
-Prefer a modern, calm, functional interface with restrained emphasis and enough contrast. Use reusable spacing, typography, surface and accent tokens so refinement stays inexpensive. Reuse accessible primitives and consistent icons; no custom identity artwork or finalized brand palette is required to make the first journey usable.
+The [brand notes](brand-notes.md) remain a lightweight guide until a working shell and visual review justify more concrete tokens or assets.
 
-The canonical [brand notes](brand-notes.md) remain intentionally lightweight until we review a working shell.
+## Later UX Work
 
-## Deferred UX Decisions
-
-Keep account-based experiences, wider platform concepts, native mobile development, and later MVP match/lineup interactions outside Phase 4. Do not treat deferred areas as requirements for the first scaffold.
+Keep later MVP workflows and broader product ideas in design exploration when relevant to the shell, but do not imply their implementation in Phase 4. Review the navigation composition, responsive behavior, and actual styling after the first connected screens are usable.
 
 ## References
 
