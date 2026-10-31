@@ -38,7 +38,7 @@ The MVP should help coaches quickly answer:
 
 The local demonstration follows this path:
 
-1. **Workspace landing:** display available Teams or a useful empty state with a Create Team action. There is no sign-in, default Team, personalized dashboard or notification feed in Phase 4.
+1. **Workspace landing:** display available Teams or a useful empty state with a Create Team action. There is no sign-in or personalized home state in Phase 4.
 2. **Select or create Team:** show the selected Team context in navigation and provide a direct way to reach its roster.
 3. **Roster:** display rostered players with available name, jersey number and status; support loading, no-players and API failure states.
 4. **Add Player:** explicitly choose **Select Existing Person** or **Create New Person**. Selection is limited to a narrow local Development-only lookup, not a public identity search. Creation and selection then use the existing Person → TeamMembership (Player) → RosterEntry API workflow. Explain conflicts and incomplete steps without inventing or bypassing server-side business rules.
@@ -83,7 +83,7 @@ The canonical [brand notes](brand-notes.md) remain intentionally lightweight unt
 
 ## Deferred UX Decisions
 
-Defer authenticated account controls, public/private player discovery, advanced organization navigation, inbox/chat, notifications, multi-team personalized home content, native mobile app design, and match/lineup interaction details until their dedicated phases. Do not treat these deferred areas as requirements for the first scaffold.
+Keep account-based experiences, wider platform concepts, native mobile development, and later MVP match/lineup interactions outside Phase 4. Do not treat deferred areas as requirements for the first scaffold.
 
 ## References
 
