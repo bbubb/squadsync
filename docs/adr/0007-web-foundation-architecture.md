@@ -1,72 +1,64 @@
-# ADR 0007: Web Foundation and Local API Boundary
+# ADR 0007: Web Foundation and API Integration
 
 ## Status
 
-Proposed for Phase 4 under [issue #158](https://github.com/bbubb/squadsync/issues/158). This ADR becomes accepted only after owner review and merge. It does not authorize frontend implementation by itself.
+Proposed for Phase 4 under [#158](https://github.com/bbubb/squadsync/issues/158), pending owner approval. This ADR establishes technical direction; implementation is separately issue-backed.
 
 ## Context
 
-Phase 3 provides a tested ASP.NET Core API for represented People, Teams, Memberships, Rosters and optional person-level PlayerProfiles. Management controllers are anonymous and mapped only in Development. `apps/web/` is a placeholder. Phase 4 needs a professional, maintainable coach-facing UI without turning these local development endpoints into a publicly accessible application.
-
-The web client consumes API contracts. It does not own persistent soccer business rules.
+SquadSync has a Development-only ASP.NET Core API and no web application scaffold. Phase 4 introduces a coach-facing web client while preserving the backend as the authoritative business and persistence boundary.
 
 ## Decision
 
-### Framework and runtime
+### Application stack
 
-- Use Next.js App Router, React, and TypeScript with strict type checking in `apps/web/`.
-- Prefer the current stable Next.js 16 line and Node.js 26 LTS; pin the chosen runtime major and exact package-manager version in the scaffold. Verify toolchain compatibility locally and in CI before considering the choice implemented. Node.js 24 LTS is a documented fallback only if an actual compatibility problem is found.
-- Use pnpm with one committed lockfile for reproducible installs.
-- Use Next.js layouts and routing for navigation. Keep interactive roster workflows in focused Client Components; do not turn Next.js into a second business/API backend.
+- Use Next.js App Router, React, and strict TypeScript in `apps/web/`.
+- Target Next.js 16 and Node.js 26 LTS, with pnpm and a committed lockfile. Pin validated runtime and package-manager versions during scaffolding. Node.js 24 LTS remains a compatibility fallback if a concrete issue is found.
+- Organize code by feature, with shared components where reuse is meaningful. Use Next.js routing and layouts; choose Server or Client Components according to actual rendering and interaction needs.
 
-### API contracts and data management
+### API and state
 
-- Generate TypeScript HTTP contract types from the ASP.NET Core API's OpenAPI document using `openapi-typescript`. Use `openapi-fetch` as the typed HTTP client rather than hand-maintained copies of backend response models.
-- The scaffold issue must define and verify a repeatable type-regeneration command. Generated types must be reviewable and buildable without requiring a live API during every frontend CI run; API contract changes require regenerating those types. Add drift detection when there is a reliable export mechanism, rather than inventing one in this ADR.
-- Use TanStack Query for remote API reads, mutations and cache invalidation. Keep transient interface state (open drawer, selected tab, form draft) in local React state or the appropriate form helper. Do not duplicate remote server data in a second mutable global store.
-- Keep frontend validation for usability; the ASP.NET Core Application/Domain remain authoritative for roster eligibility, membership rules, validation and persistence.
+- Derive HTTP types from the ASP.NET Core OpenAPI contract with `openapi-typescript`; use `openapi-fetch` for typed requests. The scaffold must establish a reproducible regeneration workflow without requiring a live backend for every frontend CI build.
+- Use TanStack Query for remote data, mutations, and cache invalidation. Keep transient interaction and form state local where appropriate.
+- Treat frontend validation as user feedback, not a replacement for backend domain rules or authorization.
 
-### Presentation and accessibility
+### Interface foundation
 
-- Use Tailwind CSS with semantic design tokens/CSS variables; use a small set of accessible shadcn/ui-style component primitives and Lucide icons where useful. Avoid a large design system, custom icon domain model or speculative asset pipeline.
-- Organize implementation by user-facing feature with a small shared UI layer, not a maze of generic services and abstractions.
-- Follow the current [UX notes](../product/ux-notes.md) for the local workspace/Team/roster journey, responsive details and form states. The UX pattern must remain usable by keyboard, touch and assistive technology.
+- Use Tailwind CSS, reusable styling tokens, accessible component primitives (including shadcn/ui), and icons such as Lucide as useful starting tools.
+- Component source may be adapted, composed, or replaced with custom SquadSync components when interaction quality, identity, or maintainability warrants it. Do not confuse avoiding unnecessary framework complexity with limiting visual design.
+- Keep screen structure, navigation models, and design-stage placeholders in [UX notes](../product/ux-notes.md), not in this technology decision.
 
-### Local-only network and security boundary
+### Local development boundary
 
-- Run the web development server and ASP.NET API on loopback interfaces; use explicitly configured local origin(s) and a narrow ASP.NET Core Development-only CORS policy to permit the browser app to call the API across local ports.
-- Browser components call the ASP.NET Core API directly via an explicitly configured local base URL. Do not add management proxy routes, Next.js Route Handlers, Server Actions or rewrites merely to avoid CORS.
-- Verify loopback binding and that management endpoints are absent outside Development. CORS is a browser-origin policy, not authentication or a network firewall; localhost-only binding plus endpoint gating are distinct safeguards.
-- No hosted or network-accessible anonymous management UI is authorized. Authentication, account identity, profile stewardship and authorization are deferred to a separate approved design. Development-only profile create/edit exposure does not establish permission policy.
+- Keep the web dev server and API bound to trusted loopback interfaces. Configure an explicit local API base URL and a narrowly scoped, Development-only ASP.NET Core CORS policy for browser calls across local ports.
+- Start with direct browser-to-API HTTP calls; do not introduce Next.js management proxies, Route Handlers, Server Actions, or rewrites without a concrete need and reviewed security boundary.
+- Verify that anonymous management endpoints remain unavailable outside Development. CORS does not authenticate callers or prevent direct network requests. No public hosting of this management UI is authorized.
 
-### Quality and validation baseline
+### Quality baseline
 
-- Configure ESLint, Prettier, TypeScript checks, a production build and frontend tests as explicit, separately runnable package scripts. Do not assume `next build` runs the linter.
-- Use Vitest and React Testing Library for behavior-focused components/hooks when appropriate. Start with a real local API integration smoke check once the connected journey exists; introduce browser automation only where it offers durable value.
-- Add a lightweight web CI job for install, formatting, lint, type check, tests and build once the scaffold actually supplies these commands. PostgreSQL-backed checks remain separately opt-in.
-- The exact commands and dependency versions belong to the scaffold and `apps/web/README.md`, then `apps/web/AGENTS.md` should refer to the verified commands.
+- Establish explicit lint, format, type-check, test, and production-build commands. Use ESLint, Prettier, Vitest, and React Testing Library where their respective checks apply.
+- Add a lightweight frontend CI gate once those scripts exist. Validate a real local API journey separately when integration is available; add browser automation when it provides durable coverage.
+- Record actual commands and dependency versions in the web area's setup documentation after they are verified.
 
-## Trade-offs and alternatives
+## Alternatives and trade-offs
 
-- **Plain React + Vite:** viable for a browser-only SPA, but Next.js offers established routing/layout conventions and an extensible web application structure without requiring us to use server-side management proxies. Next.js does not automatically make the source code a React Native mobile app; the HTTP API remains the reusable cross-platform boundary.
-- **Handwritten API DTOs / Axios:** possible but risk type drift or extra wrapper code. Generated OpenAPI types with `openapi-fetch` are the narrower default; contract-generation workflow must be made repeatable.
-- **Next.js management proxy / BFF:** may be useful in a later authenticated architecture, but adds an additional accessible boundary with no current need or approved security design.
-- **Node 24 LTS:** a sound fallback, but 26 is now Active LTS for a new web application. Follow observed compatibility rather than upgrade for novelty.
+- **React with Vite:** a sound web-only approach; Next.js was chosen for its routing/layout model and extensible web structure, not because we need a second backend. Neither approach automatically creates a native mobile app; the API is the cross-platform reuse boundary.
+- **Handwritten DTOs or Axios:** workable, but generated OpenAPI types reduce duplication and contract drift. Their regeneration workflow needs explicit maintenance.
+- **Next.js proxy/BFF:** potentially useful after an authenticated design exists; it would add an unnecessary access boundary now.
+- **Node.js 24 LTS:** viable and mature, but 26 is now Active LTS. Actual compatibility takes precedence over release novelty.
 
-## Consequences and deferred work
+## Consequences
 
-- Phase 4 includes a Development-only UI journey: select/create Team, view roster, add a player by selecting an existing Person or creating a new one, view Player details, and explicitly create/edit optional PlayerProfile attributes.
-- Profile creation remains opt-in and person-level; it does not happen automatically when creating a Person, membership or roster entry.
-- Any Team/Person lookup endpoint, local CORS configuration, OpenAPI export/type-generation support or CI changes require separately scoped implementation work and validation. This ADR alone changes no API or network behavior.
-- Keep future account/organizational/other platform concepts out of the public MVP documentation.
+- The frontend is responsible for presentation, navigation, and interaction; ASP.NET Core remains responsible for authoritative business behavior.
+- Additional API reads, local CORS configuration, type-generation plumbing, and CI require their own scoped implementation work.
+- UX exploration may consider a coherent application shell beyond the immediate functional slice, while the running MVP delivers only approved, honestly represented capabilities.
+- This ADR does not change API behavior, implement authentication, or authorize deployment.
 
 ## References
 
-- [Planning gate #157](https://github.com/bbubb/squadsync/issues/157)
-- [Documentation gate #158](https://github.com/bbubb/squadsync/issues/158)
+- [Phase 4 planning](https://github.com/bbubb/squadsync/issues/157)
+- [Documentation gate](https://github.com/bbubb/squadsync/issues/158)
 - [MVP scope](../planning/mvp-scope.md)
 - [System overview](../architecture/system-overview.md)
-- [Domain model](../architecture/domain-model.md)
-- [ADR 0006: represented people and authentication](0006-represented-person-identity-api-contract.md)
+- [ADR 0006](0006-represented-person-identity-api-contract.md)
 - [UX notes](../product/ux-notes.md)
-- [Web instructions](../../apps/web/AGENTS.md)
