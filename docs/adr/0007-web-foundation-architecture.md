@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed for Phase 4 under [#158](https://github.com/bbubb/squadsync/issues/158), pending owner approval. This ADR establishes technical direction; implementation is separately issue-backed.
+Accepted for Phase 4 following owner approval and merged [PR #159](https://github.com/bbubb/squadsync/pull/159) on 2026-11-01. Implementation remains separately issue-backed.
 
 ## Context
 
