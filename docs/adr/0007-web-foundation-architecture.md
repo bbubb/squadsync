@@ -6,7 +6,7 @@ Proposed for Phase 4 under [#158](https://github.com/bbubb/squadsync/issues/158)
 
 ## Context
 
-SquadSync has a Development-only ASP.NET Core API and no web application scaffold. Phase 4 introduces a coach-facing web client while preserving the backend as the authoritative business and persistence boundary.
+SquadSync is a soccer team-management and match-planning platform. Its first web experience serves coaches and team managers. Phase 4 adds that client to the existing Development-only ASP.NET Core API while keeping the backend authoritative for business rules and persistence.
 
 ## Decision
 
