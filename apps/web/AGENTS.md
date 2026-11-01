@@ -2,7 +2,7 @@
 
 ## Status and Scope
 
-Phase 4 web-area guidance, pending acceptance of [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md) and a ready implementation issue. The application is not scaffolded yet.
+Phase 4 web-area guidance under accepted [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md). Sprint 10 is approved in [#161](https://github.com/bbubb/squadsync/issues/161), but each implementation issue requires readiness review before dispatch. The application is not scaffolded yet.
 
 These are **tool-agnostic** instructions for contributors and authorized implementation agents. Tool-specific behavior belongs under `docs/agentic-workflow/tools/` or the associated tool-native assets.
 
