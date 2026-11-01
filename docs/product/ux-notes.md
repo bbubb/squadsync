@@ -12,11 +12,11 @@
 
 ## Purpose
 
-Establish a cohesive coach-facing experience that can guide design exploration and successive MVP slices. **A UX concept or mockup may show more than the current implementation delivers.** Functional delivery remains governed by approved phase/issue scope; technical implementation choices belong to [ADR 0007](../adr/0007-web-foundation-architecture.md).
+Establish the initial coach/team-manager experience within SquadSync's soccer team-management platform, guiding design exploration and successive MVP slices. **A UX concept or mockup may show more than the current implementation delivers.** Functional delivery remains governed by approved phase/issue scope; technical implementation choices belong to [ADR 0007](../adr/0007-web-foundation-architecture.md).
 
 ## Experience Goal
 
-SquadSync should feel like a modern, organized coaching workspace, not a generic administrative dashboard. It should help coaches find their Team, understand the roster, and act quickly. Later MVP work extends this toward availability, match preparation, and lineup planning.
+The initial web experience should feel like a modern, organized coaching workspace, not a generic administrative dashboard. It should help coaches find their Team, understand the roster, and act quickly. Later MVP work extends this toward availability, match preparation, and lineup planning.
 
 Principles:
 
@@ -71,7 +71,7 @@ Design forms with labels, appropriate keyboard behavior, clear focus order, scre
 
 Use consistent typography, spacing, color roles, surfaces and iconography with room for custom SquadSync components and refinements. Accessible primitives from a toolkit can accelerate quality; they are not a cap on layout, branding or interaction sophistication.
 
-The [brand notes](brand-notes.md) remain a lightweight guide until a working shell and visual review justify more concrete tokens or assets.
+Use the lightweight [brand notes](brand-notes.md) to guide provisional visual choices, refining them against working screens without making a finalized identity a Phase 4 prerequisite.
 
 ## Later UX Work
 
