@@ -32,4 +32,3 @@ Read `PLANS.md` for complex or cross-cutting implementation work.
 - Stop if the issue needs missing API contracts, unapproved security or architectural changes, unavailable functionality, or a major scope expansion. Ask the owner rather than guessing.
 - Never commit credentials or personal/sensitive demo data.
 
-Do not add tool-specific prompts, rules, or orchestration here. This document defines project expectations independently of the agent used.
