@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | v0.1.0 |
-| Date | 2026-05-16 |
+| Version | v0.2.0 |
+| Date | 2026-11-01 |
 | Owner | Brandon Bunch |
 | Status | Draft |
-| Change Summary | Initial lightweight brand notes for Phase 0 closeout. |
+| Change Summary | Allow provisional Phase 4 visual identity work without expanding MVP scope. |
 
 ## Purpose
 
@@ -20,7 +20,7 @@ SquadSync should feel:
 
 - practical
 - organized
-- coach-centered
+- team-focused and coach-friendly in the MVP
 - trustworthy
 - calm under game-day pressure
 - focused on helping teams prepare and communicate better
@@ -33,20 +33,11 @@ Prefer soccer-specific terms when they help clarity. Avoid generic enterprise la
 
 ## Visual Direction
 
-No visual identity has been selected yet.
-
-Future visual work may define:
-
-- logo direction
-- color palette
-- typography
-- spacing system
-- icon usage
-- dashboard visual style
+No final visual identity has been selected. As the Phase 4 web shell takes shape, use provisional color, typography, spacing, surface, and icon choices to create a coherent interface. A simple wordmark or app mark may be explored if useful, but custom logo work is not a prerequisite.
 
 ## Current Rule
 
-Do not introduce visual assets or strong brand commitments before the web app direction is clearer.
+Keep visual identity work lightweight and iterative for the MVP. Prioritize usable, consistent screens over extensive branding or polished asset production; revisit choices after seeing the application in use.
 
 ## References
 
