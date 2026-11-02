@@ -36,7 +36,8 @@ public sealed class SwaggerEndpointTests
         foreach (var route in new[] { "/api/people", "/api/teams" })
         {
             var create = paths.GetProperty(route);
-            Assert.Equal("post", Assert.Single(create.EnumerateObject()).Name);
+            Assert.Equal(route == "/api/teams" ? new[] { "get", "post" } : new[] { "post" },
+                create.EnumerateObject().Select(method => method.Name).Order().ToArray());
             Assert.Equal(new[] { "201", "400" }, create.GetProperty("post").GetProperty("responses")
                 .EnumerateObject().Select(status => status.Name).Order().ToArray());
             var read = paths.GetProperty(route + "/{id}");
@@ -44,6 +45,11 @@ public sealed class SwaggerEndpointTests
             Assert.Equal(new[] { "200", "400", "404" }, read.GetProperty("get").GetProperty("responses")
                 .EnumerateObject().Select(status => status.Name).Order().ToArray());
         }
+        var teams = paths.GetProperty("/api/teams").GetProperty("get").GetProperty("responses");
+        Assert.Equal("200", Assert.Single(teams.EnumerateObject()).Name);
+        var teamsSchema = teams.GetProperty("200").GetProperty("content").GetProperty("application/json").GetProperty("schema");
+        Assert.Equal("array", teamsSchema.GetProperty("type").GetString());
+        Assert.Equal("#/components/schemas/TeamResponse", teamsSchema.GetProperty("items").GetProperty("$ref").GetString());
         var roster = paths.GetProperty("/api/teams/{teamId}/roster");
         Assert.Equal(new[] { "get", "post" }, roster.EnumerateObject().Select(method => method.Name).Order().ToArray());
         Assert.Equal(new[] { "200", "400", "404" }, roster.GetProperty("get").GetProperty("responses")
