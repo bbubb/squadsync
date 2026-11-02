@@ -5,6 +5,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!-- Patch EF Design's transitive Pkcs dependency without updating the EF runtime packages. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" PrivateAssets="all" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
