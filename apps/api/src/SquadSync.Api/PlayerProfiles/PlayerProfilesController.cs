@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.Application.PlayerProfiles;
 using SquadSync.Domain;
 
 namespace SquadSync.Api.PlayerProfiles;
 
+[EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/people/{personId}/player-profile")]
 public sealed class PlayerProfilesController(CreatePlayerProfile createProfile, GetPlayerProfile getProfile, UpdatePlayerProfile updateProfile) : ControllerBase

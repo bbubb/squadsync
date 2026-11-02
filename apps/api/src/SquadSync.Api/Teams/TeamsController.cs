@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.Application.Teams;
 
 namespace SquadSync.Api.Teams;
 
+[EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/teams")]
 public sealed class TeamsController(CreateTeam createTeam, GetTeam getTeam, GetTeams getTeams) : ControllerBase

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.Application.Rosters;
 using SquadSync.Domain;
 
 namespace SquadSync.Api.Rosters;
 
+[EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/teams/{teamId}/roster")]
 public sealed class RostersController(CreateRosterEntry createRosterEntry, GetRosterEntry getRosterEntry,

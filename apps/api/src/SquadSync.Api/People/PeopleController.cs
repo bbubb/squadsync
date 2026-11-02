@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.Application.People;
 
 namespace SquadSync.Api.People;
 
+[EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/people")]
 public sealed class PeopleController(CreatePerson createPerson, GetPerson getPerson) : ControllerBase
