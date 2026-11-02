@@ -14,7 +14,9 @@ Phase 2 — Core Domain and Persistence — is complete through Sprint 6 ([#109]
 
 Phase 3 Sprint 7 ([#116](https://github.com/bbubb/squadsync/issues/116)) is complete. The API exposes Development-only Person and Team create/read endpoints through Application use cases and Infrastructure persistence adapters, with built-in validation, safe ProblemDetails, and opt-in real HTTP→PostgreSQL integration tests. Accepted [ADR 0006](docs/adr/0006-represented-person-identity-api-contract.md) separates represented `Person` from future account identity and restricts unauthenticated management routes to trusted Development use. See the [People API](apps/api/README.md#development-only-people-api) and [Team API](apps/api/README.md#development-only-team-api).
 
-Phase 3 Sprint 8 ([#129](https://github.com/bbubb/squadsync/issues/129)) is complete through merged PRs #138–#143. Development-only membership and player-roster create/read endpoints now have real multi-request HTTP→PostgreSQL validation, including safe error handling and rollback preservation checks; see the [local Person-to-roster workflow](apps/api/README.md#local-person-to-roster-workflow). Phase 3 is complete through Sprint 9 (#145) and PR #153. PlayerProfile POST/GET/PUT workflows are implemented and validated with real PostgreSQL tests (18/18 opt-in tests passed). Management endpoints remain restricted to trusted Development/localhost use. Authentication, full roster editing, the frontend, match planning, and Soccer-Subber integration remain later work; Phase 4 planning belongs in the main planning conversation and a separate Phase 4 thread.
+Phase 3 Sprint 8 ([#129](https://github.com/bbubb/squadsync/issues/129)) is complete through merged PRs #138–#143. Development-only membership and player-roster create/read endpoints now have real multi-request HTTP→PostgreSQL validation, including safe error handling and rollback preservation checks; see the [local Person-to-roster workflow](apps/api/README.md#local-person-to-roster-workflow). Phase 3 is complete through Sprint 9 (#145) and PR #153. PlayerProfile POST/GET/PUT workflows are implemented and validated with real PostgreSQL tests (18/18 opt-in tests passed). Management endpoints remain restricted to trusted Development/localhost use. Authentication, full roster editing, connected frontend workflows, match planning, and Soccer-Subber integration remain later work.
+
+Phase 4 now has a local, responsive Next.js workspace shell under [`apps/web/`](apps/web/README.md), with pinned Node/pnpm versions and loopback-only run commands. Team selection and API integration remain upcoming Sprint 10 work.
 
 Canonical planning state and active work are tracked in:
 
@@ -33,8 +35,8 @@ Canonical planning state and active work are tracked in:
 | Validation | ASP.NET Core built-in validation | Sprint 7 baseline; FluentValidation deferred until needed |
 | Logging | Serilog | Planned structured logging |
 | API docs | Swagger / OpenAPI | Development API inspection |
-| Web | Next.js + TypeScript | Planned under `apps/web/` |
-| Styling | Tailwind CSS | Planned frontend styling baseline |
+| Web | Next.js + TypeScript | Local workspace shell under `apps/web/` |
+| Styling | Tailwind CSS | Responsive web shell and provisional styling tokens |
 | Server state | TanStack Query | Planned API data access pattern |
 | Local environment | Docker Compose | Local PostgreSQL and supporting services |
 | Testing | xUnit / integration tests | TDD-oriented implementation workflow |
@@ -87,7 +89,7 @@ Start here:
 
 ## Getting Started
 
-The API is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); EF migrations, opt-in database validation, the `AddPlayerToRoster` application workflow, and the explicit Development demo-seed command are documented in the [API README](apps/api/README.md). Authentication, the broader Phase 3 HTTP API surface, the frontend, and Soccer-Subber integration remain later work.
+The API is available under [`apps/api/`](apps/api/README.md). It can be restored, built, tested, and run locally with the .NET 10 SDK. The local PostgreSQL workflow is documented in [`infra/docker/`](infra/docker/README.md); EF migrations, opt-in database validation, the `AddPlayerToRoster` application workflow, and the explicit Development demo-seed command are documented in the [API README](apps/api/README.md). The local web shell has separate [setup and validation instructions](apps/web/README.md). Connected frontend workflows, authentication, and Soccer-Subber integration remain later work.
 
 ## Contributing
 
