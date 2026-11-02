@@ -1,0 +1,56 @@
+name: Web CI
+
+on:
+  pull_request:
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web-ci.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Format, lint, typecheck, test, and build web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: apps/web/.node-version
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          package_json_file: apps/web/package.json
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

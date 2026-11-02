@@ -10,7 +10,11 @@ export function WorkspaceLanding() {
       <section className="welcome-panel grid overflow-hidden" aria-labelledby="welcome-heading">
         <div className="welcome-copy">
           <p className="eyebrow">For the love of the game</p>
-          <h2 id="welcome-heading">Good preparation<br />starts here<span>.</span></h2>
+          <h2 id="welcome-heading">
+            Good preparation
+            <br />
+            starts here<span>.</span>
+          </h2>
           <p>A calm space to bring your squad together. Your coaching workspace is taking shape.</p>
           <span className="welcome-caption">One team. A shared direction.</span>
         </div>
@@ -27,7 +31,10 @@ export function WorkspaceLanding() {
         </div>
       </section>
 
-      <section className="team-placeholder flex flex-col items-start gap-6 sm:flex-row sm:items-center" aria-labelledby="teams-heading">
+      <section
+        className="team-placeholder flex flex-col items-start gap-6 sm:flex-row sm:items-center"
+        aria-labelledby="teams-heading"
+      >
         <div className="team-symbol" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M16 3 27 7v8c0 6-5 10-11 14C10 25 5 21 5 15V7L16 3Z" />
@@ -37,7 +44,10 @@ export function WorkspaceLanding() {
         <div className="min-w-0 flex-1">
           <p className="eyebrow">Up next</p>
           <h2 id="teams-heading">A home for your team</h2>
-          <p>Team selection is coming next. This is where you’ll find your way into your team’s workspace.</p>
+          <p>
+            Team selection is coming next. This is where you’ll find your way into your team’s
+            workspace.
+          </p>
         </div>
         <span className="coming-next">Coming next</span>
       </section>
