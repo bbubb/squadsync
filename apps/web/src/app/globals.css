@@ -1,8 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
+@theme {
   --color-canvas: #f6f7f2;
   --color-ink: #182e26;
   --color-muted: #56675e;

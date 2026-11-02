@@ -56,7 +56,9 @@ These are Server Components without client state or fetching. Use the existing l
 
 ## Compatibility notes
 
-Tailwind **3.4.19** is pinned for this scaffold. During validation, Tailwind 4.3.3's stylesheet resolver returned a null-byte-escaped path for the `#` in this Windows checkout's `C#` directory, failing both Turbopack and Webpack builds. Tailwind 3 uses the standard PostCSS directives and avoids that resolver path. Revisit a Tailwind 4 upgrade separately once it can build from this checkout; Node 26 and Next.js 16 remain the approved targets.
+Tailwind CSS and `@tailwindcss/postcss` are pinned to **4.3.3**. Global CSS imports Tailwind with `@import "tailwindcss"` and defines styling tokens with `@theme`; source detection is automatic. The dedicated PostCSS plugin handles vendor prefixing, so a separate Autoprefixer dependency and Tailwind JavaScript configuration are unnecessary.
+
+Use a checkout path without `#`, such as `D:\Utilities\Projects\Csharp\squadsync`. The previous Windows `C#` path caused a reproduced null-byte pathname error in Tailwind 4's stylesheet resolver. Identical worktree tests built successfully outside that path and failed again when `#` was present. The scaffold now uses Tailwind 4 from the `Csharp` checkout.
 
 `next.config.ts` scopes Turbopack to this web app and disables automatic agent-rule generation so `next dev` preserves repository-owned `AGENTS.md` instructions.
 
