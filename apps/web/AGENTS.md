@@ -31,4 +31,3 @@ Read `PLANS.md` for complex or cross-cutting implementation work.
 - Respect the [ADR's local-only management API boundary](../../docs/adr/0007-web-foundation-architecture.md#local-development-boundary). Do not expose anonymous management capabilities through deployment, LAN binding, proxying, or other new routes without approval.
 - Stop if the issue needs missing API contracts, unapproved security or architectural changes, unavailable functionality, or a major scope expansion. Ask the owner rather than guessing.
 - Never commit credentials or personal/sensitive demo data.
-
