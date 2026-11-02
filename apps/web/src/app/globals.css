@@ -15,7 +15,7 @@
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); }
 a { text-decoration: none; }
 a:focus-visible { outline: 3px solid #477526; outline-offset: 5px; border-radius: 4px; }
-main:focus { outline: none; }
+main:focus { outline: 3px solid #477526; outline-offset: -5px; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 10; padding: .8rem 1.2rem; background: white; color: var(--color-ink); transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 .workspace-header { min-height: 88px; padding: 1rem 2.5rem; border-bottom: 1px solid #dfe4da; background: #fff; }
