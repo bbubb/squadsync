@@ -123,11 +123,11 @@ These routes are mapped only in Development for trusted localhost use, following
 
 ### Local Person-to-profile workflow
 
-Configure the existing local database connection and start the API in Development at `http://localhost:5050` using the setup above. These anonymous routes are for trusted localhost only. Swagger at `/swagger` describes POST/GET/PUT and their responses. **Successful manual POST and PUT requests persist changes**; use intentional development data. The automated tests below roll back their writes.
+Configure the existing local database connection and start the API in Development at `http://127.0.0.1:5050` using the setup above. These anonymous routes are for trusted localhost only. Swagger at `/swagger` describes POST/GET/PUT and their responses. **Successful manual POST and PUT requests persist changes**; use intentional development data. The automated tests below roll back their writes.
 
 ```powershell
-$person = Invoke-RestMethod http://localhost:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"Alex","lastName":"Profile"}'
-$profileUrl = "http://localhost:5050/api/people/$($person.id)/player-profile"
+$person = Invoke-RestMethod http://127.0.0.1:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"Alex","lastName":"Profile"}'
+$profileUrl = "http://127.0.0.1:5050/api/people/$($person.id)/player-profile"
 # GET here returns 404: creating a Person does not create a profile.
 $created = Invoke-WebRequest $profileUrl -Method Post -ContentType 'application/json' -Body '{"dominantFoot":"Right","heightInches":70,"weightPounds":152.5}'
 $created.StatusCode # 201
@@ -165,16 +165,16 @@ From `apps/api`, start the API in Development on a fixed local port. In PowerShe
 
 ```bash
 $env:ASPNETCORE_ENVIRONMENT = "Development"
-dotnet run --project src/SquadSync.Api --urls http://localhost:5050
+dotnet run --project src/SquadSync.Api --launch-profile local
 ```
 
-In a POSIX-compatible shell, use `ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/SquadSync.Api --urls http://localhost:5050` instead. ASP.NET Core defaults to Production when no environment is set.
+In a POSIX-compatible shell, use `ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/SquadSync.Api --launch-profile local` instead. The committed `local` launch profile selects Development and binds only `127.0.0.1:5050`. Without launch profiles (`--no-launch-profile`), ASP.NET Core defaults to Production when no environment is set; supply `--urls http://127.0.0.1:5050` explicitly for any local run. Do not override the listener with a wildcard or LAN address.
 
 When running in Development, use:
 
-- Liveness check: <http://localhost:5050/health> (HTTP 200 while the API is running, even when PostgreSQL is unavailable)
-- Readiness check: <http://localhost:5050/health/ready> (HTTP 200 when PostgreSQL accepts connections; HTTP 503 when it is unavailable)
-- Swagger UI: <http://localhost:5050/swagger>
+- Liveness check: <http://127.0.0.1:5050/health> (HTTP 200 while the API is running, even when PostgreSQL is unavailable)
+- Readiness check: <http://127.0.0.1:5050/health/ready> (HTTP 200 when PostgreSQL accepts connections; HTTP 503 when it is unavailable)
+- Swagger UI: <http://127.0.0.1:5050/swagger>
 
 Swagger is enabled only in the Development environment. Serilog writes structured logs to the console only.
 
@@ -184,7 +184,45 @@ After confirming both health endpoints return HTTP 200, stop PostgreSQL with `do
 
 MVC controllers are mapped only inside the Development environment gate in `Program.cs`, including the People and Teams controllers. Staging and Production expose no controller routes. `/health` and `/health/ready` remain mapped in every environment, and Swagger remains Development-only.
 
-Management endpoints are anonymous until an authentication and authorization design is implemented. Run them only in a trusted local environment, bind to localhost, and do not expose them on public networks. The environment gate is an interim route restriction, not a production security mechanism. A `PersonId` or `TeamRole` does not establish caller authority; see [ADR 0006](../../docs/adr/0006-represented-person-identity-api-contract.md).
+Management endpoints are anonymous until an authentication and authorization design is implemented. Run them only in a trusted local environment, bind to IPv4 loopback (`127.0.0.1`), and do not expose them on public networks. The environment gate is an interim route restriction, not a production security mechanism. A `PersonId` or `TeamRole` does not establish caller authority; see [ADR 0006](../../docs/adr/0006-represented-person-identity-api-contract.md).
+
+### Local browser CORS and listener verification
+
+The named `LocalDevelopmentManagement` CORS policy is registered only in Development and enabled on the management controllers using attributes and CORS middleware. There is no default policy. Health and Swagger endpoints receive no CORS permission. The exact allowed browser origin is `http://127.0.0.1:3000`, with only `GET` and the `Accept` request header allowed. No wildcard origins, credentials, cookies, authorization headers, or write-method preflight permissions are enabled. `localhost:3000`, HTTPS, port 3001 and LAN origins are not approved.
+
+CORS controls browser access to responses; it does not authenticate callers, prevent direct HTTP clients, or block writes (including simple browser requests). The method/header allow-list governs preflight permission. Loopback binding and the Development route gate remain separate requirements.
+
+Start the API with the `local` launch profile above and the web app with [`pnpm dev`](../web/README.md#install-and-run). In another PowerShell terminal, inspect both actual listeners:
+
+```powershell
+Get-NetTCPConnection -State Listen -LocalPort 5050,3000 |
+  Select-Object LocalAddress, LocalPort, OwningProcess
+```
+
+Expect only `127.0.0.1` for both ports. Stop if either listener uses `0.0.0.0`, `::`, or a LAN address. An HTTP response with CORS headers is not proof of safe binding. The launch profile is a local development default, not enforcement against explicit environment/command-line overrides.
+
+With the local PostgreSQL connection configured and migrations applied, open `http://127.0.0.1:3000`, then run in that page's browser developer console:
+
+```javascript
+const response = await fetch("http://127.0.0.1:5050/api/teams", {
+  credentials: "omit",
+  headers: { Accept: "application/json" },
+});
+console.log(response.status, await response.json()); // 200 and a Team array (possibly [])
+```
+
+In the Network panel, confirm request `Origin: http://127.0.0.1:3000` and response `Access-Control-Allow-Origin: http://127.0.0.1:3000`, with no `Access-Control-Allow-Credentials`. This GET normally needs no preflight. Repeat from `http://localhost:3000` to verify the browser rejects access and the API response has no allow-origin header. Do not widen the policy to fix a different hostname or an occupied port.
+
+To inspect preflight without performing a write, use PowerShell:
+
+```powershell
+$headers = @{ Origin = 'http://127.0.0.1:3000'; 'Access-Control-Request-Method' = 'GET'; 'Access-Control-Request-Headers' = 'accept' }
+(Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Options -Headers $headers).Headers
+$headers['Access-Control-Request-Method'] = 'POST'
+(Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Options -Headers $headers).Headers
+```
+
+The allowed preflight returns 204, the exact allowed origin, methods `GET`, headers `Accept`, and no credential header. Unsupported methods/headers may also return 204 with the policy's allow-list; browsers reject them because the requested method/header is missing from that list. A 204 alone does not mean permission. `CorsEndpointTests` verifies these cases, rejected origins, health/Swagger exclusion, and management GET/OPTIONS returning 404 in Staging and Production without permissive headers. In-process tests do not verify real socket binding or browser enforcement; record those manual observations separately.
 
 Controllers use `[ApiController]` and request validation attributes. MVC automatically returns HTTP 400 `ValidationProblemDetails` for malformed JSON and invalid models. Return `NotFound()` when the Application use case indicates an absent resource; MVC supplies standard HTTP 404 `ProblemDetails`. Unexpected exceptions use the built-in exception handler and `AddProblemDetails` in every environment, including Development, returning a generic HTTP 500 response without exception details, stack traces, or credentials. Aborted requests follow ASP.NET Core's cancellation handling rather than being converted into HTTP 500 errors. Health responses retain their existing format.
 
@@ -225,13 +263,13 @@ Application tests use fake ports. Membership HTTP tests exercise real controller
 In PowerShell:
 
 ```powershell
-$person = Invoke-WebRequest http://localhost:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"  Alex ","lastName":" Player "}'
+$person = Invoke-WebRequest http://127.0.0.1:5050/api/people -Method Post -ContentType 'application/json' -Body '{"firstName":"  Alex ","lastName":" Player "}'
 $person.StatusCode # 201
-$person.Headers.Location # http://localhost:5050/api/people/<generated-guid>
+$person.Headers.Location # http://127.0.0.1:5050/api/people/<generated-guid>
 Invoke-RestMethod $person.Headers.Location
 # { "id": "<generated-guid>", "firstName": "Alex", "lastName": "Player" }
 
-$team = Invoke-WebRequest http://localhost:5050/api/teams -Method Post -ContentType 'application/json' -Body '{"name":"  SquadSync FC "}'
+$team = Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Post -ContentType 'application/json' -Body '{"name":"  SquadSync FC "}'
 $team.StatusCode # 201
 Invoke-RestMethod $team.Headers.Location
 # { "id": "<generated-guid>", "name": "SquadSync FC" }
@@ -239,17 +277,17 @@ Invoke-RestMethod $team.Headers.Location
 $personId = ($person.Content | ConvertFrom-Json).id
 $teamId = ($team.Content | ConvertFrom-Json).id
 $membershipBody = @{ personId = $personId; teamRole = 'Player' } | ConvertTo-Json
-$membership = Invoke-WebRequest "http://localhost:5050/api/teams/$teamId/memberships" -Method Post -ContentType 'application/json' -Body $membershipBody
+$membership = Invoke-WebRequest "http://127.0.0.1:5050/api/teams/$teamId/memberships" -Method Post -ContentType 'application/json' -Body $membershipBody
 $membership.StatusCode # 201
 Invoke-RestMethod $membership.Headers.Location # 200, includes Person and teamRole: Player
 
 $membershipId = ($membership.Content | ConvertFrom-Json).id
 $rosterBody = @{ teamMembershipId = $membershipId; jerseyNumber = '007'; rosterStatus = 'Active' } | ConvertTo-Json
-$entry = Invoke-WebRequest "http://localhost:5050/api/teams/$teamId/roster" -Method Post -ContentType 'application/json' -Body $rosterBody
+$entry = Invoke-WebRequest "http://127.0.0.1:5050/api/teams/$teamId/roster" -Method Post -ContentType 'application/json' -Body $rosterBody
 $entry.StatusCode # 201
 Invoke-RestMethod $entry.Headers.Location # 200, jerseyNumber remains the string '007'
-Invoke-RestMethod "http://localhost:5050/api/teams/$teamId/memberships" # 200, all roles
-Invoke-RestMethod "http://localhost:5050/api/teams/$teamId/roster" # 200, rostered Players only
+Invoke-RestMethod "http://127.0.0.1:5050/api/teams/$teamId/memberships" # 200, all roles
+Invoke-RestMethod "http://127.0.0.1:5050/api/teams/$teamId/roster" # 200, rostered Players only
 ```
 
 Each POST returns 201 and a retrievable Location; individual and list GETs return 200. Manual successful POST requests **persist records**; use intentional development data. No login account or automatic Owner membership is created. A Player membership without a RosterEntry appears only in the membership list. Staff memberships such as Coach cannot be rostered. Roster statuses are exactly `Active`, `Reserved`, or `Suspended`; jersey numbers are null or strings of 1–3 ASCII digits.

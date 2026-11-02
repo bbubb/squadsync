@@ -1,4 +1,5 @@
 using Serilog;
+using SquadSync.Api;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SquadSync.Infrastructure;
 using SquadSync.Infrastructure.Persistence;
@@ -24,6 +25,10 @@ builder.Services.AddHealthChecks()
 
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddCors(options => options.AddPolicy(DevelopmentCors.PolicyName, policy => policy
+        .WithOrigins("http://127.0.0.1:3000")
+        .WithMethods("GET")
+        .WithHeaders("Accept")));
     builder.Services.AddScoped<UpdatePlayerProfile>();
     builder.Services.AddScoped<CreatePlayerProfile>();
     builder.Services.AddScoped<GetPlayerProfile>();
@@ -64,6 +69,9 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseRouting();
+    // No default policy: only explicitly attributed management controllers receive CORS headers.
+    app.UseCors();
     app.UseSwagger();
     app.UseSwaggerUI();
     // All MVC controllers are management endpoints until an authenticated boundary is approved.

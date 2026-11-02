@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SquadSync.Application.Memberships;
 using SquadSync.Domain;
 
 namespace SquadSync.Api.Memberships;
 
+[EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/teams/{teamId}/memberships")]
 public sealed class MembershipsController(CreateMembership createMembership, GetMembership getMembership, GetTeamMemberships getTeamMemberships) : ControllerBase

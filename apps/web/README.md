@@ -19,9 +19,11 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open <http://127.0.0.1:3000>. Stop with `Ctrl+C`. The development script explicitly binds to IPv4 loopback; keep that hostname. If the port is busy, stop the existing process or use `pnpm dev --port 3001`, then use the port reported by Next.js.
+Open <http://127.0.0.1:3000>. Stop with `Ctrl+C`. The development script explicitly binds to IPv4 loopback; keep that hostname. For API browser calls, keep port 3000 available: the API permits only the exact origin `http://127.0.0.1:3000`. A shell-only run on port 3001 has no API CORS permission; do not widen the policy to accommodate it.
 
 The shell needs no API, PostgreSQL, environment variables, remote fonts, or credentials. No API client, proxy, Route Handlers, Server Actions, or management endpoint is introduced here.
+
+For a manual cross-origin API check, start the API's loopback `local` launch profile and follow the [API CORS and listener verification](../api/README.md#local-browser-cors-and-listener-verification). It includes listener inspection and a browser-console Team-list GET from this origin. CORS is not authentication or a network access control; anonymous management routes remain Development-only. The shell still performs no automatic API calls.
 
 ## Quality checks and local preview
 
