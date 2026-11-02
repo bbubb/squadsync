@@ -15,6 +15,45 @@ namespace SquadSync.IntegrationTests;
 public class TeamsEndpointTests
 {
     [Fact]
+    public async Task GetAll_EmptyStorage_ReturnsOkEmptyArray()
+    {
+        await using var factory = CreateFactory();
+        using var client = factory.CreateClient();
+
+        using var response = await client.GetAsync("/api/teams");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
+        Assert.Equal("[]", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task GetAll_ReturnsOrderedMinimalTeamResponses()
+    {
+        var persistence = new TestTeamPersistence();
+        var teams = new[]
+        {
+            new Team(Guid.Parse("a0000000-0000-0000-0000-000000000002"), "Alpha FC"),
+            new Team(Guid.NewGuid(), "Zulu FC"),
+            new Team(Guid.Parse("a0000000-0000-0000-0000-000000000001"), "Alpha FC")
+        };
+        foreach (var team in teams) await persistence.AddAsync(team);
+        await using var factory = CreateFactory(persistence: persistence);
+        using var client = factory.CreateClient();
+
+        using var response = await client.GetAsync("/api/teams");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(new[] { teams[2].Id, teams[0].Id, teams[1].Id },
+            json.EnumerateArray().Select(team => team.GetProperty("id").GetGuid()));
+        Assert.Equal(new[] { "Alpha FC", "Alpha FC", "Zulu FC" },
+            json.EnumerateArray().Select(team => team.GetProperty("name").GetString()));
+        foreach (var team in json.EnumerateArray())
+            Assert.Equal(new[] { "id", "name" }, team.EnumerateObject().Select(property => property.Name).Order());
+    }
+
+    [Fact]
     public async Task CreateAndGet_UseRealApplicationAndReturnMinimalNormalizedResource()
     {
         await using var factory = CreateFactory();
@@ -87,6 +126,8 @@ public class TeamsEndpointTests
         Assert.Equal(HttpStatusCode.NotFound,
             (await client.PostAsJsonAsync("/api/teams", new { name = "SquadSync FC" })).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/api/teams/{Guid.NewGuid()}")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/api/teams")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/swagger/v1/swagger.json")).StatusCode);
         Assert.Equal(0, persistence.Count);
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health")).StatusCode);
         Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/health/ready")).StatusCode);
@@ -98,6 +139,8 @@ public class TeamsEndpointTests
         {
             services.RemoveAll<ITeamPersistence>();
             services.AddSingleton<ITeamPersistence>(persistence ?? new TestTeamPersistence());
+            services.RemoveAll<ITeamQueries>();
+            services.AddSingleton<ITeamQueries>(provider => (TestTeamPersistence)provider.GetRequiredService<ITeamPersistence>());
         }));
 
     private static async Task<JsonElement> AssertProblem(HttpResponseMessage response, HttpStatusCode status)
@@ -111,10 +154,18 @@ public class TeamsEndpointTests
         return problem;
     }
 
-    private sealed class TestTeamPersistence : ITeamPersistence
+    private sealed class TestTeamPersistence : ITeamPersistence, ITeamQueries
     {
         private readonly ConcurrentDictionary<Guid, Team> teams = new();
         public int Count => teams.Count;
+
+        public Task<IReadOnlyList<TeamDetails>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult<IReadOnlyList<TeamDetails>>(teams.Values
+                .OrderBy(team => team.Name, StringComparer.Ordinal).ThenBy(team => team.Id)
+                .Select(team => new TeamDetails(team.Id, team.Name)).ToArray());
+        }
 
         public Task AddAsync(Team team, CancellationToken cancellationToken = default)
         {

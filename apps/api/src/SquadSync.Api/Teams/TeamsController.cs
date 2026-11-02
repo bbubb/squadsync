@@ -5,8 +5,16 @@ namespace SquadSync.Api.Teams;
 
 [ApiController]
 [Route("api/teams")]
-public sealed class TeamsController(CreateTeam createTeam, GetTeam getTeam) : ControllerBase
+public sealed class TeamsController(CreateTeam createTeam, GetTeam getTeam, GetTeams getTeams) : ControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType<TeamResponse[]>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<TeamResponse[]>> GetAll(CancellationToken cancellationToken)
+    {
+        var teams = await getTeams.ExecuteAsync(cancellationToken);
+        return Ok(teams.Select(team => new TeamResponse(team.Id, team.Name)).ToArray());
+    }
+
     [HttpPost]
     [ProducesResponseType<TeamResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
