@@ -8,6 +8,29 @@ namespace SquadSync.IntegrationTests;
 public sealed class SwaggerEndpointTests
 {
     [Fact]
+    public async Task DevelopmentSwagger_TeamResponseHasRequiredNonNullableProperties()
+    {
+        await using var factory = new ApiTestFactory();
+        using var client = factory.CreateClient();
+        using var response = await client.GetAsync("/swagger/v1/swagger.json");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var document = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var team = document.GetProperty("components").GetProperty("schemas").GetProperty("TeamResponse");
+
+        Assert.Equal(new[] { "id", "name" }, team.GetProperty("required")
+            .EnumerateArray().Select(property => property.GetString()).Order().ToArray());
+        var properties = team.GetProperty("properties");
+        Assert.Equal(new[] { "id", "name" }, properties.EnumerateObject().Select(property => property.Name).Order().ToArray());
+        foreach (var propertyName in new[] { "id", "name" })
+        {
+            var property = properties.GetProperty(propertyName);
+            Assert.Equal("string", property.GetProperty("type").GetString());
+            Assert.False(property.TryGetProperty("nullable", out var nullable) && nullable.GetBoolean());
+        }
+        Assert.Equal("uuid", properties.GetProperty("id").GetProperty("format").GetString());
+    }
+
+    [Fact]
     public async Task DevelopmentSwagger_DescribesPeopleAndTeamsMethodsAndResponses()
     {
         await using var factory = new ApiTestFactory();
