@@ -85,6 +85,8 @@ The single setting `NEXT_PUBLIC_API_BASE_URL` defaults to `http://127.0.0.1:5050
 
 TanStack Query **5.105.3** owns remote data. The Server Component root layout imports the small Client Component `QueryProvider`, which maintains one cache per mounted provider. Generated types describe the contract; the client executes the typed HTTP operation; a feature query puts its result in that cache; a component reads query loading, error and data state. Keep transient selection state local and avoid copying Team data into component state. Provider tests verify cache retention across renders and isolation between mounts.
 
+Client Components under that provider can call `useTeams()` from `src/features/teams/use-teams.ts`. It returns the Query result, including `data`, `isPending`, `isError` and `error`, for the generated Team collection. Reads share `teamsQueryKey` (`["teams"]`) and remain fresh for 30 seconds; later mounts can reuse the cached collection. The query passes cancellation to the typed client, propagates request failures, and rejects a missing response body instead of substituting `[]`. A real empty collection remains a successful result. The focused hook tests mock HTTP at `fetch`, exercise success/empty/error results through the real typed client and verify cache sharing. The shell does not call the hook yet; Team selector rendering remains #167.
+
 ## Source layout
 
 - `src/app/`: root route, layout, metadata, and Tailwind styling tokens.
@@ -93,6 +95,7 @@ TanStack Query **5.105.3** owns remote data. The Server Component root layout im
 - `openapi/` and `scripts/openapi.mjs`: committed contract and explicit refresh/generate/check workflow.
 - `src/components/workspace-shell.tsx`: shared header, workspace navigation, main landmark, and footer. The single current navigation item needs no mobile menu; it becomes a compact bar on narrow screens.
 - `src/features/workspace/workspace-landing.tsx`: presentational workspace landing content, ready for the later Team-selection slice.
+- `src/features/teams/use-teams.ts`: typed Team collection query using the shared remote cache.
 
 The shell and workspace landing remain Server Components without fetching. Use the existing layout and feature boundary as the starting point for future UI work; create additional abstractions only when actual behavior calls for them.
 
