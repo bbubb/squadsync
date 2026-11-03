@@ -56,7 +56,7 @@ Get-NetTCPConnection -State Listen -LocalPort 3000 |
 
 Expect `127.0.0.1`, not `0.0.0.0` or `::`. Keep the app local: do not change the hostname, add a tunnel/proxy, or expose it on a LAN. Later API integration must preserve the Development-only API boundary in [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md#local-development-boundary); the API is not started or reconfigured by these commands.
 
-Generated OpenAPI types, the API client, and TanStack Query belong to [#166](https://github.com/bbubb/squadsync/issues/166); the owner-authored Team selector belongs to [#167](https://github.com/bbubb/squadsync/issues/167).
+Generated OpenAPI types, the API client, and TanStack Query belong to [#166](https://github.com/bbubb/squadsync/issues/166); the Team selector implementation belongs to [#167](https://github.com/bbubb/squadsync/issues/167).
 
 ## API contract and local configuration
 
@@ -83,7 +83,7 @@ The single setting `NEXT_PUBLIC_API_BASE_URL` defaults to `http://127.0.0.1:5050
 
 `openapi-fetch` **0.17.0** uses generated `paths`, omits credentials and refuses redirects. Non-2xx responses throw `ApiError` with HTTP status; transport failures throw a useful local-API error with the original cause. Failed requests must not become empty collections. Mocked client tests cover successful and empty Team collections, HTTP/transport errors and local URL restrictions.
 
-TanStack Query **5.105.3** owns remote data. The Server Component root layout imports the small Client Component `QueryProvider`, which maintains one cache per mounted provider. Generated types describe the contract; the client executes the typed HTTP operation; a feature query puts its result in that cache; a component reads query loading, error and data state. Keep transient selection state local and avoid copying Team data into component state. Provider tests verify cache retention across renders and isolation between mounts.
+TanStack Query **5.105.3** owns remote data. The Server Component root layout imports the small Client Component `QueryProvider`, which maintains one cache per mounted provider. Generated types describe the contract; the client executes the typed HTTP operation; a feature query puts its result in that cache; a component reads query loading, error and data state. Keep transient UI state local and represent selected Team context in the route; avoid copying Team data into component state. Provider tests verify cache retention across renders and isolation between mounts.
 
 Client Components under that provider can call `useTeams()` from `src/features/teams/use-teams.ts`. It returns the Query result, including `data`, `isPending`, `isError` and `error`, for the generated Team collection. Reads share `teamsQueryKey` (`["teams"]`) and remain fresh for 30 seconds; later mounts can reuse the cached collection. The query passes cancellation to the typed client, propagates request failures, and rejects a missing response body instead of substituting `[]`. A real empty collection remains a successful result. The focused hook tests mock HTTP at `fetch`, exercise success/empty/error results through the real typed client and verify cache sharing. The shell does not call the hook yet; Team selector rendering remains #167.
 
