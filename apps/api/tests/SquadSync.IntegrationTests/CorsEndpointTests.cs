@@ -47,36 +47,47 @@ public class CorsEndpointTests
             using var response = await client.SendAsync(request);
             AssertNoCorsPermission(response);
         }
+        using var postPreflight = CreateRequest(HttpMethod.Options, "/api/teams", origin, "POST");
+        postPreflight.Headers.Add("Access-Control-Request-Headers", "content-type");
+        using var postResponse = await client.SendAsync(postPreflight);
+        AssertNoCorsPermission(postResponse);
     }
 
     [Theory]
-    [InlineData("/api/teams")]
-    [InlineData("/api/people/11111111-1111-1111-1111-111111111111")]
-    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/memberships")]
-    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/roster")]
-    [InlineData("/api/people/11111111-1111-1111-1111-111111111111/player-profile")]
-    public async Task ManagementPreflight_ApprovesOnlyGetAndAccept(string path)
+    [InlineData("/api/teams", "GET", "accept")]
+    [InlineData("/api/people/11111111-1111-1111-1111-111111111111", "GET", "accept")]
+    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/memberships", "GET", "accept")]
+    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/roster", "GET", "accept")]
+    [InlineData("/api/people/11111111-1111-1111-1111-111111111111/player-profile", "GET", "accept")]
+    [InlineData("/api/teams", "POST", "content-type")]
+    [InlineData("/api/teams", "POST", "accept,content-type")]
+    [InlineData("/api/people", "POST", "content-type")]
+    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/memberships", "POST", "content-type")]
+    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/roster", "POST", "content-type")]
+    [InlineData("/api/people/11111111-1111-1111-1111-111111111111/player-profile", "POST", "content-type")]
+    public async Task ManagementPreflight_ApprovesOnlyGetPostAndRequiredHeaders(
+        string path, string method, string headers)
     {
         await using var factory = new ApiTestFactory();
         using var client = factory.CreateClient();
-        using var request = CreateRequest(HttpMethod.Options, path, WebOrigin);
-        request.Headers.Add("Access-Control-Request-Headers", "accept");
+        using var request = CreateRequest(HttpMethod.Options, path, WebOrigin, method);
+        // JSON POST preflights name Content-Type; the application/json value belongs to the later POST.
+        request.Headers.Add("Access-Control-Request-Headers", headers);
         using var response = await client.SendAsync(request);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Equal(WebOrigin, Assert.Single(response.Headers.GetValues("Access-Control-Allow-Origin")));
-        Assert.Equal("GET", Assert.Single(response.Headers.GetValues("Access-Control-Allow-Methods")));
-        Assert.Equal("Accept", Assert.Single(response.Headers.GetValues("Access-Control-Allow-Headers")));
-        Assert.False(response.Headers.Contains("Access-Control-Allow-Credentials"));
+        AssertAllowedPolicy(response);
     }
 
     [Theory]
-    [InlineData("POST", null, HttpStatusCode.NoContent)]
     [InlineData("PUT", null, HttpStatusCode.NoContent)]
+    [InlineData("PUT", "content-type", HttpStatusCode.NoContent)]
     [InlineData("DELETE", null, HttpStatusCode.NotFound)]
     [InlineData("GET", "authorization", HttpStatusCode.NoContent)]
-    [InlineData("GET", "content-type", HttpStatusCode.NoContent)]
     [InlineData("GET", "x-custom-header", HttpStatusCode.NoContent)]
+    [InlineData("POST", "authorization", HttpStatusCode.NoContent)]
+    [InlineData("POST", "content-type,x-custom-header", HttpStatusCode.NoContent)]
     public async Task UnsupportedPreflight_DoesNotPermitRequestedMethodOrHeader(
         string method, string? header, HttpStatusCode expected)
     {
@@ -98,9 +109,7 @@ public class CorsEndpointTests
         // ASP.NET Core can return 204 plus the policy's allow-list even for a rejected request.
         // A browser must find its requested method and every requested header in that list.
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Equal("GET", Assert.Single(response.Headers.GetValues("Access-Control-Allow-Methods")));
-        Assert.Equal("Accept", Assert.Single(response.Headers.GetValues("Access-Control-Allow-Headers")));
-        Assert.False(response.Headers.Contains("Access-Control-Allow-Credentials"));
+        AssertAllowedPolicy(response);
     }
 
     [Theory]
@@ -131,6 +140,20 @@ public class CorsEndpointTests
         using var preflight = await client.SendAsync(options);
         AssertNoCorsPermission(preflight);
         if (expected == HttpStatusCode.NotFound) Assert.Equal(expected, preflight.StatusCode);
+
+        using var postOptions = CreateRequest(HttpMethod.Options, path, WebOrigin, "POST");
+        postOptions.Headers.Add("Access-Control-Request-Headers", "content-type");
+        using var postPreflight = await client.SendAsync(postOptions);
+        AssertNoCorsPermission(postPreflight);
+        if (expected == HttpStatusCode.NotFound)
+        {
+            Assert.Equal(expected, postPreflight.StatusCode);
+            using var post = CreateRequest(HttpMethod.Post, path, WebOrigin);
+            post.Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+            using var postResponse = await client.SendAsync(post);
+            Assert.Equal(HttpStatusCode.NotFound, postResponse.StatusCode);
+            AssertNoCorsPermission(postResponse);
+        }
     }
 
     private static HttpRequestMessage CreateRequest(HttpMethod method, string path, string origin, string requestedMethod = "GET")
@@ -139,6 +162,16 @@ public class CorsEndpointTests
         request.Headers.Add("Origin", origin);
         if (method == HttpMethod.Options) request.Headers.Add("Access-Control-Request-Method", requestedMethod);
         return request;
+    }
+
+    private static void AssertAllowedPolicy(HttpResponseMessage response)
+    {
+        Assert.Equal(WebOrigin, Assert.Single(response.Headers.GetValues("Access-Control-Allow-Origin")));
+        Assert.Equal(new[] { "GET", "POST" }, response.Headers.GetValues("Access-Control-Allow-Methods")
+            .SelectMany(value => value.Split(',', StringSplitOptions.TrimEntries)));
+        Assert.Equal(new[] { "Accept", "Content-Type" }, response.Headers.GetValues("Access-Control-Allow-Headers")
+            .SelectMany(value => value.Split(',', StringSplitOptions.TrimEntries)));
+        Assert.False(response.Headers.Contains("Access-Control-Allow-Credentials"));
     }
 
     private static void AssertNoCorsPermission(HttpResponseMessage response)

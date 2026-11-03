@@ -188,9 +188,11 @@ Management endpoints are anonymous until an authentication and authorization des
 
 ### Local browser CORS and listener verification
 
-The named `LocalDevelopmentManagement` CORS policy is registered only in Development and enabled on the management controllers using attributes and CORS middleware. There is no default policy. Health and Swagger endpoints receive no CORS permission. The exact allowed browser origin is `http://127.0.0.1:3000`, with only `GET` and the `Accept` request header allowed. No wildcard origins, credentials, cookies, authorization headers, or write-method preflight permissions are enabled. `localhost:3000`, HTTPS, port 3001 and LAN origins are not approved.
+The named `LocalDevelopmentManagement` CORS policy is registered only in Development and enabled on the management controllers using attributes and CORS middleware after routing. There is no default policy. Health and Swagger endpoints receive no CORS permission. The exact allowed browser origin is `http://127.0.0.1:3000`, with only `GET`/`POST` and the `Accept`/`Content-Type` request headers allowed. No wildcard origins, credentials, cookies, or authorization headers are enabled. `localhost:3000`, HTTPS, port 3001 and LAN origins are not approved.
 
 CORS controls browser access to responses; it does not authenticate callers, prevent direct HTTP clients, or block writes (including simple browser requests). The method/header allow-list governs preflight permission. Loopback binding and the Development route gate remain separate requirements.
+
+The shared controller policy permits JSON POST preflights for People, Memberships, Rosters and Player Profiles as well as Teams from this trusted origin. This is browser permission, not user authorization. Controllers are mapped only in Development; the policy does not expose management routes in Staging or Production. A cross-origin POST with `Content-Type: application/json` is not a simple request, so the browser first sends OPTIONS naming method `POST` and header `content-type`. Both must be allowed: permitting Content-Type alone would still leave POST blocked.
 
 Start the API with the `local` launch profile above and the web app with [`pnpm dev`](../web/README.md#install-and-run). In another PowerShell terminal, inspect both actual listeners:
 
@@ -219,10 +221,13 @@ To inspect preflight without performing a write, use PowerShell:
 $headers = @{ Origin = 'http://127.0.0.1:3000'; 'Access-Control-Request-Method' = 'GET'; 'Access-Control-Request-Headers' = 'accept' }
 (Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Options -Headers $headers).Headers
 $headers['Access-Control-Request-Method'] = 'POST'
+$headers['Access-Control-Request-Headers'] = 'content-type'
+(Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Options -Headers $headers).Headers
+$headers['Access-Control-Request-Method'] = 'PUT'
 (Invoke-WebRequest http://127.0.0.1:5050/api/teams -Method Options -Headers $headers).Headers
 ```
 
-The allowed preflight returns 204, the exact allowed origin, methods `GET`, headers `Accept`, and no credential header. Unsupported methods/headers may also return 204 with the policy's allow-list; browsers reject them because the requested method/header is missing from that list. A 204 alone does not mean permission. `CorsEndpointTests` verifies these cases, rejected origins, health/Swagger exclusion, and management GET/OPTIONS returning 404 in Staging and Production without permissive headers. In-process tests do not verify real socket binding or browser enforcement; record those manual observations separately.
+The allowed GET and JSON POST preflights return 204, the exact allowed origin, methods `GET,POST`, headers `Accept,Content-Type`, and no credential header. Unsupported methods/headers may also return 204 with the policy's allow-list; browsers reject them because the requested method/header is missing from that list (for example, PUT above). A 204 alone does not mean permission. `CorsEndpointTests` verifies these cases, rejected origins, health/Swagger exclusion, and management GET/POST/OPTIONS returning 404 in Staging and Production without permissive headers. In-process tests do not verify real socket binding or browser enforcement; record those manual observations separately. The live browser JSON POST check is deferred to the Sprint 11 local smoke with the Create Team form; these preflight commands do not create data.
 
 Controllers use `[ApiController]` and request validation attributes. MVC automatically returns HTTP 400 `ValidationProblemDetails` for malformed JSON and invalid models. Return `NotFound()` when the Application use case indicates an absent resource; MVC supplies standard HTTP 404 `ProblemDetails`. Unexpected exceptions use the built-in exception handler and `AddProblemDetails` in every environment, including Development, returning a generic HTTP 500 response without exception details, stack traces, or credentials. Aborted requests follow ASP.NET Core's cancellation handling rather than being converted into HTTP 500 errors. Health responses retain their existing format.
 
