@@ -1,6 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
+
+vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 import { WorkspaceShell } from "./workspace-shell";
 
 test("keyboard users can reach a skip link targeting the main workspace", async () => {

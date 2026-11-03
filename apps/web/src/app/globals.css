@@ -21,7 +21,8 @@ body {
 a {
   text-decoration: none;
 }
-a:focus-visible {
+a:focus-visible,
+button:focus-visible {
   outline: 3px solid #477526;
   outline-offset: 5px;
   border-radius: 4px;
@@ -111,7 +112,6 @@ main:focus {
   min-height: 48px;
   padding: 0.8rem 1rem;
   border-radius: 8px;
-  background: #e6ecdf;
   color: var(--color-forest);
   font-size: 0.875rem;
   font-weight: 650;
@@ -257,52 +257,84 @@ main:focus {
   top: 72%;
   left: 28%;
 }
-.team-placeholder {
+.team-panel {
   margin-top: 1.5rem;
   border: 1px solid #dfe4da;
   border-radius: 12px;
-  padding: 1.75rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background: #fff;
 }
-.team-symbol {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 60px;
-  height: 64px;
-  background: #f0f3e9;
-  border-radius: 12px;
-  color: #567046;
-}
-.team-symbol svg {
-  width: 30px;
-  height: 30px;
-}
-.team-placeholder .eyebrow {
-  color: var(--color-muted);
-  margin-bottom: 0.45rem;
-}
-.team-placeholder h2 {
-  font-size: 1.1rem;
+.team-panel h1,
+.team-panel h2 {
+  font-size: 1.5rem;
   font-weight: 650;
   letter-spacing: -0.02em;
 }
-.team-placeholder p:last-child {
-  max-width: 56ch;
+.team-panel p {
+  margin-block: 0.75rem;
   color: var(--color-muted);
-  font-size: 0.83rem;
   line-height: 1.7;
-  margin-top: 0.5rem;
 }
-.coming-next {
-  flex-shrink: 0;
-  align-self: flex-start;
-  padding: 0.4rem 0.65rem;
-  border-radius: 5px;
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+.team-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 1.25rem;
+  border: 1px solid #c4cfbc;
+  border-radius: 8px;
+  color: var(--color-ink);
+}
+.team-card:hover {
   background: #f0f3e9;
-  color: #566746;
-  font-size: 0.68rem;
+  border-color: #567046;
+}
+.team-name {
+  overflow-wrap: anywhere;
+  font-size: 1.2rem;
   font-weight: 650;
+}
+.team-identity {
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-block: 1rem;
+}
+.team-enter {
+  margin-top: auto;
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: var(--color-forest);
+}
+.team-action {
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  background: var(--color-forest);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.team-action:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.team-back {
+  display: inline-block;
+  min-height: 44px;
+  padding-block: 0.75rem;
+  color: var(--color-forest);
+  font-weight: 650;
+}
+.workspace-nav[aria-current="page"] {
+  background: #e6ecdf;
 }
 .workspace-footer {
   padding: 1.25rem 2.5rem;
@@ -354,9 +386,6 @@ main:focus {
   }
   .workspace-main {
     padding: 2rem 1.25rem 3rem;
-  }
-  .team-placeholder {
-    padding: 1.5rem;
   }
   .workspace-footer {
     padding: 1rem 1.25rem;

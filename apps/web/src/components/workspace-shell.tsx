@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WorkspaceNavigation } from "./workspace-navigation";
 import type { ReactNode } from "react";
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
@@ -23,21 +24,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         <aside className="workspace-sidebar">
           <nav aria-label="Workspace">
             <p className="eyebrow sidebar-label">Your space</p>
-            <Link className="workspace-nav flex items-center gap-3" href="/" aria-current="page">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              >
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-              Workspace
-            </Link>
+            <WorkspaceNavigation />
           </nav>
           <div className="sidebar-note">
             <span className="note-marker" aria-hidden="true" />

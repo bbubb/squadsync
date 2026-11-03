@@ -2,7 +2,7 @@
 
 ## Status and Scope
 
-Phase 4 web-area guidance under accepted [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md). Sprint 10 is approved in [#161](https://github.com/bbubb/squadsync/issues/161), but each implementation issue requires readiness review before dispatch. The local workspace shell is scaffolded; see [README.md](README.md) for pinned versions, available commands, source layout, and the local-only boundary. API integration and Team selection remain separate issues.
+Phase 4 web-area guidance under accepted [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md). Sprint 10 is approved in [#161](https://github.com/bbubb/squadsync/issues/161), but each implementation issue requires readiness review before dispatch. The local workspace shell is scaffolded; see [README.md](README.md) for pinned versions, available commands, source layout, and the local-only boundary. Typed API integration and route-backed Team selection are implemented; roster and Team-create UI require separate approved issues.
 
 These are **tool-agnostic** instructions for contributors and authorized implementation agents. Tool-specific behavior belongs under `docs/agentic-workflow/tools/` or the associated tool-native assets.
 

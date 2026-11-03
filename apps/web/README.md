@@ -1,6 +1,6 @@
 # SquadSync Web
 
-The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. Team selection is clearly marked as coming next; the shell does not fetch or display Teams.
+The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to `/teams/[teamId]`, displaying its real name and ID with an All Teams return path. Team creation and roster workflows are not implemented in the web UI.
 
 ## Prerequisites
 
@@ -21,9 +21,9 @@ pnpm dev
 
 Open <http://127.0.0.1:3000>. Stop with `Ctrl+C`. The development script explicitly binds to IPv4 loopback; keep that hostname. For API browser calls, keep port 3000 available: the API permits only the exact origin `http://127.0.0.1:3000`. A shell-only run on port 3001 has no API CORS permission; do not widen the policy to accommodate it.
 
-The shell needs no API, PostgreSQL, environment variables, remote fonts, or credentials. The typed API client and Query provider are available for interactive reads; the shell performs no automatic API calls. Browser requests go directly to the local Development API.
+Rendering the shell needs no API, PostgreSQL, remote fonts, or credentials. Loading real Teams requires the local Development API and its PostgreSQL database. Browser requests go directly to the API without a web proxy. The default loopback API URL needs no environment override.
 
-For a manual cross-origin API check, start the API's loopback `local` launch profile and follow the [API CORS and listener verification](../api/README.md#local-browser-cors-and-listener-verification). It includes listener inspection and a browser-console Team-list GET from this origin. CORS is not authentication or a network access control; anonymous management routes remain Development-only. The shell still performs no automatic API calls.
+For a manual cross-origin API check, start the API's loopback `local` launch profile and follow the [API CORS and listener verification](../api/README.md#local-browser-cors-and-listener-verification). It includes listener inspection and a browser-console Team-list GET from this origin. CORS is not authentication or a network access control; anonymous management routes remain Development-only. Opening the workspace now automatically reads `GET /api/teams`.
 
 ## Quality checks and local preview
 
@@ -39,13 +39,13 @@ pnpm start
 
 Run these checks from `apps/web` in any editor or terminal. Use `pnpm format` to apply formatting before committing; `format:check` reports differences without changing files. Prettier owns formatting (two spaces, double quotes, semicolons, trailing commas, 100-column wrapping and LF endings), including CSS with Tailwind directives. It preserves utility-class order. ESLint uses the Next.js Core Web Vitals and TypeScript presets, with formatting rules disabled through `eslint-config-prettier`; warnings fail the lint gate. TypeScript errors and test failures are reported by their own commands.
 
-`pnpm test` runs Vitest once with React Testing Library and jsdom. The representative shell test checks keyboard access to the skip link, its focusable main-content target, and the current navigation link. It requires no API or database. jsdom does not verify browser fragment-focus movement, CSS visibility or responsive layout; retain the browser checks below. Run `pnpm exec vitest` for watch mode while authoring tests.
+`pnpm test` runs Vitest once with React Testing Library and jsdom. Shell and Team journey tests check keyboard access, loading, empty results, failure/retry, distinct Team links, route-selected identity with fresh caches, and malformed/unknown IDs. Fetch is mocked; tests resolve the actual Team page with route params but do not run a browser router. It requires no API or database. jsdom does not verify browser fragment-focus movement, CSS visibility or responsive layout; retain the browser checks below. Run `pnpm exec vitest` for watch mode while authoring tests.
 
 The [Web CI workflow](../../.github/workflows/web-ci.yml) runs on pull requests and pushes to `main` that change `apps/web/**` or the workflow itself. It reads the exact Node and pnpm versions from `.node-version` and `package.json`, installs with `pnpm install --frozen-lockfile`, then runs format check, lint, generated API type check, typecheck, tests and build in that order. Each check has its own step. It needs no services or secrets and performs no deployment. The API workflow remains independent.
 
 `typecheck` generates Next.js route types before strict TypeScript compilation, including on a fresh checkout. `build` produces the production build; `start` previews it at <http://127.0.0.1:3000> using loopback binding. This is a local preview, not deployment authorization.
 
-Check both a desktop and narrow phone viewport, keyboard Tab navigation, the visible focus indicator, and the first “Skip to content” link. Confirm that the page fits without horizontal scrolling and that the Team-selection placeholder is non-interactive.
+Check both a desktop and narrow phone viewport, keyboard Tab navigation, the visible focus indicator, and the first “Skip to content” link. Confirm that the page fits without horizontal scrolling and that Team cards and retry/return controls remain usable. Check long Team names and distinct IDs for Teams sharing a name.
 
 While the server runs, verify the listener in another PowerShell terminal (adjust the port if changed):
 
@@ -56,7 +56,28 @@ Get-NetTCPConnection -State Listen -LocalPort 3000 |
 
 Expect `127.0.0.1`, not `0.0.0.0` or `::`. Keep the app local: do not change the hostname, add a tunnel/proxy, or expose it on a LAN. Later API integration must preserve the Development-only API boundary in [ADR 0007](../../docs/adr/0007-web-foundation-architecture.md#local-development-boundary); the API is not started or reconfigured by these commands.
 
-Generated OpenAPI types, the API client, and TanStack Query belong to [#166](https://github.com/bbubb/squadsync/issues/166); the Team selector implementation belongs to [#167](https://github.com/bbubb/squadsync/issues/167).
+Generated OpenAPI types, the API client, and TanStack Query were introduced by [#166](https://github.com/bbubb/squadsync/issues/166); the Team-selection journey is scoped by [#167](https://github.com/bbubb/squadsync/issues/167).
+
+## Manual Team journey smoke check
+
+Before final approval, Brandon must perform this environment-dependent check:
+
+1. Follow the [API PostgreSQL setup and demo-seed instructions](../api/README.md#local-postgresql-smoke-check). Use existing local Teams or the documented explicit demo seed; do not delete existing data. Start the API with its `local` launch profile in Development.
+2. Run `pnpm dev` here, then inspect both listeners:
+
+   ```powershell
+   Get-NetTCPConnection -State Listen -LocalPort 3000,5050 |
+     Select-Object LocalAddress, LocalPort, OwningProcess
+   ```
+
+   Both must report `127.0.0.1`. Keep the exact web origin `http://127.0.0.1:3000`; do not widen CORS or bind to a LAN address.
+
+3. Open that origin. Observe stored Team names and IDs matching `GET http://127.0.0.1:5050/api/teams`. Select a Team with the keyboard, verify its URL, name and ID, then reload and confirm the same identity. Use All Teams, browser Back and Forward to verify return/navigation behavior and the Workspace current-page indication.
+4. Open `/teams/not-a-team` and `/teams/00000000-0000-0000-0000-000000000000` (assuming that ID is absent). Expect an invalid-link or unavailable-Team message and a working return path.
+5. Stop the API and reload the workspace. Observe loading followed by failure and Try again, rather than an empty collection. Restart the API, retry, and confirm recovery. Check the true empty state only against an already empty local database; do not erase records to manufacture it.
+6. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that there are no pretend create/roster actions.
+
+Agent environment observation (2026-11-03): no listener observations were returned for ports 3000/5050/5432. Docker inspection was denied in the sandbox, and the browser access host/native pipe was unavailable. The real browser to API to PostgreSQL journey and visual/mobile checks were **not demonstrated**; they remain Brandon's checkpoint before final approval. Mocked tests do not substitute for this smoke check.
 
 ## API contract and local configuration
 
@@ -85,7 +106,7 @@ The single setting `NEXT_PUBLIC_API_BASE_URL` defaults to `http://127.0.0.1:5050
 
 TanStack Query **5.105.3** owns remote data. The Server Component root layout imports the small Client Component `QueryProvider`, which maintains one cache per mounted provider. Generated types describe the contract; the client executes the typed HTTP operation; a feature query puts its result in that cache; a component reads query loading, error and data state. Keep transient UI state local and represent selected Team context in the route; avoid copying Team data into component state. Provider tests verify cache retention across renders and isolation between mounts.
 
-Client Components under that provider can call `useTeams()` from `src/features/teams/use-teams.ts`. It returns the Query result, including `data`, `isPending`, `isError` and `error`, for the generated Team collection. Reads share `teamsQueryKey` (`["teams"]`) and remain fresh for 30 seconds; later mounts can reuse the cached collection. The query passes cancellation to the typed client, propagates request failures, and rejects a missing response body instead of substituting `[]`. A real empty collection remains a successful result. The focused hook tests mock HTTP at `fetch`, exercise success/empty/error results through the real typed client and verify cache sharing. The shell does not call the hook yet; Team selector rendering remains #167.
+Client Components under that provider can call `useTeams()` from `src/features/teams/use-teams.ts`. It returns the Query result, including `data`, `isPending`, `isError` and `error`, for the generated Team collection. Reads share `teamsQueryKey` (`["teams"]`) and remain fresh for 30 seconds; later mounts can reuse the cached collection. The query passes cancellation to the typed client, propagates request failures, and rejects a missing response body instead of substituting `[]`. A real empty collection remains a successful result. The focused hook tests mock HTTP at `fetch`, exercise success/empty/error results through the real typed client and verify cache sharing. The `TeamCollection` Client Component reads this hook for both the workspace list and route-selected identity. The URL owns the selected ID, which is matched against the cached collection without copying remote data into local state. No transient interaction state is needed. Unknown IDs show a return instruction; malformed route IDs are rejected before fetching. Workspace navigation only marks `/` as the current page.
 
 ## Source layout
 
@@ -93,11 +114,13 @@ Client Components under that provider can call `useTeams()` from `src/features/t
 - `src/app/query-provider.tsx`: Client Component providing TanStack Query to interactive descendants.
 - `src/lib/api/`: generated schema, local base URL configuration and typed HTTP client.
 - `openapi/` and `scripts/openapi.mjs`: committed contract and explicit refresh/generate/check workflow.
-- `src/components/workspace-shell.tsx`: shared header, workspace navigation, main landmark, and footer. The single current navigation item needs no mobile menu; it becomes a compact bar on narrow screens.
-- `src/features/workspace/workspace-landing.tsx`: presentational workspace landing content, ready for the later Team-selection slice.
+- `src/components/workspace-shell.tsx`: shared header, workspace navigation, main landmark, and footer. The small `workspace-navigation.tsx` Client Component reads the pathname for accurate `aria-current`. The single navigation item needs no mobile menu; it becomes a compact bar on narrow screens.
+- `src/features/workspace/workspace-landing.tsx`: Server Component landing content with the interactive Team collection.
+- `src/features/teams/team-collection.tsx`: Team list, selected identity, loading, empty and retry presentation.
+- `src/app/teams/[teamId]/page.tsx`: route-backed Team context and return navigation.
 - `src/features/teams/use-teams.ts`: typed Team collection query using the shared remote cache.
 
-The shell and workspace landing remain Server Components without fetching. Use the existing layout and feature boundary as the starting point for future UI work; create additional abstractions only when actual behavior calls for them.
+The shell and workspace landing remain Server Components. Their Client Component descendants handle pathname and remote-query interaction. Future roster UI can compose into the selected Team route under the same shell.
 
 ## Compatibility notes
 
