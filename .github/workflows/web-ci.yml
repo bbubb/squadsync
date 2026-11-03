@@ -46,6 +46,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Check generated API types
+        run: pnpm api:check
+
       - name: Typecheck
         run: pnpm typecheck
 

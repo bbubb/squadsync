@@ -1,0 +1,1201 @@
+{
+  "openapi": "3.0.4",
+  "info": { "title": "SquadSync.Api", "version": "1.0" },
+  "paths": {
+    "/api/teams/{teamId}/memberships": {
+      "post": {
+        "tags": ["Memberships"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Memberships"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MembershipResponse" }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MembershipResponse" }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MembershipResponse" }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teams/{teamId}/memberships/{membershipId}": {
+      "get": {
+        "tags": ["Memberships"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "membershipId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/MembershipResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/people": {
+      "post": {
+        "tags": ["People"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePersonRequest" }
+            },
+            "text/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePersonRequest" }
+            },
+            "application/*+json": {
+              "schema": { "$ref": "#/components/schemas/CreatePersonRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/people/{id}": {
+      "get": {
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/people/{personId}/player-profile": {
+      "post": {
+        "tags": ["PlayerProfiles"],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerProfileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerProfileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["PlayerProfiles"],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlayerProfileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlayerProfileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlayerProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["PlayerProfiles"],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teams/{teamId}/roster": {
+      "get": {
+        "tags": ["Rosters"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RosterEntryResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RosterEntryResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RosterEntryResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Rosters"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRosterEntryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRosterEntryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRosterEntryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teams/{teamId}/roster/{rosterEntryId}": {
+      "get": {
+        "tags": ["Rosters"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "rosterEntryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teams": {
+      "get": {
+        "tags": ["Teams"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TeamResponse" }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TeamResponse" }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TeamResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Teams"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTeamRequest" }
+            },
+            "text/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTeamRequest" }
+            },
+            "application/*+json": {
+              "schema": { "$ref": "#/components/schemas/CreateTeamRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teams/{id}": {
+      "get": {
+        "tags": ["Teams"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/TeamResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateMembershipRequest": {
+        "required": ["personId", "teamRole"],
+        "type": "object",
+        "properties": {
+          "personId": { "type": "string", "format": "uuid" },
+          "teamRole": {
+            "minLength": 1,
+            "pattern": "^(Owner|Coach|AssistantCoach|Manager|Player|Viewer)$",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreatePersonRequest": {
+        "required": ["firstName", "lastName"],
+        "type": "object",
+        "properties": {
+          "firstName": { "minLength": 1, "type": "string" },
+          "lastName": { "minLength": 1, "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "CreatePlayerProfileRequest": {
+        "type": "object",
+        "properties": {
+          "dominantFoot": {
+            "pattern": "^(Left|Right|Both)$",
+            "type": "string",
+            "nullable": true
+          },
+          "heightInches": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightPounds": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateRosterEntryRequest": {
+        "required": ["rosterStatus", "teamMembershipId"],
+        "type": "object",
+        "properties": {
+          "teamMembershipId": { "type": "string", "format": "uuid" },
+          "jerseyNumber": { "type": "string", "nullable": true },
+          "rosterStatus": {
+            "minLength": 1,
+            "pattern": "^(Active|Reserved|Suspended)$",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTeamRequest": {
+        "required": ["name"],
+        "type": "object",
+        "properties": { "name": { "minLength": 1, "type": "string" } },
+        "additionalProperties": false
+      },
+      "MembershipPersonResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "firstName": { "type": "string", "nullable": true },
+          "lastName": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "MembershipResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "teamId": { "type": "string", "format": "uuid" },
+          "person": { "$ref": "#/components/schemas/MembershipPersonResponse" },
+          "teamRole": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "PersonResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "firstName": { "type": "string", "nullable": true },
+          "lastName": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "PlayerProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "personId": { "type": "string", "format": "uuid" },
+          "dominantFoot": { "type": "string", "nullable": true },
+          "heightInches": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightPounds": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "nullable": true },
+          "title": { "type": "string", "nullable": true },
+          "status": { "type": "integer", "format": "int32", "nullable": true },
+          "detail": { "type": "string", "nullable": true },
+          "instance": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": {}
+      },
+      "RosterEntryResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "teamMembershipId": { "type": "string", "format": "uuid" },
+          "person": { "$ref": "#/components/schemas/RosterPersonResponse" },
+          "jerseyNumber": { "type": "string", "nullable": true },
+          "rosterStatus": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "RosterPersonResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "firstName": { "type": "string", "nullable": true },
+          "lastName": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "TeamResponse": {
+        "required": ["id", "name"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "minLength": 1, "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePlayerProfileRequest": {
+        "required": ["dominantFoot", "heightInches", "weightPounds"],
+        "type": "object",
+        "properties": {
+          "dominantFoot": {
+            "pattern": "^(Left|Right|Both)$",
+            "type": "string",
+            "nullable": true
+          },
+          "heightInches": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weightPounds": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "nullable": true },
+          "title": { "type": "string", "nullable": true },
+          "status": { "type": "integer", "format": "int32", "nullable": true },
+          "detail": { "type": "string", "nullable": true },
+          "instance": { "type": "string", "nullable": true },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      }
+    }
+  },
+  "tags": [
+    { "name": "Memberships" },
+    { "name": "People" },
+    { "name": "PlayerProfiles" },
+    { "name": "Rosters" },
+    { "name": "Teams" }
+  ]
+}
