@@ -1140,10 +1140,11 @@
         "additionalProperties": false
       },
       "TeamResponse": {
+        "required": ["id", "name"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
-          "name": { "type": "string", "nullable": true }
+          "name": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },

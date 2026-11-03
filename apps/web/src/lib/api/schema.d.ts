@@ -882,8 +882,8 @@ export interface components {
     };
     TeamResponse: {
       /** Format: uuid */
-      id?: string;
-      name?: string | null;
+      id: string;
+      name: string;
     };
     UpdatePlayerProfileRequest: {
       dominantFoot: string | null;
