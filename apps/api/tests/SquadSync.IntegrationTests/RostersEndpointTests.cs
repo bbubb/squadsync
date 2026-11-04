@@ -210,9 +210,10 @@ public class RostersEndpointTests
         var response = await client.PostAsJsonAsync(Route(fake.Team.Id),
             new { teamMembershipId = fake.Membership.Id, jerseyNumber = (string?)null, rosterStatus = "Active" });
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.Null((await response.Content.ReadFromJsonAsync<RosterEntryResponse>())!.JerseyNumber);
-        var entries = (await client.GetFromJsonAsync<RosterEntryResponse[]>(Route(fake.Team.Id)))!;
-        Assert.Null(Assert.Single(entries).JerseyNumber);
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Null, json.GetProperty("jerseyNumber").ValueKind);
+        var collectionJson = await client.GetFromJsonAsync<JsonElement>(Route(fake.Team.Id));
+        Assert.Equal(JsonValueKind.Null, Assert.Single(collectionJson.EnumerateArray()).GetProperty("jerseyNumber").ValueKind);
     }
 
     [Fact]
