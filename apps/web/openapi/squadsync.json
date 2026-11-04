@@ -1062,21 +1062,23 @@
         "additionalProperties": false
       },
       "MembershipPersonResponse": {
+        "required": ["firstName", "id", "lastName"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
-          "firstName": { "type": "string", "nullable": true },
-          "lastName": { "type": "string", "nullable": true }
+          "firstName": { "minLength": 1, "type": "string" },
+          "lastName": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },
       "MembershipResponse": {
+        "required": ["id", "person", "teamId", "teamRole"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "teamId": { "type": "string", "format": "uuid" },
           "person": { "$ref": "#/components/schemas/MembershipPersonResponse" },
-          "teamRole": { "type": "string", "nullable": true }
+          "teamRole": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },
@@ -1120,22 +1122,24 @@
         "additionalProperties": {}
       },
       "RosterEntryResponse": {
+        "required": ["id", "jerseyNumber", "person", "rosterStatus", "teamMembershipId"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "teamMembershipId": { "type": "string", "format": "uuid" },
           "person": { "$ref": "#/components/schemas/RosterPersonResponse" },
           "jerseyNumber": { "type": "string", "nullable": true },
-          "rosterStatus": { "type": "string", "nullable": true }
+          "rosterStatus": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },
       "RosterPersonResponse": {
+        "required": ["firstName", "id", "lastName"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
-          "firstName": { "type": "string", "nullable": true },
-          "lastName": { "type": "string", "nullable": true }
+          "firstName": { "minLength": 1, "type": "string" },
+          "lastName": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },
