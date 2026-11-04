@@ -27,8 +27,8 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddCors(options => options.AddPolicy(DevelopmentCors.PolicyName, policy => policy
         .WithOrigins("http://127.0.0.1:3000")
-        .WithMethods("GET")
-        .WithHeaders("Accept")));
+        .WithMethods("GET", "POST")
+        .WithHeaders("Accept", "Content-Type")));
     builder.Services.AddScoped<UpdatePlayerProfile>();
     builder.Services.AddScoped<CreatePlayerProfile>();
     builder.Services.AddScoped<GetPlayerProfile>();
