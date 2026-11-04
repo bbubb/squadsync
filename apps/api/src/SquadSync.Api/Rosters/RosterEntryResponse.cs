@@ -1,11 +1,20 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using SquadSync.Application.Rosters;
 
 namespace SquadSync.Api.Rosters;
 
-public sealed record RosterPersonResponse(Guid Id, string FirstName, string LastName);
+public sealed record RosterPersonResponse(
+    [property: Required] Guid Id,
+    [property: Required] string FirstName,
+    [property: Required] string LastName);
 
-public sealed record RosterEntryResponse(Guid Id, Guid TeamMembershipId, RosterPersonResponse Person,
-    string? JerseyNumber, string RosterStatus)
+public sealed record RosterEntryResponse(
+    [property: Required] Guid Id,
+    [property: Required] Guid TeamMembershipId,
+    [property: Required] RosterPersonResponse Person,
+    [property: JsonRequired] string? JerseyNumber,
+    [property: Required] string RosterStatus)
 {
     public static RosterEntryResponse From(RosterDetails entry)
         => new(entry.Id, entry.TeamMembershipId,

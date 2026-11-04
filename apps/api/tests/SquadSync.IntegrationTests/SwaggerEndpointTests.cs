@@ -7,6 +7,43 @@ namespace SquadSync.IntegrationTests;
 
 public sealed class SwaggerEndpointTests
 {
+    [Theory]
+    [InlineData("MembershipResponse", new[] { "id", "person", "teamId", "teamRole" }, "MembershipPersonResponse")]
+    [InlineData("MembershipPersonResponse", new[] { "firstName", "id", "lastName" }, null)]
+    [InlineData("RosterEntryResponse", new[] { "id", "jerseyNumber", "person", "rosterStatus", "teamMembershipId" }, "RosterPersonResponse")]
+    [InlineData("RosterPersonResponse", new[] { "firstName", "id", "lastName" }, null)]
+    public async Task DevelopmentSwagger_MembershipAndRosterResponsesDescribeRequiredProperties(
+        string schemaName, string[] expectedProperties, string? personSchemaName)
+    {
+        await using var factory = new ApiTestFactory();
+        using var client = factory.CreateClient();
+        using var response = await client.GetAsync("/swagger/v1/swagger.json");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var document = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var schema = document.GetProperty("components").GetProperty("schemas").GetProperty(schemaName);
+
+        Assert.Equal(expectedProperties, schema.GetProperty("required")
+            .EnumerateArray().Select(property => property.GetString()).Order().ToArray());
+        var properties = schema.GetProperty("properties");
+        Assert.Equal(expectedProperties, properties.EnumerateObject().Select(property => property.Name).Order().ToArray());
+        foreach (var propertyName in expectedProperties)
+        {
+            var property = properties.GetProperty(propertyName);
+            var isNullable = property.TryGetProperty("nullable", out var nullable) && nullable.GetBoolean();
+            Assert.Equal(propertyName == "jerseyNumber", isNullable);
+            if (propertyName == "person")
+            {
+                Assert.Equal($"#/components/schemas/{personSchemaName}", property.GetProperty("$ref").GetString());
+            }
+            else
+            {
+                Assert.Equal("string", property.GetProperty("type").GetString());
+                if (propertyName is "id" or "teamId" or "teamMembershipId")
+                    Assert.Equal("uuid", property.GetProperty("format").GetString());
+            }
+        }
+    }
+
     [Fact]
     public async Task DevelopmentSwagger_TeamResponseHasRequiredNonNullableProperties()
     {
