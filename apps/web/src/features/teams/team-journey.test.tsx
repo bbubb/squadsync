@@ -21,7 +21,9 @@ afterEach(() => {
 });
 
 function renderJourney(content: React.ReactNode) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, retryDelay: 0, gcTime: 0 } },
+  });
   return render(
     <QueryClientProvider client={client}>
       <WorkspaceShell>{content}</WorkspaceShell>
@@ -41,6 +43,8 @@ test("workspace announces loading then offers distinct keyboard-accessible Team 
     ),
   );
   renderJourney(<WorkspaceLanding />);
+  expect(screen.getByText("Local Teams")).toBeVisible();
+  expect(screen.getByText(/All Teams in the local Development database/)).toBeVisible();
   expect(screen.getByRole("status")).toHaveTextContent("Loading Teams");
   respond(Response.json(teams));
   const links = await screen.findAllByRole("link", { name: /Touchline FC/ });
@@ -129,19 +133,18 @@ test.each([
 ])(
   "Team detail distinguishes $label from not found and supports keyboard retry",
   async ({ response }) => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockImplementationOnce(response)
-      .mockImplementation(() => Promise.resolve(Response.json(teams[0])));
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(response);
     vi.stubGlobal("fetch", fetcher);
     renderJourney(await TeamPage({ params: Promise.resolve({ teamId: teams[0].id }) }));
     expect(screen.getByRole("status")).toHaveTextContent("Loading Team");
     expect(await screen.findByRole("alert")).toHaveTextContent("Team could not be loaded");
     expect(screen.queryByText(/This Team was not found/)).not.toBeInTheDocument();
+    expect(fetcher).toHaveBeenCalledTimes(4);
+    fetcher.mockImplementation(() => Promise.resolve(Response.json(teams[0])));
     screen.getByRole("button", { name: "Try again" }).focus();
     await userEvent.setup().keyboard("{Enter}");
     expect(await screen.findByRole("heading", { name: teams[0].name })).toBeVisible();
-    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(fetcher).toHaveBeenCalledTimes(5);
     for (const [request] of fetcher.mock.calls) {
       expect(new URL((request as Request).url).pathname).toBe(`/api/teams/${teams[0].id}`);
     }

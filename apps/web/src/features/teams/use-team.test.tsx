@@ -13,12 +13,47 @@ const firstTeam = { id: "ad828d12-92c5-4578-985b-e83bb37cc861", name: "First FC"
 const secondTeam = { id: "bd828d12-92c5-4578-985b-e83bb37cc861", name: "Second FC" } satisfies Team;
 
 function setup() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retryDelay: 0 } } });
   const wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={client}>{children}</QueryClientProvider>
   );
   return { client, wrapper };
 }
+
+test("a 404 makes one request with production-like QueryClient defaults", async () => {
+  const fetcher = vi
+    .fn<typeof fetch>()
+    .mockImplementation(() => Promise.resolve(new Response(null, { status: 404 })));
+  vi.stubGlobal("fetch", fetcher);
+  const client = new QueryClient();
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  );
+  const view = renderHook(() => useTeam(firstTeam.id), { wrapper });
+  await waitFor(() => expect(view.result.current.isError).toBe(true));
+  expect(view.result.current.error).toMatchObject({ name: "ApiError", status: 404 });
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  view.unmount();
+  client.clear();
+});
+
+test.each([
+  { label: "HTTP 500", response: () => Promise.resolve(new Response(null, { status: 500 })) },
+  { label: "transport failure", response: () => Promise.reject(new TypeError("Failed to fetch")) },
+])("retries a transient $label and recovers", async ({ response }) => {
+  const fetcher = vi
+    .fn<typeof fetch>()
+    .mockImplementationOnce(response)
+    .mockImplementation(() => Promise.resolve(Response.json(firstTeam)));
+  vi.stubGlobal("fetch", fetcher);
+  const { client, wrapper } = setup();
+  const view = renderHook(() => useTeam(firstTeam.id), { wrapper });
+  await waitFor(() => expect(view.result.current.isSuccess).toBe(true));
+  expect(view.result.current.data).toEqual(firstTeam);
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  view.unmount();
+  client.clear();
+});
 
 test("loads detail independently of the collection, isolates IDs and reuses each Team cache", async () => {
   const fetcher = vi.fn<typeof fetch>().mockImplementation((input) => {
@@ -69,13 +104,15 @@ test.each([
     response: () => Promise.resolve(new Response(null, { status: 204 })),
   },
 ])("propagates $label without caching a Team", async ({ status, response }) => {
-  vi.stubGlobal("fetch", vi.fn<typeof fetch>().mockImplementation(response));
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(response);
+  vi.stubGlobal("fetch", fetcher);
   const { client, wrapper } = setup();
   const view = renderHook(() => useTeam(firstTeam.id), { wrapper });
   await waitFor(() => expect(view.result.current.isError).toBe(true));
   expect(view.result.current.error).toMatchObject({ name: "ApiError" });
   expect((view.result.current.error as { status?: number }).status).toBe(status);
   expect(client.getQueryData(teamQueryKey(firstTeam.id))).toBeUndefined();
+  expect(fetcher).toHaveBeenCalledTimes(status === 404 ? 1 : 4);
   view.unmount();
   client.clear();
 });

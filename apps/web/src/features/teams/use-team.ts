@@ -12,6 +12,10 @@ export function useTeam(teamId: string) {
   return useQuery({
     queryKey: teamQueryKey(teamId),
     staleTime: 30_000,
+    retry: (failureCount, error) => {
+      if (error instanceof ApiError && error.status === 404) return false;
+      return failureCount < 3;
+    },
     queryFn: async ({ signal }): Promise<Team> => {
       const { data } = await apiClient.GET("/api/teams/{id}", {
         params: { path: { id: teamId } },
