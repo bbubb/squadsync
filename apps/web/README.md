@@ -1,6 +1,6 @@
 # SquadSync Web
 
-The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to `/teams/[teamId]`, displaying its real name and ID with an All Teams return path. Team creation and roster workflows are not implemented in the web UI.
+The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to `/teams/[teamId]`, displaying its real name and ID with an All Teams return path. Create Team opens `/teams/new`, submits a name to the Development API, and selects the created Team. Roster workflows are not implemented in the web UI.
 
 ## Prerequisites
 
@@ -75,9 +75,14 @@ Before final approval, Brandon must perform this environment-dependent check:
 3. Open that origin. Observe stored Team names and IDs matching `GET http://127.0.0.1:5050/api/teams`. Select a Team with the keyboard, verify its URL, name and ID, then open that URL directly and reload. In browser Network, confirm each fresh detail load requests `GET /api/teams/{id}` for Team identity without `GET /api/teams`. Use All Teams, browser Back and Forward to verify return/navigation behavior and the Workspace current-page indication.
 4. Open `/teams/not-a-team` and `/teams/00000000-0000-0000-0000-000000000000` (assuming that ID is absent). Expect an invalid-link message without an API request for the malformed ID, and a Team-not-found message after HTTP 404 for the absent ID. Verify a keyboard-accessible All Teams return path in both cases.
 5. Stop the API and reload a known Team detail URL, then the workspace. Observe loading followed by failure and Try again, rather than not-found or an empty collection. Restart the API, retry with the keyboard, and confirm recovery. Check the true empty workspace state only against an already empty local database; do not erase records to manufacture it.
-6. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that there are no pretend create/roster actions.
+6. Choose Create Team from the workspace (also available with an empty collection). At `/teams/new`, submit a blank or spaces-only name: expect feedback, focus on the name input, and no POST. Check Tab order through the name, submit and Cancel controls; Cancel returns to `/` without creating anything.
+7. Create a uniquely named local test Team with surrounding spaces. In Network, expect one `POST /api/teams` with the trimmed name and HTTP 201, even after rapid submission. The button and input are disabled while pending. Confirm navigation to `/teams/{id}` using the response ID and a detail GET showing the real name. Return with All Teams and confirm the refreshed list includes it. The new Team has no members or roster entries; no Owner assignment or authenticated identity is implied. Keep the new record; do not delete existing data.
+8. Stop the API, submit another name, and verify an understandable error with the input preserved and retry available. Restart the API and retry deliberately. Check HTTP 400 feedback with a browser request override/mock if available; do not modify the API or existing data to force a rejection.
+9. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that there are no pretend roster actions.
 
 Agent environment observation (2026-11-03): no listener observations were returned for ports 3000/5050/5432. Docker inspection was denied in the sandbox, and the browser access host/native pipe was unavailable. The real browser to API to PostgreSQL journey and visual/mobile checks were **not demonstrated**; they remain Brandon's checkpoint before final approval. Mocked tests do not substitute for this smoke check.
+
+Issue #184 agent observation (2026-11-05): listener inspection returned no entries for ports 3000/5050/5432 in this environment. The real creation journey and browser visual/mobile checks were not run; steps 1–9 remain the owner's local approval checkpoint. Fetch-mocked tests cover trimmed POST/201 navigation, list invalidation and refresh, blank feedback, pending duplicate prevention, API 400/500, transport failure, missing bodies, explicit retry, cancel and keyboard use.
 
 ## API contract and local configuration
 
@@ -110,6 +115,8 @@ Client Components under that provider can call `useTeams()` from `src/features/t
 
 The selected route renders `TeamDetail`, which calls `useTeam(teamId)` using the generated `GET /api/teams/{id}` success type and the shared typed client. The URL supplies the identity; no collection lookup or local copy of Team state is needed. Fetching one resource avoids downloading and searching an unbounded list for each detail view. Keys `["teams", "detail", teamId]` isolate each Team's identity from other Teams and from the collection cache. The hook uses the same 30-second stale time, cancellation signal, and missing-body/error handling as existing read hooks. HTTP 404 means that resource was not found and offers return navigation; HTTP 500 and transport failures show an error with retry. Neither is a successful empty collection. Malformed route IDs are rejected before fetching. Focused fetch-mocked tests cover fresh detail mounts without list reads, ID switching/cache reuse, missing bodies, 404, server/transport failures, and keyboard retry/return controls. Workspace navigation only marks `/` as the current page.
 
+`useCreateTeam()` uses `useMutation` because POST is an explicit write triggered by submission; `useQuery` reads remote state by cache key. The mutation uses generated request/201 response types and `apiClient.POST`, with automatic retries disabled to avoid repeating a write. Success invalidates the exact `teamsQueryKey`, so returning to the workspace refetches its previously fresh collection. `CreateTeamForm` keeps the name and feedback locally, trims whitespace and rejects blank input for immediate feedback; the API remains authoritative for validation and persistence. It locks submission synchronously, displays pending/error state, and uses `router.push` with the returned Team ID rather than guessing an ID or selecting by name. Cancel returns to the workspace. Creation does not assign ownership or link members.
+
 ## Source layout
 
 The Team-scoped read hooks `useTeamMemberships(teamId)` and `useTeamRoster(teamId)` live beside `useTeams` under `src/features/teams/`. They use the same typed client, 30-second stale time, and Query result states. Their keys are `["teams", teamId, "memberships"]` and `["teams", teamId, "roster"]`: including `teamId` isolates each Team's cached data, while the final segment separates the collections. Switching IDs starts with pending data for an uncached Team instead of displaying the previous Team's collection; returning within the stale time reuses that Team's cache. The hooks pass the fetch abort signal so Query can cancel requests that no longer have observers.
@@ -127,6 +134,8 @@ TanStack Query owns these remote collections and their loading/error state; futu
 - `src/app/teams/[teamId]/page.tsx`: route-backed Team context and return navigation.
 - `src/features/teams/use-teams.ts`: typed Team collection query using the shared remote cache.
 - `src/features/teams/use-team.ts`: typed Team detail query with an ID-specific cache key.
+- `src/features/teams/use-create-team.ts`: typed Team mutation and collection invalidation.
+- `src/features/teams/create-team-form.tsx` and `src/app/teams/new/page.tsx`: accessible name form and creation route.
 
 The shell and workspace landing remain Server Components. Their Client Component descendants handle pathname and remote-query interaction. Future roster UI can compose into the selected Team route under the same shell.
 

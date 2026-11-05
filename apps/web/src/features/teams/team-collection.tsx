@@ -25,12 +25,7 @@ export function TeamCollection() {
   }
 
   if (query.data.length === 0) {
-    return (
-      <p role="status">
-        No Teams yet. Create a Team through the local Development API or run the documented demo
-        seed, then reload this workspace.
-      </p>
-    );
+    return <p role="status">No Teams yet. Choose Create Team to start your workspace.</p>;
   }
 
   return (
