@@ -826,17 +826,17 @@ export interface components {
     };
     MembershipPersonResponse: {
       /** Format: uuid */
-      id?: string;
-      firstName?: string | null;
-      lastName?: string | null;
+      id: string;
+      firstName: string;
+      lastName: string;
     };
     MembershipResponse: {
       /** Format: uuid */
-      id?: string;
+      id: string;
       /** Format: uuid */
-      teamId?: string;
-      person?: components["schemas"]["MembershipPersonResponse"];
-      teamRole?: string | null;
+      teamId: string;
+      person: components["schemas"]["MembershipPersonResponse"];
+      teamRole: string;
     };
     PersonResponse: {
       /** Format: uuid */
@@ -867,18 +867,18 @@ export interface components {
     };
     RosterEntryResponse: {
       /** Format: uuid */
-      id?: string;
+      id: string;
       /** Format: uuid */
-      teamMembershipId?: string;
-      person?: components["schemas"]["RosterPersonResponse"];
-      jerseyNumber?: string | null;
-      rosterStatus?: string | null;
+      teamMembershipId: string;
+      person: components["schemas"]["RosterPersonResponse"];
+      jerseyNumber: string | null;
+      rosterStatus: string;
     };
     RosterPersonResponse: {
       /** Format: uuid */
-      id?: string;
-      firstName?: string | null;
-      lastName?: string | null;
+      id: string;
+      firstName: string;
+      lastName: string;
     };
     TeamResponse: {
       /** Format: uuid */
