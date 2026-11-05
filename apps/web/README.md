@@ -98,9 +98,7 @@ pnpm api:generate
 pnpm api:check
 ```
 
-Refresh fetches `/swagger/v1/swagger.json` explicitly; Swagger needs no database. Stop for owner review if the live contract differs from the approved endpoint. Commit the reviewed snapshot and generated types together. Generation and `api:check` read only the snapshot and reject external references. CI, tests, typecheck and build never refresh Swagger or need a running API/database. A successful live refresh after API PR #178 was verified on 2026-11-03; only TeamResponse required/nullability metadata changed.
-
-For #185 on 2026-11-04, the current API at `b938492` was built with `dotnet build apps/api/src/SquadSync.Api --no-restore --disable-build-servers -m:1`, then run directly from `apps/api/src/SquadSync.Api` using `dotnet bin/Debug/net10.0/SquadSync.Api.dll`, with `ASPNETCORE_ENVIRONMENT=Development` and `ASPNETCORE_URLS=http://127.0.0.1:5050`. From `apps/web`, `pnpm api:refresh` fetched actual Development Swagger, then `pnpm api:generate` regenerated the types after review. The diff contained only PR #190's membership/roster response corrections: required fields, non-null names/role/status, and a required but nullable `jerseyNumber`. The API was stopped after refresh; no database was needed.
+Refresh fetches `/swagger/v1/swagger.json` explicitly; Swagger needs no database. Stop for owner review if the live contract differs from the approved endpoint. Commit the reviewed snapshot and generated types together. Generation and `api:check` read only the snapshot and reject external references. CI, tests, typecheck and build never refresh Swagger or need a running API/database.
 
 The single setting `NEXT_PUBLIC_API_BASE_URL` defaults to `http://127.0.0.1:5050`. It is a public, build-time browser setting, never a place for secrets. To override it, set it in your terminal before refresh, dev or build, for example `$env:NEXT_PUBLIC_API_BASE_URL = "http://127.0.0.1:5050"`. Only HTTP loopback origins are accepted, without credentials, paths, query strings or fragments. Changing the API origin does not widen its CORS permission for the web origin `http://127.0.0.1:3000`.
 
