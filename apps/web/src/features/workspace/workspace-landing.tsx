@@ -34,9 +34,9 @@ export function WorkspaceLanding() {
       </section>
 
       <section className="team-panel" aria-labelledby="teams-heading">
-        <p className="eyebrow">Local Teams</p>
-        <h2 id="teams-heading">Choose a Team</h2>
-        <p>All Teams in the local Development database. Open a Team to enter its workspace.</p>
+        <p className="eyebrow">Your Teams</p>
+        <h2 id="teams-heading">Choose your Team</h2>
+        <p>Open a Team to enter its workspace.</p>
         <TeamCollection />
       </section>
     </div>

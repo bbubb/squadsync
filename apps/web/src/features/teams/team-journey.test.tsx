@@ -43,8 +43,7 @@ test("workspace announces loading then offers distinct keyboard-accessible Team 
     ),
   );
   renderJourney(<WorkspaceLanding />);
-  expect(screen.getByText("Local Teams")).toBeVisible();
-  expect(screen.getByText(/All Teams in the local Development database/)).toBeVisible();
+  expect(screen.getByText("Your Teams")).toBeVisible();
   expect(screen.getByRole("status")).toHaveTextContent("Loading Teams");
   respond(Response.json(teams));
   const links = await screen.findAllByRole("link", { name: /Touchline FC/ });
