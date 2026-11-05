@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TeamCollection } from "@/features/teams/team-collection";
+import { TeamDetail } from "@/features/teams/team-detail";
 
 export default async function TeamPage({ params }: { params: Promise<{ teamId: string }> }) {
   const { teamId } = await params;
@@ -15,7 +15,7 @@ export default async function TeamPage({ params }: { params: Promise<{ teamId: s
             <p className="eyebrow">Local workspace</p>
             <h1>Team workspace</h1>
           </div>
-          <TeamCollection selectedTeamId={teamId} />
+          <TeamDetail teamId={teamId} />
         </>
       ) : (
         <div className="team-panel">

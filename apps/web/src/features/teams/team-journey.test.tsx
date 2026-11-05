@@ -21,7 +21,9 @@ afterEach(() => {
 });
 
 function renderJourney(content: React.ReactNode) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, retryDelay: 0, gcTime: 0 } },
+  });
   return render(
     <QueryClientProvider client={client}>
       <WorkspaceShell>{content}</WorkspaceShell>
@@ -41,6 +43,7 @@ test("workspace announces loading then offers distinct keyboard-accessible Team 
     ),
   );
   renderJourney(<WorkspaceLanding />);
+  expect(screen.getByText("Your Teams")).toBeVisible();
   expect(screen.getByRole("status")).toHaveTextContent("Loading Teams");
   respond(Response.json(teams));
   const links = await screen.findAllByRole("link", { name: /Touchline FC/ });
@@ -77,7 +80,12 @@ test("API failure stays distinct from empty and can be retried with the keyboard
 });
 
 test("following a Team route and reloading derives real identity from a fresh remote cache", async () => {
-  const fetcher = vi.fn().mockImplementation(() => Promise.resolve(Response.json(teams)));
+  const fetcher = vi.fn<typeof fetch>().mockImplementation((input) => {
+    const path = new URL((input as Request).url).pathname;
+    if (path === "/api/teams") return Promise.resolve(Response.json(teams));
+    expect(path).toBe(`/api/teams/${teams[1].id}`);
+    return Promise.resolve(Response.json(teams[1]));
+  });
   vi.stubGlobal("fetch", fetcher);
   const workspace = renderJourney(<WorkspaceLanding />);
   const link = (await screen.findAllByRole("link", { name: /Touchline FC/ }))[1];
@@ -99,16 +107,48 @@ test("following a Team route and reloading derives real identity from a fresh re
     view.unmount();
   }
   expect(fetcher).toHaveBeenCalledTimes(3);
+  expect(
+    fetcher.mock.calls.slice(1).map(([request]) => new URL((request as Request).url).pathname),
+  ).toEqual([`/api/teams/${teams[1].id}`, `/api/teams/${teams[1].id}`]);
 });
 
 test("unknown Team context offers a return path instead of a fabricated Team", async () => {
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json([])));
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
   renderJourney(await TeamPage({ params: Promise.resolve({ teamId: teams[0].id }) }));
   await waitFor(() =>
-    expect(screen.getByRole("status")).toHaveTextContent("This Team is not in the local workspace"),
+    expect(screen.getByRole("status")).toHaveTextContent("This Team was not found"),
   );
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  const back = screen.getByRole("link", { name: "← All Teams" });
+  const user = userEvent.setup();
+  for (let i = 0; i < 6 && document.activeElement !== back; i++) await user.tab();
+  expect(back).toHaveFocus();
   expect(screen.getByRole("link", { name: "← All Teams" })).toHaveAttribute("href", "/");
 });
+
+test.each([
+  { label: "server failure", response: () => Promise.resolve(new Response(null, { status: 500 })) },
+  { label: "transport failure", response: () => Promise.reject(new TypeError("Failed to fetch")) },
+])(
+  "Team detail distinguishes $label from not found and supports keyboard retry",
+  async ({ response }) => {
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(response);
+    vi.stubGlobal("fetch", fetcher);
+    renderJourney(await TeamPage({ params: Promise.resolve({ teamId: teams[0].id }) }));
+    expect(screen.getByRole("status")).toHaveTextContent("Loading Team");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Team could not be loaded");
+    expect(screen.queryByText(/This Team was not found/)).not.toBeInTheDocument();
+    expect(fetcher).toHaveBeenCalledTimes(4);
+    fetcher.mockImplementation(() => Promise.resolve(Response.json(teams[0])));
+    screen.getByRole("button", { name: "Try again" }).focus();
+    await userEvent.setup().keyboard("{Enter}");
+    expect(await screen.findByRole("heading", { name: teams[0].name })).toBeVisible();
+    expect(fetcher).toHaveBeenCalledTimes(5);
+    for (const [request] of fetcher.mock.calls) {
+      expect(new URL((request as Request).url).pathname).toBe(`/api/teams/${teams[0].id}`);
+    }
+  },
+);
 
 test("malformed route fails gracefully without an API call", async () => {
   const fetcher = vi.fn();
