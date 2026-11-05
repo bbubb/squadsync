@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useTeams } from "./use-teams";
 
-export function TeamCollection({ selectedTeamId }: { selectedTeamId?: string }) {
+export function TeamCollection() {
   const query = useTeams();
 
   if (query.isPending) return <p role="status">Loading Teams…</p>;
@@ -21,32 +21,6 @@ export function TeamCollection({ selectedTeamId }: { selectedTeamId?: string }) 
           {query.isFetching ? "Retrying…" : "Try again"}
         </button>
       </div>
-    );
-  }
-
-  if (selectedTeamId) {
-    const team = query.data.find((team) => team.id.toLowerCase() === selectedTeamId.toLowerCase());
-    if (!team)
-      return (
-        <p role="status">
-          This Team is not in the local workspace. Return to the workspace to choose an available
-          Team.
-        </p>
-      );
-    return (
-      <section className="team-panel" aria-labelledby="selected-team-heading">
-        <p className="eyebrow">Selected Team</p>
-        <h2 id="selected-team-heading" className="team-name">
-          {team.name}
-        </h2>
-        <dl className="team-identity">
-          <dt>Team ID</dt>
-          <dd>{team.id}</dd>
-        </dl>
-        <p>
-          You’re in this Team’s workspace. Roster and Player workflows are coming in a later slice.
-        </p>
-      </section>
     );
   }
 
