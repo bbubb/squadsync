@@ -22,7 +22,8 @@ a {
   text-decoration: none;
 }
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+input:focus-visible {
   outline: 3px solid #477526;
   outline-offset: 5px;
   border-radius: 4px;
@@ -332,6 +333,41 @@ main:focus {
   padding-block: 0.75rem;
   color: var(--color-forest);
   font-weight: 650;
+}
+.team-form {
+  max-width: 36rem;
+}
+.team-form label {
+  display: block;
+  font-weight: 650;
+}
+.team-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem;
+  border: 1px solid #56675e;
+  border-radius: 6px;
+  background: white;
+  font: inherit;
+}
+.team-form input[aria-invalid="true"] {
+  border-color: #9b2828;
+}
+.team-form p[role="alert"] {
+  color: #9b2828;
+}
+.team-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+.team-form-actions .team-action {
+  margin-top: 0;
+}
+.team-form-actions button:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 .workspace-nav[aria-current="page"] {
   background: #e6ecdf;

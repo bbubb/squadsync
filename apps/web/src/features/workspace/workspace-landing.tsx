@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TeamCollection } from "@/features/teams/team-collection";
 
 export function WorkspaceLanding() {
@@ -38,6 +39,9 @@ export function WorkspaceLanding() {
         <h2 id="teams-heading">Choose your Team</h2>
         <p>Open a Team to enter its workspace.</p>
         <TeamCollection />
+        <Link className="team-action inline-block" href="/teams/new">
+          Create Team
+        </Link>
       </section>
     </div>
   );

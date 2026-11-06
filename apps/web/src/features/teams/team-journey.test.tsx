@@ -55,12 +55,11 @@ test("workspace announces loading then offers distinct keyboard-accessible Team 
   expect(links[0]).toHaveFocus();
 });
 
-test("empty collection gives an honest next step without a fake create action", async () => {
+test("empty collection offers a real Create Team entry point", async () => {
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json([])));
   renderJourney(<WorkspaceLanding />);
   await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("No Teams yet"));
-  expect(screen.getByRole("status")).toHaveTextContent("local Development API");
-  expect(screen.queryByRole("link", { name: /create/i })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Create Team" })).toHaveAttribute("href", "/teams/new");
 });
 
 test("API failure stays distinct from empty and can be retried with the keyboard", async () => {
