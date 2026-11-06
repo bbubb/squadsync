@@ -1,6 +1,6 @@
 # SquadSync Web
 
-The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to `/teams/[teamId]`, displaying its real name and ID with an All Teams return path. Create Team opens `/teams/new`, submits a name to the Development API, and selects the created Team. Roster workflows are not implemented in the web UI.
+The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to its canonical Overview at `/teams/[teamId]`, displaying its real name, ID, roster-entry total and membership total with an All Teams return path. The existing sidebar separates global Workspace navigation from selected-Team navigation and adapts to a wrapping bar on narrow screens. Roster and Members are explicitly unavailable labels until their pages are implemented. Create Team opens `/teams/new`, submits a name to the Development API, and selects the created Team. Item lists and roster writes are not implemented in the web UI.
 
 ## Prerequisites
 
@@ -78,7 +78,8 @@ Before final approval, Brandon must perform this environment-dependent check:
 6. Choose Create Team from the workspace (also available with an empty collection). At `/teams/new`, submit a blank or spaces-only name: expect feedback, focus on the name input, and no POST. Check Tab order through the name, submit and Cancel controls; Cancel returns to `/` without creating anything.
 7. Create a uniquely named local test Team with surrounding spaces. In Network, expect one `POST /api/teams` with the trimmed name and HTTP 201, even after rapid submission. The button and input are disabled while pending. Confirm navigation to `/teams/{id}` using the response ID and a detail GET showing the real name. Return with All Teams and confirm the refreshed list includes it. The new Team has no members or roster entries; no Owner assignment or authenticated identity is implied. Keep the new record; do not delete existing data.
 8. Stop the API, submit another name, and verify an understandable error with the input preserved and retry available. Restart the API and retry deliberately. Check HTTP 400 feedback with a browser request override/mock if available; do not modify the API or existing data to force a rejection.
-9. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that there are no pretend roster actions.
+9. On a selected Team, confirm Overview in the existing sidebar points to `/teams/{id}` and announces the current page. Roster and Members must be visibly unavailable, without links or keyboard stops. Check roster-entry and membership totals against their respective API responses; totals include all statuses/roles, and empty collections show zero with clear empty text. Switch Teams, open a deep link and reload: identity and totals must belong to the URL's Team. With a browser request override/mock, fail one summary request, verify that the other summary remains usable, then retry with the keyboard. A failed read must not display a zero count.
+10. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that global Workspace and selected-Team navigation share one sidebar, become usable compact navigation on phones, and that there are no pretend roster actions. All Teams and browser Back/Forward should restore the appropriate workspace/Overview current-page indication.
 
 Automated fetch-mocked tests and CI do not replace this real browser-to-API-to-PostgreSQL and responsive-layout review.
 
@@ -128,14 +129,16 @@ TanStack Query owns these remote collections and their loading/error state; futu
 - `src/components/workspace-shell.tsx`: shared header, workspace navigation, main landmark, and footer. The small `workspace-navigation.tsx` Client Component reads the pathname for accurate `aria-current`. The single navigation item needs no mobile menu; it becomes a compact bar on narrow screens.
 - `src/features/workspace/workspace-landing.tsx`: Server Component landing content with the interactive Team collection.
 - `src/features/teams/team-collection.tsx`: workspace Team list, loading, empty and retry presentation.
-- `src/features/teams/team-detail.tsx`: selected Team identity, loading, not-found and failure/retry presentation.
+- `src/features/teams/team-detail.tsx`: selected Team identity, loading, not-found and failure/retry boundary. Child content mounts only after the Team resolves; future Team pages can reuse this boundary.
+- `src/features/teams/team-overview.tsx`: independent roster-entry and membership totals, loading, empty and retry presentation using the existing reads. These are collection lengths, not active-player counts or authenticated permissions.
+- `src/features/teams/team-route.ts` and `src/components/team-navigation.tsx`: shared ID validation and URL-derived contextual navigation inside the existing sidebar. Only implemented destinations are links.
 - `src/app/teams/[teamId]/page.tsx`: route-backed Team context and return navigation.
 - `src/features/teams/use-teams.ts`: typed Team collection query using the shared remote cache.
 - `src/features/teams/use-team.ts`: typed Team detail query with an ID-specific cache key.
 - `src/features/teams/use-create-team.ts`: typed Team mutation and collection invalidation.
 - `src/features/teams/create-team-form.tsx` and `src/app/teams/new/page.tsx`: accessible name form and creation route.
 
-The shell and workspace landing remain Server Components. Their Client Component descendants handle pathname and remote-query interaction. Future roster UI can compose into the selected Team route under the same shell.
+The shell and workspace landing remain Server Components. Their Client Component descendants handle pathname and remote-query interaction. The Team page stays a Server Component to resolve and validate route params; TeamDetail and TeamOverview are Client Components because they use TanStack hooks. The root layout preserves the shell and QueryProvider cache across client navigation; page content changes with the route. No shared Team layout is required for this slice. The URL owns the selected ID so a deep link/reload works without a prior workspace visit or local selection state. Future Roster/Members pages can reuse TeamDetail with their own child content and activate their navigation links when delivered.
 
 ## Compatibility notes
 

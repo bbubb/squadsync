@@ -82,6 +82,8 @@ test("following a Team route and reloading derives real identity from a fresh re
   const fetcher = vi.fn<typeof fetch>().mockImplementation((input) => {
     const path = new URL((input as Request).url).pathname;
     if (path === "/api/teams") return Promise.resolve(Response.json(teams));
+    if (path.endsWith("/roster") || path.endsWith("/memberships"))
+      return Promise.resolve(Response.json([]));
     expect(path).toBe(`/api/teams/${teams[1].id}`);
     return Promise.resolve(Response.json(teams[1]));
   });
@@ -105,10 +107,18 @@ test("following a Team route and reloading derives real identity from a fresh re
     );
     view.unmount();
   }
-  expect(fetcher).toHaveBeenCalledTimes(3);
+  expect(fetcher).toHaveBeenCalledTimes(7);
   expect(
     fetcher.mock.calls.slice(1).map(([request]) => new URL((request as Request).url).pathname),
-  ).toEqual([`/api/teams/${teams[1].id}`, `/api/teams/${teams[1].id}`]);
+  ).toEqual(
+    Array(2)
+      .fill([
+        `/api/teams/${teams[1].id}`,
+        `/api/teams/${teams[1].id}/memberships`,
+        `/api/teams/${teams[1].id}/roster`,
+      ])
+      .flat(),
+  );
 });
 
 test("unknown Team context offers a return path instead of a fabricated Team", async () => {
@@ -138,12 +148,15 @@ test.each([
     expect(await screen.findByRole("alert")).toHaveTextContent("Team could not be loaded");
     expect(screen.queryByText(/This Team was not found/)).not.toBeInTheDocument();
     expect(fetcher).toHaveBeenCalledTimes(4);
-    fetcher.mockImplementation(() => Promise.resolve(Response.json(teams[0])));
+    fetcher.mockImplementation((input) => {
+      const path = new URL((input as Request).url).pathname;
+      return Promise.resolve(Response.json(path.endsWith(teams[0].id) ? teams[0] : []));
+    });
     screen.getByRole("button", { name: "Try again" }).focus();
     await userEvent.setup().keyboard("{Enter}");
     expect(await screen.findByRole("heading", { name: teams[0].name })).toBeVisible();
-    expect(fetcher).toHaveBeenCalledTimes(5);
-    for (const [request] of fetcher.mock.calls) {
+    expect(fetcher).toHaveBeenCalledTimes(7);
+    for (const [request] of fetcher.mock.calls.slice(0, 5)) {
       expect(new URL((request as Request).url).pathname).toBe(`/api/teams/${teams[0].id}`);
     }
   },
