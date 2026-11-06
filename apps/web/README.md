@@ -80,9 +80,7 @@ Before final approval, Brandon must perform this environment-dependent check:
 8. Stop the API, submit another name, and verify an understandable error with the input preserved and retry available. Restart the API and retry deliberately. Check HTTP 400 feedback with a browser request override/mock if available; do not modify the API or existing data to force a rejection.
 9. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that there are no pretend roster actions.
 
-Agent environment observation (2026-11-03): no listener observations were returned for ports 3000/5050/5432. Docker inspection was denied in the sandbox, and the browser access host/native pipe was unavailable. The real browser to API to PostgreSQL journey and visual/mobile checks were **not demonstrated**; they remain Brandon's checkpoint before final approval. Mocked tests do not substitute for this smoke check.
-
-Issue #184 agent observation (2026-11-05): listener inspection returned no entries for ports 3000/5050/5432 in this environment. The real creation journey and browser visual/mobile checks were not run; steps 1–9 remain the owner's local approval checkpoint. Fetch-mocked tests cover trimmed POST/201 navigation, list invalidation and refresh, blank feedback, pending duplicate prevention, API 400/500, transport failure, missing bodies, explicit retry, cancel and keyboard use.
+Automated fetch-mocked tests and CI do not replace this real browser-to-API-to-PostgreSQL and responsive-layout review.
 
 ## API contract and local configuration
 
