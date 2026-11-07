@@ -2,8 +2,9 @@
 
 import { ApiError } from "@/lib/api/client";
 import { useTeam } from "./use-team";
+import type { ReactNode } from "react";
 
-export function TeamDetail({ teamId }: { teamId: string }) {
+export function TeamDetail({ teamId, children }: { teamId: string; children?: ReactNode }) {
   const query = useTeam(teamId);
 
   if (query.isPending) return <p role="status">Loading Team…</p>;
@@ -42,9 +43,7 @@ export function TeamDetail({ teamId }: { teamId: string }) {
         <dt>Team ID</dt>
         <dd>{team.id}</dd>
       </dl>
-      <p>
-        You’re in this Team’s workspace. Roster and Player workflows are coming in a later slice.
-      </p>
+      {children}
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WorkspaceNavigation } from "./workspace-navigation";
+import { TeamNavigation } from "./team-navigation";
 import type { ReactNode } from "react";
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
@@ -22,10 +23,13 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
 
       <div className="workspace-layout grid">
         <aside className="workspace-sidebar">
-          <nav aria-label="Workspace">
-            <p className="eyebrow sidebar-label">Your space</p>
-            <WorkspaceNavigation />
-          </nav>
+          <div>
+            <nav aria-label="Workspace">
+              <p className="eyebrow sidebar-label">Your space</p>
+              <WorkspaceNavigation />
+            </nav>
+            <TeamNavigation />
+          </div>
           <div className="sidebar-note">
             <span className="note-marker" aria-hidden="true" />
             <p>
