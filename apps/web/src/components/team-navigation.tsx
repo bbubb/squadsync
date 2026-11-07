@@ -3,11 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isTeamId } from "@/features/teams/team-route";
+import { useTeam } from "@/features/teams/use-team";
 
 export function TeamNavigation() {
   const pathname = usePathname();
   const [, segment, teamId] = pathname.split("/");
   if (segment !== "teams" || !teamId || !isTeamId(teamId)) return null;
+  return <ResolvedTeamNavigation teamId={teamId} pathname={pathname} />;
+}
+
+function ResolvedTeamNavigation({ teamId, pathname }: { teamId: string; pathname: string }) {
+  const query = useTeam(teamId);
+  if (!query.isSuccess) return null;
   const overview = `/teams/${teamId}`;
 
   return (

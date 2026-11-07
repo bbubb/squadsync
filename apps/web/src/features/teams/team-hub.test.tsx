@@ -65,7 +65,7 @@ test("deep-linked Overview has keyboard navigation in the existing sidebar and h
     }),
   );
   setup(await TeamPage({ params: Promise.resolve({ teamId: teamA }) }));
-  const nav = screen.getByRole("navigation", { name: "Selected Team" });
+  const nav = await screen.findByRole("navigation", { name: "Selected Team" });
   const overview = within(nav).getByRole("link", { name: "Overview" });
   expect(overview).toHaveAttribute("aria-current", "page");
   expect(overview).toHaveAttribute("href", `/teams/${teamA}`);
@@ -147,4 +147,46 @@ test.each(["/teams/new", "/teams/bad-link"])("%s has no contextual links", (path
   route.pathname = pathname;
   setup(<h1>Workspace</h1>);
   expect(screen.queryByRole("navigation", { name: "Selected Team" })).not.toBeInTheDocument();
+});
+
+test("a valid but nonexistent Team has no contextual navigation while loading or after 404", async () => {
+  route.pathname = `/teams/${teamA}`;
+  let respond!: (response: Response) => void;
+  const fetcher = vi.fn<typeof fetch>(
+    () =>
+      new Promise<Response>((resolve) => {
+        respond = resolve;
+      }),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  setup(await TeamPage({ params: Promise.resolve({ teamId: teamA }) }));
+  expect(screen.getByRole("status")).toHaveTextContent("Loading Team");
+  expect(screen.queryByRole("navigation", { name: "Selected Team" })).not.toBeInTheDocument();
+  respond(new Response(null, { status: 404 }));
+  expect(await screen.findByText(/This Team was not found/)).toBeVisible();
+  expect(screen.queryByRole("navigation", { name: "Selected Team" })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /All Teams/ })).toHaveAttribute("href", "/");
+  expect(screen.getByRole("link", { name: "Workspace" })).toHaveAttribute("href", "/");
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(new URL((fetcher.mock.calls[0][0] as Request).url).pathname).toBe(`/api/teams/${teamA}`);
+});
+
+test("switching from a resolved Team to a nonexistent Team removes contextual navigation", async () => {
+  const fetcher = vi.fn<typeof fetch>().mockImplementation((input) => {
+    const path = new URL((input as Request).url).pathname;
+    return Promise.resolve(
+      path === `/api/teams/${teamA}`
+        ? Response.json({ id: teamA, name: "Team A" })
+        : new Response(null, { status: 404 }),
+    );
+  });
+  vi.stubGlobal("fetch", fetcher);
+  route.pathname = `/teams/${teamA}`;
+  const view = setup(await TeamPage({ params: Promise.resolve({ teamId: teamA }) }));
+  expect(await screen.findByRole("navigation", { name: "Selected Team" })).toBeVisible();
+  route.pathname = `/teams/${teamB}`;
+  view.rerender(await TeamPage({ params: Promise.resolve({ teamId: teamB }) }));
+  expect(screen.queryByRole("navigation", { name: "Selected Team" })).not.toBeInTheDocument();
+  expect(await screen.findByText(/This Team was not found/)).toBeVisible();
+  expect(screen.queryByRole("link", { name: "Overview" })).not.toBeInTheDocument();
 });
