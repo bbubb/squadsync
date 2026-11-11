@@ -2,7 +2,7 @@
 
 ## Status
 
-Active. **Phases 0–3 are complete.** Phase 3 — Roster Management API — closed through Sprints 7 ([#116](https://github.com/bbubb/squadsync/issues/116)), 8 ([#129](https://github.com/bbubb/squadsync/issues/129)) and 9 ([#145](https://github.com/bbubb/squadsync/issues/145)), ending with merged [PR #153](https://github.com/bbubb/squadsync/pull/153) on 2026-10-29. The accepted milestone is a **Development-only** Person, Team, Membership, Roster and PlayerProfile API with real rollback-safe PostgreSQL validation. Management endpoints remain anonymous and restricted to trusted localhost Development; authenticated coach access, complete roster editing, frontend and production deployment are not delivered. **Phase 4 Sprint 10 execution is approved** under [#161](https://github.com/bbubb/squadsync/issues/161), following completed planning gate [#157](https://github.com/bbubb/squadsync/issues/157), frontend documentation gate [#158](https://github.com/bbubb/squadsync/issues/158), and accepted ADR 0007. Each implementation issue still requires a readiness review before Codex dispatch.
+Active. **Phases 0–3 and Phase 4 Sprints 10–11 are complete** ([#161](https://github.com/bbubb/squadsync/issues/161), [#181](https://github.com/bbubb/squadsync/issues/181)). Current sprint direction and next planning action are below.
 
 ## Purpose
 
@@ -399,38 +399,6 @@ The ChatGPT tool-profile documents own the prompt templates. This roadmap owns c
 
 ## Current Next Step
 
-Phase 0 is complete through [Issue #40](https://github.com/bbubb/squadsync/issues/40). Phase 1 Sprint 1 is complete through [Issue #11](https://github.com/bbubb/squadsync/issues/11) and child issues #44–#48.
+**Phase 4 Sprint 11 complete** ([#181](https://github.com/bbubb/squadsync/issues/181)): the Development-only web workspace supports Team selection and creation, selected-Team Overview, and read-only player Roster and Team Members views. The implementation issues are closed through merged [PR #205](https://github.com/bbubb/squadsync/pull/205); owner-reported local full-stack manual testing passed.
 
-Phase 1 Sprint 2 — Local PostgreSQL & Infrastructure Baseline — is complete through umbrella [#57](https://github.com/bbubb/squadsync/issues/57) and child issues [#58](https://github.com/bbubb/squadsync/issues/58)–[#61](https://github.com/bbubb/squadsync/issues/61). Sprint 2 established:
-
-- minimal GitHub Actions restore/build/test validation for the .NET 10 API;
-- local PostgreSQL through Docker Compose with loopback-only host binding, health checking, and a persistent named volume;
-- database-independent `GET /health` liveness and PostgreSQL-backed `GET /health/ready` readiness;
-- successful local validation of readiness failure and recovery when PostgreSQL is stopped and restarted;
-- documented local setup, connection-string, health-check, credential, and volume workflows;
-- continued separation between connectivity readiness and Phase 2 persistence modeling.
-
-Sprint 2 deliberately did not introduce EF Core, a `DbContext`, domain tables, migrations, seed data, production/cloud infrastructure, or API containerization.
-
-Observed Sprint 2 workflow friction is preserved in follow-up issues [#72](https://github.com/bbubb/squadsync/issues/72)–[#74](https://github.com/bbubb/squadsync/issues/74). Issues #73 and #74 completed. Issue #72 was later closed as not planned on 2026-10-30; optional local smoke-test automation is not a Phase 4 dependency.
-
-Phase 1 is complete. A separate Phase 1 Sprint 3 was not created because Sprints 1–2 and the completed workflow follow-ups already satisfy the Phase 1 completion criteria.
-
-Phase 2 is complete through Sprints 3–6.
-
-- Sprint 3 ([#82](https://github.com/bbubb/squadsync/issues/82)) established EF-independent `User` and `Team` domain entities, Infrastructure-owned EF Core/Npgsql persistence, the initial migration, and real PostgreSQL round-trip validation.
-- Sprint 4 ([#94](https://github.com/bbubb/squadsync/issues/94)) added explicit `TeamMembership` with one constrained `TeamRole`, relationship/uniqueness enforcement, and restrictive deletion.
-- Sprint 5 ([#102](https://github.com/bbubb/squadsync/issues/102)) separated person-level `PlayerProfile` from team-context `RosterEntry`, persisted both with additive migrations, and validated their one-to-one structural constraints against PostgreSQL.
-- Sprint 6 ([#109](https://github.com/bbubb/squadsync/issues/109)) added the first real Application workflow, `AddPlayerToRoster`, using an Application-owned persistence contract implemented by Infrastructure. It also added explicit, Development-only, idempotent demo seeding for the complete Phase 2 model.
-
-Phase 2 completion criteria are satisfied: core entities persist, relationships match the canonical domain model, an Application use-case path is testable without HTTP, and seed data supports a simple demo scenario.
-
-Maintenance #100 (.NET 10 SDK selection) is complete through PR #130. Historically deferred [#72](https://github.com/bbubb/squadsync/issues/72) and [#89](https://github.com/bbubb/squadsync/issues/89) were both closed as not planned on 2026-10-30; neither is a Phase 4 prerequisite.
-
-Phase 3 Sprint 7 is **complete** under [#116](https://github.com/bbubb/squadsync/issues/116) (merged PRs #123–#128). It established represented `Person` naming, Development-only management routing, thin Person/Team create-read controllers, Application-owned persistence ports, and safe real HTTP→PostgreSQL tests. [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) defines the identity and interim access boundary.
-
-**Sprint 8 [#129](https://github.com/bbubb/squadsync/issues/129) is complete** — the accepted [membership/roster HTTP contract](../architecture/membership-roster-http-contract.md), Development-only membership and roster creation/read workflows, and real HTTP→PostgreSQL data-preserving validation were merged through [PR #143](https://github.com/bbubb/squadsync/pull/143). The opt-in 14-test database suite passed in #137.
-
-**Sprint 9 [#145](https://github.com/bbubb/squadsync/issues/145) is complete** — the accepted [PlayerProfile HTTP contract](../architecture/player-profile-http-contract.md), explicit Person-scoped POST/GET ([#148 / PR #151](https://github.com/bbubb/squadsync/pull/151)), owner-authored existing-profile full-replacement PUT ([#149 / PR #152](https://github.com/bbubb/squadsync/pull/152)), and real cross-request HTTP→PostgreSQL validation ([#150 / PR #153](https://github.com/bbubb/squadsync/pull/153)) are merged. Final execution evidence: **411 ordinary tests passed**, the full **18/18 opt-in database tests passed**, and GitHub Actions API CI passed; the transactional harness preserved original/demo rows and migration history after success and intentional failure.
-
-**Phase 3's accepted Development-only API milestone is complete (2026-10-29).** Team creation, membership and player-roster creation/read, Person-level PlayerProfile create/read/update, safe HTTP errors, and persistence validation are demonstrated. This is not an authenticated coach-facing product: no production management access, role-based authorization, roster update/removal, frontend, match planning or cloud deployment is implied. Carry the unfinished product workflows into later approved planning only if needed. **Next execution state:** Phase 4 planning [#157](https://github.com/bbubb/squadsync/issues/157) and frontend documentation [#158](https://github.com/bbubb/squadsync/issues/158) are complete; ADR 0007 is accepted and Sprint 10 is approved under [#161](https://github.com/bbubb/squadsync/issues/161). Review each child issue before applying `agent-ready` or starting implementation. One theme-centered Phase 3 Engineering Journal retrospective is planned separately, drawing on owner-authored #133 and #149.
+**Next:** return to Phase 4 planning for Sprint 12's Add Player journey. Resolve the [bounded Person discovery and account-scoped collections gate #199](https://github.com/bbubb/squadsync/issues/199) before approving Select Existing Person behavior. [Navigation follow-up #197](https://github.com/bbubb/squadsync/issues/197) remains deferred until a dedicated UX slice. No Sprint 12 implementation, authentication, or production deployment is approved by this closeout.
