@@ -84,11 +84,15 @@ test("deep-linked roster shows selected Team, distinct same-name players, string
   const overview = within(nav).getByRole("link", { name: "Overview" });
   expect(overview).toHaveAttribute("href", `/teams/${teamA}`);
   expect(overview).not.toHaveAttribute("aria-current");
-  expect(within(nav).getByText(/Members/)).toHaveAttribute("aria-disabled", "true");
-  expect(within(nav).getAllByRole("link")).toHaveLength(2);
+  const members = within(nav).getByRole("link", { name: "Members" });
+  expect(members).toHaveAttribute("href", `/teams/${teamA}/members`);
+  expect(members).not.toHaveAttribute("aria-current");
+  expect(within(nav).getAllByRole("link")).toHaveLength(3);
   const user = userEvent.setup();
   for (let i = 0; i < 5; i++) await user.tab();
   expect(rosterLink).toHaveFocus();
+  await user.tab();
+  expect(members).toHaveFocus();
   await user.tab();
   expect(screen.getByRole("link", { name: /All Teams/ })).toHaveFocus();
   expect(screen.getByRole("link", { name: /All Teams/ })).toHaveAttribute("href", "/");

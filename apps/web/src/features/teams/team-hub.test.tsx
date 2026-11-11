@@ -70,18 +70,24 @@ test("deep-linked Overview has keyboard navigation in the existing sidebar and h
   expect(overview).toHaveAttribute("aria-current", "page");
   expect(overview).toHaveAttribute("href", `/teams/${teamA}`);
   expect(nav.closest("aside")).toBe(screen.getByRole("complementary"));
-  expect(within(nav).getAllByRole("link")).toHaveLength(2);
+  expect(within(nav).getAllByRole("link")).toHaveLength(3);
   expect(within(nav).getByRole("link", { name: "Roster" })).toHaveAttribute(
     "href",
     `/teams/${teamA}/roster`,
   );
   expect(within(nav).getByRole("link", { name: "Roster" })).not.toHaveAttribute("aria-current");
-  expect(within(nav).getByText(/Members/)).toHaveAttribute("aria-disabled", "true");
+  expect(within(nav).getByRole("link", { name: "Members" })).toHaveAttribute(
+    "href",
+    `/teams/${teamA}/members`,
+  );
+  expect(within(nav).getByRole("link", { name: "Members" })).not.toHaveAttribute("aria-current");
   const user = userEvent.setup();
   for (let i = 0; i < 4; i++) await user.tab();
   expect(overview).toHaveFocus();
   await user.tab();
   expect(within(nav).getByRole("link", { name: "Roster" })).toHaveFocus();
+  await user.tab();
+  expect(within(nav).getByRole("link", { name: "Members" })).toHaveFocus();
   await user.tab();
   expect(screen.getByRole("link", { name: /All Teams/ })).toHaveFocus();
   expect(await screen.findByLabelText("Memberships: 1")).toBeVisible();

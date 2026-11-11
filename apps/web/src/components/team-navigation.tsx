@@ -40,9 +40,13 @@ function ResolvedTeamNavigation({ teamId, pathname }: { teamId: string; pathname
           </Link>
         </li>
         <li>
-          <span className="workspace-nav" aria-disabled="true">
-            Members <small>Coming soon</small>
-          </span>
+          <Link
+            className="workspace-nav"
+            href={`${overview}/members`}
+            aria-current={pathname === `${overview}/members` ? "page" : undefined}
+          >
+            Members
+          </Link>
         </li>
       </ul>
     </nav>
