@@ -6,7 +6,7 @@
 |---|---|
 | Version | v0.2.0 |
 | Date | 2026-10-31 |
-| Owner | Brandon Bunch |
+| Owner | Repository owner |
 | Status | Draft |
 | Change Summary | Phase 4 experience, adaptable navigation structure, and design-versus-delivery conventions. |
 

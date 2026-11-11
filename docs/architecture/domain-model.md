@@ -181,6 +181,12 @@ Under [ADR 0003](../adr/0003-use-explicit-membership-model.md) and [ADR 0005](..
 
 Authentication/account identity and delegation, membership status, joined/left timestamps, granular permissions, a dynamic `Role` entity, HTTP endpoints, generic repository/base entity work, auditing, and soft deletion remain deferred. `RosterEntry` extends a player membership; it does not add another `Person`-to-`Team` relationship.
 
+#### Future stewardship and verified identity claims
+
+A Team staff member may create a represented `Person` before that person or a guardian has an account. For example, a coach adds a youth player; later, an authorized guardian verifies a claim and becomes responsible for the player's person-level details and `PlayerProfile`. The coach's separately authorized Team duties may still include roster status or jersey number, but do not imply ongoing control of the person's own data.
+
+The future design must resolve claim verification, account/guardian delegation, duplicates and disputed identity matches without automatic merges. **This is a deferred design direction, not an implemented MVP permission or claim process.** Revisit before authenticated Person/Profile editing or account claims. See [#199](https://github.com/bbubb/squadsync/issues/199) for the separate Add Player lookup gate.
+
 ## Current Player Profile and Roster Implementation Contract
 
 The accepted contract under [Sprint 5 tracker #102](https://github.com/bbubb/squadsync/issues/102) and [architecture gate #103](https://github.com/bbubb/squadsync/issues/103) separates person-level soccer attributes, team-context roster data, and match availability.

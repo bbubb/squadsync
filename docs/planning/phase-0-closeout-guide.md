@@ -8,7 +8,7 @@ Accepted historical orientation. Current phase and sprint state belong in `docs/
 
 This guide explains what Phase 0 created, why it matters, and how the foundation should be used in later phases.
 
-It is written for Brandon, future ChatGPT project threads, Codex CLI sessions, and reviewers who need a fast orientation to the project foundation.
+It is written for the repository owner, future ChatGPT project threads, Codex CLI sessions, and reviewers who need a fast orientation to the project foundation.
 
 ## What Phase 0 Accomplished
 
@@ -41,7 +41,7 @@ docs/agentic-workflow = human-readable process manual
 .codex = future native Codex configuration area
 ChatGPT GitHub = planning, docs, issues, PR setup, review support
 Codex CLI = implementation worker
-Brandon = architect, reviewer, merge authority
+Repository owner = architect, reviewer, merge authority
 ```
 
 ## How Humans Use the Foundation

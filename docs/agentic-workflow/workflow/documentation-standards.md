@@ -29,7 +29,7 @@ Optional format:
 |---|---|
 | Version | v0.1.0 |
 | Date | YYYY-MM-DD |
-| Owner | Brandon Bunch |
+| Owner | Responsible role |
 | Status | Draft / Active / Accepted / Superseded |
 | Change Summary | Concise summary of the latest meaningful change. |
 ```

@@ -6,7 +6,7 @@
 |---|---|
 | Version | v0.2.0 |
 | Date | 2026-11-01 |
-| Owner | Brandon Bunch |
+| Owner | Repository owner |
 | Status | Draft |
 | Change Summary | Allow provisional Phase 4 visual identity work without expanding MVP scope. |
 

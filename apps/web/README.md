@@ -60,7 +60,7 @@ Generated OpenAPI types, the API client, and TanStack Query were introduced by [
 
 ## Manual Team journey smoke check
 
-Before final approval, Brandon must perform this environment-dependent check:
+Before final approval, the repository owner must perform this environment-dependent check:
 
 1. Follow the [API PostgreSQL setup and demo-seed instructions](../api/README.md#local-postgresql-smoke-check). Use existing local Teams or the documented explicit demo seed; do not delete existing data. Start the API with its `local` launch profile in Development.
 2. Run `pnpm dev` here, then inspect both listeners:
