@@ -397,6 +397,27 @@ After a sprint or task is confirmed, use the [Standard Branch Thread Prompt](../
 
 The ChatGPT tool-profile documents own the prompt templates. This roadmap owns current phase and sprint direction; GitHub issues, Project, and pull requests own executable work state. Populate prompt fields from those sources during handoff instead of duplicating current state or prompt wording here.
 
+## Completed Milestones (Historical Index)
+
+This index preserves the progression and points to the durable closeout records. Sprint trackers and linked PRs own detailed validation and decisions; accepted ADRs own architectural decisions. The roadmap's **Current Next Step** remains focused on active planning.
+
+| Phase / sprint | Completed outcome and record |
+| --- | --- |
+| **Phase 0** | [Foundation closeout #40](https://github.com/bbubb/squadsync/issues/40): project scope, architecture, repository guidance and AI-assisted workflow established; see the [Phase 0 closeout guide](phase-0-closeout-guide.md). |
+| **Phase 1 · Sprint 1** | [#11](https://github.com/bbubb/squadsync/issues/11): .NET API solution, health endpoint, Development Swagger, Serilog console logging, test baseline and local setup. |
+| **Phase 1 · Sprint 2** | [#57](https://github.com/bbubb/squadsync/issues/57): minimal CI, loopback-only PostgreSQL Compose, process-only `/health`, database-aware `/health/ready`, and documented failure/recovery smoke test. **No EF Core schema or migrations yet; Phase 1 ended here without a Sprint 3.** |
+| **Phase 2 · Sprint 3** | [#82](https://github.com/bbubb/squadsync/issues/82): EF-independent `User` (later renamed `Person`) and `Team`, EF Core/Npgsql mappings, initial migration and real PostgreSQL round-trip. |
+| **Phase 2 · Sprint 4** | [#94](https://github.com/bbubb/squadsync/issues/94): explicit TeamMembership / constrained TeamRole with relational uniqueness and deletion rules. |
+| **Phase 2 · Sprint 5** | [#102](https://github.com/bbubb/squadsync/issues/102): person-level PlayerProfile separated from team-context RosterEntry, with additive persistence and database validation. |
+| **Phase 2 · Sprint 6** | [#109](https://github.com/bbubb/squadsync/issues/109): AddPlayerToRoster Application use case and explicit, idempotent Development demo seed; Phase 2 complete. |
+| **Phase 3 · Sprint 7** | [#116](https://github.com/bbubb/squadsync/issues/116): `User` → `Person` rename, Development-only Person/Team HTTP endpoints, standardized errors and PostgreSQL-backed validation ([ADR 0006](../adr/0006-represented-person-identity-api-contract.md)). |
+| **Phase 3 · Sprint 8** | [#129](https://github.com/bbubb/squadsync/issues/129): membership and player-roster create/read HTTP workflows, contract, and rollback-safe PostgreSQL validation. |
+| **Phase 3 · Sprint 9** | [#145](https://github.com/bbubb/squadsync/issues/145): Person-scoped PlayerProfile create/read/update and full cross-request database validation; Development-only API milestone complete (411 ordinary tests and 18 opt-in database tests reported at closeout). |
+| **Phase 4 · Sprint 10** | [#161](https://github.com/bbubb/squadsync/issues/161): Next.js web foundation, typed OpenAPI client, TanStack Query and working local Team selection. |
+| **Phase 4 · Sprint 11** | [#181](https://github.com/bbubb/squadsync/issues/181): Team creation, selected-Team overview, and read-only player Roster and Team Members screens, validated locally. |
+
+Historical maintenance decisions remain in their original issues: [#72](https://github.com/bbubb/squadsync/issues/72) (optional smoke automation) and [#89](https://github.com/bbubb/squadsync/issues/89) (workflow regression investigation) were closed **not planned**; [#73](https://github.com/bbubb/squadsync/issues/73)–[#74](https://github.com/bbubb/squadsync/issues/74) were completed. The .NET SDK family pin is tracked in [#100](https://github.com/bbubb/squadsync/issues/100). Implementation PRs, acceptance evidence, deferred scope and historical decisions remain accessible through each linked tracker.
+
 ## Current Next Step
 
 **Phase 4 Sprint 11 complete** ([#181](https://github.com/bbubb/squadsync/issues/181)): the Development-only web workspace supports Team selection and creation, selected-Team Overview, and read-only player Roster and Team Members views. The implementation issues are closed through merged [PR #205](https://github.com/bbubb/squadsync/pull/205); owner-reported local full-stack manual testing passed.
