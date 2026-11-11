@@ -6,7 +6,7 @@
 |---|---|
 | Version | v0.1.0 |
 | Date | 2026-05-16 |
-| Owner | Brandon Bunch |
+| Owner | Repository owner |
 | Status | Draft |
 | Change Summary | Initial lightweight product brief for Phase 0 closeout. |
 
