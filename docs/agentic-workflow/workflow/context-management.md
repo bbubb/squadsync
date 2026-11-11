@@ -17,19 +17,13 @@ When a decision, plan, task, or constraint must survive the current session, cap
 - an agentic workflow document;
 - `PLANS.md` or a task-specific ExecPlan when the work is complex.
 
-## Decision and Deferral Handoff
+## Deferred Decision Handoff
 
-Capture material architectural constraints, UX intent, risks, and design questions **when they surface** in planning, implementation, mentoring, or PR review. Do not wait for sprint closeout or rely on chat memory.
+When a consequential architecture, UX, or security decision is deferred, record it once in the relevant issue, ADR, or canonical doc. Distinguish accepted constraints from proposals, and include the reason for deferral, any interim guardrail, a revisit trigger, and the downstream issue or feature affected.
 
-1. **Classify:** distinguish current behavior, accepted decisions, proposals needing owner approval, deferred work, and intentionally private exploration. An idea mentioned in chat is not automatically an approved requirement.
-2. **Choose one durable home:** accepted architecture or UX guidance belongs in its relevant canonical doc/ADR; actionable work or unresolved design gates belong in GitHub issues; local implementation choices belong in PRs. Keep private, potentially proprietary concepts in an access-controlled private reference, not the public repo.
-3. **Preserve the consequence:** for a material deferral record its rationale, what must remain true until then, the decision or implementation **trigger**, and the issue/phase responsible for reconsidering it.
-4. **Link the consumer:** reference the constraint or gate from the future issue that could violate it. A note only in an old sprint tracker or closed PR is insufficient. If the downstream issue does not exist yet, link it when planning that work.
-5. **Reconcile before handoff:** during issue readiness and PR review, check whether new material decisions or risks have been linked to their canonical home and downstream consumer. Sprint closeout checks for omissions; it is not the first capture point.
+Link the record from the downstream issue when it exists. Check that handoff during issue readiness and PR review, not only sprint closeout. Passing ideas do not require issues, and discussion alone is not approval.
 
-Example: defer a production-scale Person search contract during a local Team screen, but record the server-bounded, authorization-sensitive query requirement and link it to the later **Select Existing Person** readiness gate. Do not let that later implementation default to loading all People.
-
-Avoid logging passing ideas as mandatory issues, copying whole conversations, exposing private designs, or creating speculative ADRs.
+Example: [bounded Person lookup #199](https://github.com/bbubb/squadsync/issues/199) must be reviewed before implementing Select Existing Person in Add Player.
 
 ## Thread Types
 

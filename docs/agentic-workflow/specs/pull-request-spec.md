@@ -46,7 +46,7 @@ Checks not run, incomplete criteria, temporary constraints, or review risks that
 
 ### Suggested Follow-ups
 
-New issues or workflow improvements discovered during implementation. For material deferred decisions, capture their rationale, revisit trigger, and downstream issue link using [context management](../workflow/context-management.md#decision-and-deferral-handoff) before closure.
+New issues or workflow improvements discovered during implementation.
 
 ## PR Quality Standard
 
