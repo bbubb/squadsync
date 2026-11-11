@@ -1,6 +1,7 @@
 "use client";
 
 import type { UseQueryResult } from "@tanstack/react-query";
+import styles from "./team-overview.module.css";
 import { useTeamMemberships } from "./use-team-memberships";
 import { useTeamRoster } from "./use-team-roster";
 
@@ -16,7 +17,7 @@ function Summary({
   query: UseQueryResult<readonly unknown[], Error>;
 }) {
   return (
-    <section className="team-summary" aria-label={title}>
+    <section className={styles.summary} aria-label={title}>
       <h3>{title}</h3>
       {query.isPending ? (
         <p role="status">Loading {title.toLowerCase()}…</p>
@@ -35,7 +36,7 @@ function Summary({
         </>
       ) : (
         <>
-          <output className="team-summary-count" aria-label={`${title}: ${query.data.length}`}>
+          <output className={styles.count} aria-label={`${title}: ${query.data.length}`}>
             {query.data.length}
           </output>
           <p>{query.data.length === 0 ? empty : description}</p>
@@ -49,7 +50,7 @@ export function TeamOverview({ teamId }: { teamId: string }) {
   const memberships = useTeamMemberships(teamId);
   const roster = useTeamRoster(teamId);
   return (
-    <div className="team-summary-grid">
+    <div className={styles.grid}>
       <Summary
         title="Roster entries"
         empty="No roster entries yet."

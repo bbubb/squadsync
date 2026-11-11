@@ -1,0 +1,25 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.summary {
+  min-width: 0;
+  border-top: 1px solid #dfe4da;
+  padding-top: 1rem;
+}
+
+.summary h3 {
+  font-weight: 650;
+}
+
+.summary .count {
+  display: block;
+  margin-block: 0.75rem;
+  font-size: 2.5rem;
+  font-weight: 650;
+  color: var(--color-forest);
+  line-height: 1.2;
+}

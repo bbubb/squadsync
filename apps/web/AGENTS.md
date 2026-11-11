@@ -26,6 +26,13 @@ Read `PLANS.md` for complex or cross-cutting implementation work.
 - Make behavior testable; add relevant component/integration tests with changes. Document actual lint, format, type-check, test, and build commands in the web README once scaffolded, and report only validation that ran.
 - Keep PRs issue-backed, focused, and reviewable. Explain architectural trade-offs when introducing new dependencies or reusable primitives.
 
+## Styling Boundaries
+
+- Keep `src/app/globals.css` for resets, app-wide tokens, and truly global rules.
+- Use Tailwind utilities for straightforward layout, spacing, and presentation.
+- Use co-located `*.module.css` files for substantial component-specific selectors, responsive rules, or state styling. Import classes through `styles` (for example, `className={styles.summary}`). Give shared styles a deliberate shared owner rather than duplicating declarations.
+- Avoid a CSS Module for every trivial style, and do not add new feature rules to `globals.css`. Existing legacy styles can remain until a scoped change addresses their ownership.
+
 ## Security and Stop Conditions
 
 - Respect the [ADR's local-only management API boundary](../../docs/adr/0007-web-foundation-architecture.md#local-development-boundary). Do not expose anonymous management capabilities through deployment, LAN binding, proxying, or other new routes without approval.
