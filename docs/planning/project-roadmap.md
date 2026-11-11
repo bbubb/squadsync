@@ -416,7 +416,7 @@ This index preserves the progression and points to the durable closeout records.
 | **Phase 4 · Sprint 10** | [#161](https://github.com/bbubb/squadsync/issues/161): Next.js web foundation, typed OpenAPI client, TanStack Query and working local Team selection. |
 | **Phase 4 · Sprint 11** | [#181](https://github.com/bbubb/squadsync/issues/181): Team creation, selected-Team overview, and read-only player Roster and Team Members screens, validated locally. |
 
-Historical maintenance decisions remain in their original issues: [#72](https://github.com/bbubb/squadsync/issues/72) (optional smoke automation) and [#89](https://github.com/bbubb/squadsync/issues/89) (workflow regression investigation) were closed **not planned**; [#73](https://github.com/bbubb/squadsync/issues/73)–[#74](https://github.com/bbubb/squadsync/issues/74) were completed. The .NET SDK family pin is tracked in [#100](https://github.com/bbubb/squadsync/issues/100). Implementation PRs, acceptance evidence, deferred scope and historical decisions remain accessible through each linked tracker.
+Implementation PRs, acceptance evidence, and relevant deferred decisions remain accessible through each linked sprint tracker.
 
 ## Current Next Step
 
