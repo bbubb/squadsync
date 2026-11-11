@@ -61,8 +61,7 @@ test("deep-linked members shows all roles and same-name people with working keyb
     expect(within(row).getByText("Team role")).toBeVisible();
     expect(within(row).getByText(labels[index])).toBeVisible();
   });
-  expect(screen.getByText(/Membership is separate from player roster participation/)).toBeVisible();
-  expect(screen.getByText(/do not grant the current browser user permissions/)).toBeVisible();
+  expect(screen.getByText("People associated with this Team and their roles.")).toBeVisible();
   const nav = screen.getByRole("navigation", { name: "Selected Team" });
   const members = within(nav).getByRole("link", { name: "Members" });
   expect(members).toHaveAttribute("href", `/teams/${teamA}/members`);

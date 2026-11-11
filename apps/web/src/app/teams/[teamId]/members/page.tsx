@@ -18,9 +18,7 @@ export default async function MembersPage({ params }: { params: Promise<{ teamId
           </div>
           <TeamDetail teamId={teamId}>
             <p className="mt-4 text-[var(--color-muted)]">
-              People associated with this Team and their Team roles. Membership is separate from
-              player roster participation. These domain role labels do not grant the current browser
-              user permissions.
+              People associated with this Team and their roles.
             </p>
             <TeamMembers teamId={teamId} />
           </TeamDetail>
