@@ -54,6 +54,7 @@ An issue should receive `agent-ready` only when:
 - validation expectations are documented
 - required architecture decisions already exist or are not needed
 - relevant docs/ADRs are linked or named by exact repository path
+- material deferred constraints affecting this issue are linked from it (see [context management](../workflow/context-management.md#deferred-decision-handoff))
 
 ## Label Lifecycle
 

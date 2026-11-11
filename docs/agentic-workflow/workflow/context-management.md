@@ -17,6 +17,14 @@ When a decision, plan, task, or constraint must survive the current session, cap
 - an agentic workflow document;
 - `PLANS.md` or a task-specific ExecPlan when the work is complex.
 
+## Deferred Decision Handoff
+
+When a consequential architecture, UX, or security decision is deferred, record it once in the relevant issue, ADR, or canonical doc. Distinguish accepted constraints from proposals, and include the reason for deferral, any interim guardrail, a revisit trigger, and the downstream issue or feature affected.
+
+Link the record from the downstream issue when it exists. Check that handoff during issue readiness and PR review, not only sprint closeout. Passing ideas do not require issues, and discussion alone is not approval.
+
+Example: [bounded Person lookup #199](https://github.com/bbubb/squadsync/issues/199) must be reviewed before implementing Select Existing Person in Add Player.
+
 ## Thread Types
 
 ### Main Planning Thread
