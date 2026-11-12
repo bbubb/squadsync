@@ -38,19 +38,7 @@ If a command is unavailable because the scaffold does not exist yet, document th
 
 ### Frontend Gate
 
-Used once frontend application code exists.
-
-Expected checks will likely include:
-
-```bash
-cd apps/web
-npm install
-npm run lint
-npm run build
-npm test
-```
-
-Exact commands should be confirmed when the frontend scaffold is created.
+Use the verified scripts in [`apps/web/README.md`](../../../apps/web/README.md#quality-checks-and-local-preview) and [`apps/web/package.json`](../../../apps/web/package.json), including formatting, lint, OpenAPI contract, type checking, tests and build as applicable. The web app uses pinned **pnpm**, not npm. Report which checks were run; avoid keeping a second, potentially stale command list here.
 
 ### Integration Gate
 
