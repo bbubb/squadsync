@@ -30,6 +30,7 @@ Players and parents may become future user types, but the first MVP centers on t
 
 - Create and manage teams
 - Add represented people to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership
+- Support ordinary roster maintenance (correct player roster details and remove a player from an active roster) without deleting the represented `Person` or their shared `PlayerProfile`. The TeamMembership termination and history policy needs a separately approved lifecycle design.
 - Track jersey number and roster status on `RosterEntry`; track dominant foot on the person-level `PlayerProfile`, with preferred positions deferred until the soccer-position/formation/lineup vocabulary is defined (see the [current profile/roster contract](../architecture/domain-model.md#current-player-profile-and-roster-implementation-contract))
 - Track match-specific player availability through `PlayerAvailability`
 
@@ -78,6 +79,8 @@ The following areas are outside the first MVP and should be introduced only thro
 - Auth provider integration
 - Mobile-first player/parent experience
 - Multi-team organization management
+- Account/guardian identity claims, self-service roster invitations, public Person discovery and production-search privacy/visibility policy (the local Development-only name lookup is a separate restricted demonstration; see [#199](https://github.com/bbubb/squadsync/issues/199))
+- Global Person deletion and formal cross-team competition transfer workflows; establish data retention and official eligibility rules before implementation
 
 ## Success Criteria for the MVP
 
