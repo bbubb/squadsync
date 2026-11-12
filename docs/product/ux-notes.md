@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | v0.2.0 |
-| Date | 2026-10-31 |
+| Version | v0.3.0 |
+| Date | 2026-11-12 |
 | Owner | Repository owner |
 | Status | Draft |
-| Change Summary | Phase 4 experience, adaptable navigation structure, and design-versus-delivery conventions. |
+| Change Summary | Clarify provisional Add Player, bounded local lookup, and deferred verified identity UX. |
 
 ## Purpose
 
@@ -52,6 +52,12 @@ This is an initial UX direction, not a requirement to implement every shell regi
 5. **Player details:** see relevant Person, roster, and optional person-level PlayerProfile information; explicitly create or edit the existing PlayerProfile fields when needed.
 
 The current API provides Development-only management capabilities without authenticated user permissions. The functional UI demonstrates these operations; it does not define who will be authorized to perform them later. Refer to the domain model and API contracts for underlying behavior.
+
+## Add Player selection — Phase 4 planning
+
+From the selected Team's roster, the coach can **Create New Person** provisionally or **Select Existing Person** using bounded, server-filtered name lookup in trusted-local Development. Neither path requires an existing source Team or a human-facing GUID exchange. Search results expose only minimal candidate information, never treat matching names as verified identity, and provide clear ambiguous/no-match states. The exact query contract remains gated by [#199](https://github.com/bbubb/squadsync/issues/199); the connected workflow is tracked in [Sprint 12 #207](https://github.com/bbubb/squadsync/issues/207).
+
+Roster correction/removal and explicit, optional Person-level PlayerProfile editing are planned in [Sprint 13 #208](https://github.com/bbubb/squadsync/issues/208). The trusted-local UI does not establish authenticated Person stewardship; no unimplemented invitation or discovery controls should appear functional.
 
 ## Design Exploration Versus Shipped Behavior
 

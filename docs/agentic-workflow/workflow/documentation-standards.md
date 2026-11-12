@@ -72,6 +72,7 @@ When updating docs:
 - avoid duplicating canonical content
 - link to canonical docs instead of copying large sections
 - keep README and AGENTS guidance evergreen: document current behavior, setup, validation instructions, and lasting constraints; record dated agent-environment observations, one-off test results, and issue/PR execution history in the relevant GitHub issue or PR instead. Describe persistent limitations without tying them to a particular run
+- before publishing, include only what is needed for the approved public project scope; omit speculative or unrelated future capabilities, including unnecessary non-goals and deferrals. When relevance or disclosure is uncertain, obtain owner approval first
 
 ## Agent Guidance
 

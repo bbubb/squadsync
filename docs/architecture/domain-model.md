@@ -187,6 +187,16 @@ A Team staff member may create a represented `Person` before that person or a gu
 
 The future design must resolve claim verification, account/guardian delegation, duplicates and disputed identity matches without automatic merges. **This is a deferred design direction, not an implemented MVP permission or claim process.** Revisit before authenticated Person/Profile editing or account claims. See [#199](https://github.com/bbubb/squadsync/issues/199) for the separate Add Player lookup gate.
 
+## Roster lifecycle — Phase 4 direction
+
+**Status:** Roster maintenance is an approved [Sprint 13 objective](https://github.com/bbubb/squadsync/issues/208); removal and membership-termination contracts are not yet approved.
+
+- **Remove from roster:** Preserve the represented `Person` and optional `PlayerProfile`. Decide how to remove/re-add the `RosterEntry` before implementation.
+- **End TeamMembership:** This is a separate operation requiring explicit treatment of dependent roster data and future match history. Current restrictive foreign keys do not imply cascade deletion or a soft-delete policy.
+- **Join another Team:** Use the same `Person` with a separate TeamMembership and, when appropriate, RosterEntry. Do not duplicate their PlayerProfile or change other Team relationships.
+
+Person-level stewardship and verified claims are addressed above; global Person/Profile deletion and retention require separate decisions.
+
 ## Current Player Profile and Roster Implementation Contract
 
 The accepted contract under [Sprint 5 tracker #102](https://github.com/bbubb/squadsync/issues/102) and [architecture gate #103](https://github.com/bbubb/squadsync/issues/103) separates person-level soccer attributes, team-context roster data, and match availability.

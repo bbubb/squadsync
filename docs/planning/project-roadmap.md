@@ -420,6 +420,6 @@ Implementation PRs, acceptance evidence, and relevant deferred decisions remain 
 
 ## Current Next Step
 
-**Phase 4 Sprint 11 complete** ([#181](https://github.com/bbubb/squadsync/issues/181)): the Development-only web workspace supports Team selection and creation, selected-Team Overview, and read-only player Roster and Team Members views. The implementation issues are closed through merged [PR #205](https://github.com/bbubb/squadsync/pull/205); owner-reported local full-stack manual testing passed.
+**Phase 4 Sprints 10–11 complete.** The approved planning direction is [Sprint 12 — connected Add Player (#207)](https://github.com/bbubb/squadsync/issues/207), followed by [Sprint 13 — roster management and PlayerProfile UI (#208)](https://github.com/bbubb/squadsync/issues/208).
 
-**Next:** return to Phase 4 planning for Sprint 12's Add Player journey. Resolve the [bounded Person discovery and account-scoped collections gate #199](https://github.com/bbubb/squadsync/issues/199) before approving Select Existing Person behavior. [Navigation follow-up #197](https://github.com/bbubb/squadsync/issues/197) remains deferred until a dedicated UX slice. No Sprint 12 implementation, authentication, or production deployment is approved by this closeout.
+**Next decision:** Resolve [#199's bounded Development-only Person lookup contract](https://github.com/bbubb/squadsync/issues/199) before authorizing Sprint 12 implementation. Both sprint trackers remain planning-only; no implementation issue is agent-ready.

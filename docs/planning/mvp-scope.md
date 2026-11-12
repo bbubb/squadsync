@@ -30,6 +30,7 @@ Players and parents may become future user types, but the first MVP centers on t
 
 - Create and manage teams
 - Add represented people to teams through `TeamMembership`; attach player-only roster details through `RosterEntry` on a player membership
+- Support roster correction and removal without deleting the represented `Person` or shared `PlayerProfile`.
 - Track jersey number and roster status on `RosterEntry`; track dominant foot on the person-level `PlayerProfile`, with preferred positions deferred until the soccer-position/formation/lineup vocabulary is defined (see the [current profile/roster contract](../architecture/domain-model.md#current-player-profile-and-roster-implementation-contract))
 - Track match-specific player availability through `PlayerAvailability`
 
