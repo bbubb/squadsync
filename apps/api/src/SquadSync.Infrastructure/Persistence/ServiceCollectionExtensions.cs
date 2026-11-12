@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRosterQueries, EfRosterPersistence>();
         services.AddScoped<IMembershipPersistence, EfMembershipPersistence>();
         services.AddScoped<IPersonPersistence, EfPersonPersistence>();
+        services.AddScoped<IPersonCandidateQueries, EfPersonCandidateQueries>();
         services.AddScoped<ITeamPersistence, EfTeamPersistence>();
         services.AddScoped<ITeamQueries, EfTeamPersistence>();
         services.AddScoped<DevelopmentDemoSeeder>();

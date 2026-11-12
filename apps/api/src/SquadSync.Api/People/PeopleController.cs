@@ -7,8 +7,26 @@ namespace SquadSync.Api.People;
 [EnableCors(DevelopmentCors.PolicyName)]
 [ApiController]
 [Route("api/people")]
-public sealed class PeopleController(CreatePerson createPerson, GetPerson getPerson) : ControllerBase
+public sealed class PeopleController(CreatePerson createPerson, GetPerson getPerson, GetPersonCandidates getCandidates) : ControllerBase
 {
+    [HttpGet("candidates")]
+    [ProducesResponseType<PersonCandidatePageResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PersonCandidatePageResponse>> Candidates(
+        [FromQuery] PersonCandidateRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var page = await getCandidates.ExecuteAsync(request.Q, request.Limit, request.Cursor, cancellationToken);
+            return Ok(PersonCandidatePageResponse.From(page));
+        }
+        catch (PersonCandidateValidationException exception)
+        {
+            ModelState.AddModelError(exception.Field, exception.Message);
+            return ValidationProblem(ModelState);
+        }
+    }
+
     [HttpPost]
     [ProducesResponseType<PersonResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
