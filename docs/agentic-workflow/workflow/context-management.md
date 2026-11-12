@@ -23,8 +23,6 @@ When a consequential architecture, UX, or security decision is deferred, record 
 
 Link the record from the downstream issue when it exists. Check that handoff during issue readiness and PR review, not only sprint closeout. Passing ideas do not require issues, and discussion alone is not approval.
 
-Before putting a deferred concept in a **public** issue or document, apply the [public relevance and disclosure gate](documentation-standards.md#public-relevance-and-disclosure-gate). If it does not belong in the public MVP record, do not publish even a negative-scope hint; preserve consequential confidential reasoning only in the authorized private source.
-
 Example: [bounded Person lookup #199](https://github.com/bbubb/squadsync/issues/199) must be reviewed before implementing Select Existing Person in Add Player.
 
 ## Thread Types
