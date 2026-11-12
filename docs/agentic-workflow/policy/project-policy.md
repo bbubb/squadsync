@@ -8,16 +8,7 @@ It does not replace `AGENTS.md`. Instead, it organizes the workflow-specific pol
 
 ## Source of Truth
 
-Before implementation work begins, agents should read:
-
-- `AGENTS.md`
-- `README.md`
-- `docs/planning/project-roadmap.md`
-- `docs/planning/mvp-scope.md`
-- `docs/architecture/system-overview.md`
-- `docs/architecture/domain-model.md`
-- relevant ADRs in `docs/adr/`
-- relevant files under `docs/agentic-workflow/`
+Follow the task-based startup and context routing in root `AGENTS.md` and `CONTRIBUTING.md`: for implementation, load the active issue before broad context, confirm readiness, then read the scoped documents and ADRs required by that task. Use `README.md`, roadmap, MVP scope and architecture sources when the question or affected code requires them; they are not a mandatory preload bundle.
 
 ## Human-Owned Architecture
 
