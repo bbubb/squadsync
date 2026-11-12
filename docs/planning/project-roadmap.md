@@ -371,8 +371,6 @@ These examples describe possible work areas only. They do not assign sprint numb
 
 ## Sprint Planning Rules
 
-**Sprint records:** The roadmap tracks phase direction, the active next action, and an index of completed milestones. The detailed current and historical plans, issue dependencies, acceptance evidence and closeout live in GitHub sprint tracker issues linked here; do not duplicate each sprint as a separate planning Markdown file. Durable architectural decisions remain in domain/ADR/product docs, while deferred gates belong in their relevant existing issue or canonical document.
-
 Each sprint should define:
 
 - Goal
@@ -422,8 +420,6 @@ Implementation PRs, acceptance evidence, and relevant deferred decisions remain 
 
 ## Current Next Step
 
-**Phase 4 Sprints 10–11 are complete.** The owner approved a planning split: **Sprint 12** establishes connected Add Player (coach-created provisional Person or bounded Development-only existing-Person lookup), followed by **Sprint 13** for roster edit/removal, membership termination design and optional PlayerProfile management. See [Sprint 12 #207](https://github.com/bbubb/squadsync/issues/207) and [Sprint 13 #208](https://github.com/bbubb/squadsync/issues/208).
+**Phase 4 Sprints 10–11 complete.** The approved planning direction is [Sprint 12 — connected Add Player (#207)](https://github.com/bbubb/squadsync/issues/207), followed by [Sprint 13 — roster management and PlayerProfile UI (#208)](https://github.com/bbubb/squadsync/issues/208).
 
-**Immediate design gate:** resolve the precise local-only Person lookup contract in [#199](https://github.com/bbubb/squadsync/issues/199) before authorizing Sprint 12 candidate-search implementation. The prior source-Team-first/GUID-handoff proposal was superseded. Production discovery, verified identity/guardian stewardship and invitation acceptance remain deferred; [navigation #197](https://github.com/bbubb/squadsync/issues/197) remains a separate UX gate.
-
-**Implementation authorization:** Neither planning tracker is `agent-ready`. Each detailed API/UI write or removal contract needs owner review, small issue-backed work and validated PRs. Sprint 13 should finish ordinary roster administration before proceeding to Phase 5.
+**Next decision:** Resolve [#199's bounded Development-only Person lookup contract](https://github.com/bbubb/squadsync/issues/199) before authorizing Sprint 12 implementation. Both sprint trackers remain planning-only; no implementation issue is agent-ready.
