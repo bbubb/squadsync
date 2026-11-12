@@ -76,7 +76,7 @@ public sealed class SwaggerEndpointTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var document = await response.Content.ReadFromJsonAsync<JsonElement>();
         var paths = document.GetProperty("paths");
-        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/people/{personId}/player-profile", "/api/teams", "/api/teams/{id}",
+        Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/people/{personId}/player-profile", "/api/people/candidates", "/api/teams", "/api/teams/{id}",
                 "/api/teams/{teamId}/memberships", "/api/teams/{teamId}/memberships/{membershipId}",
                 "/api/teams/{teamId}/roster", "/api/teams/{teamId}/roster/{rosterEntryId}" },
             paths.EnumerateObject().Select(path => path.Name).Order().ToArray());
