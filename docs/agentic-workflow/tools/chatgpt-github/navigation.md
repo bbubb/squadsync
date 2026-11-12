@@ -18,22 +18,7 @@ Then route to the appropriate workflow document and source-of-truth docs.
 
 ## Required First Reads
 
-For most project work, start with:
-
-- `README.md`
-- `AGENTS.md`
-- `CONTRIBUTING.md`
-- `docs/planning/project-roadmap.md`
-- `docs/agentic-workflow/README.md`
-- `docs/agentic-workflow/tools/chatgpt-github/README.md`
-- the active issue or pull request when the work is bounded
-
-For architecture/product questions, also read:
-
-- `docs/planning/mvp-scope.md`
-- `docs/architecture/system-overview.md`
-- `docs/architecture/domain-model.md`
-- the specific ADRs governing the question, selected from [docs/adr/](../../../adr/)
+Use root `AGENTS.md` and `CONTRIBUTING.md` to route the current task, not a universal list of documents. Read the **active issue or PR first** for bounded work; for new orientation or sprint planning, start with `README.md` and `docs/planning/project-roadmap.md`. Load the relevant MVP scope, architecture/ADR, area instructions and workflow guidance only when needed for a concrete decision, discrepancy or affected path. The [ChatGPT tool profile](README.md#required-context) provides the task-specific reference catalog.
 
 ## Canonical Thread Starts
 

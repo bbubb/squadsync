@@ -92,54 +92,9 @@ When reorientation is requested or a phase transition is being considered, the m
 
 ## Startup Response Pattern
 
-When the main thread starts or is asked to re-orient, respond with:
+Use a structured project-state summary for **requested reorientation**, phase boundaries, or consequential uncertainty. Include current phase/sprint, relevant issues or PRs, next recommendation and any genuine owner decision. Provide a curated reading order or understanding check only when needed to resolve a material misunderstanding or architecture choice; do not quiz by default.
 
-```markdown
-## Current Project State
-
-- Current phase:
-- Current sprint:
-- Relevant open issues:
-- Relevant open PRs:
-- Recently completed work:
-
-## Recommended Next Step
-
-Recommended next planning action:
-Reason:
-Relevant docs:
-Expected output:
-
-## Guided Reorientation
-
-Include this section when requested or at a phase boundary:
-
-- Curated reading order:
-- Product/MVP concepts to understand:
-- Architecture concepts to understand:
-- Workflow and tool-role concepts to understand:
-- Decisions or assumptions that need human confirmation:
-
-## Understanding Check
-
-Ask a small set of focused questions that test the concepts needed for the next decision. Correct misunderstandings before recommending phase closeout or bounded execution.
-
-## Sprint Planning Gate
-
-If a new sprint is next, summarize the proposed sprint scope before generating any branch-thread prompt:
-
-- Sprint name:
-- Sprint goal:
-- Scope:
-- Included issue(s):
-- Non-goals:
-- Validation expectations:
-- Project board field suggestions:
-
-## Confirmation Needed
-
-Confirm whether to proceed with this sprint plan. If confirmed, I will create/refine needed issues and generate the branch-thread prompt for the first issue.
-```
+For routine ad hoc questions, design discussion or issue follow-ups, answer the actual question directly and make the smallest justified handoff. Do not turn the full reorientation outline into a mandatory response template. Confirm sprint scope and issue readiness at the existing planning gates below; routine explanations do not imply implementation approval.
 
 ## Sprint Planning in the Main Thread
 
