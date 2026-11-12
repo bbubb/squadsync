@@ -422,4 +422,4 @@ Implementation PRs, acceptance evidence, and relevant deferred decisions remain 
 
 **Phase 4 Sprints 10–11 complete.** The approved planning direction is [Sprint 12 — connected Add Player (#207)](https://github.com/bbubb/squadsync/issues/207), followed by [Sprint 13 — roster management and PlayerProfile UI (#208)](https://github.com/bbubb/squadsync/issues/208).
 
-**Next decision:** Resolve [#199's bounded Development-only Person lookup contract](https://github.com/bbubb/squadsync/issues/199) before authorizing Sprint 12 implementation. Both sprint trackers remain planning-only; no implementation issue is agent-ready.
+**Next:** Sprint 12 is approved for a dedicated implementation thread. The bounded Development-only Person lookup design [#199](https://github.com/bbubb/squadsync/issues/199) is complete; begin with [agent-ready backend issue #212](https://github.com/bbubb/squadsync/issues/212). The subsequent transactional Add Player write contract remains a design gate within [Sprint 12 tracker #207](https://github.com/bbubb/squadsync/issues/207); Sprint 13 is planning-only.
