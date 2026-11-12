@@ -187,6 +187,26 @@ A Team staff member may create a represented `Person` before that person or a gu
 
 The future design must resolve claim verification, account/guardian delegation, duplicates and disputed identity matches without automatic merges. **This is a deferred design direction, not an implemented MVP permission or claim process.** Revisit before authenticated Person/Profile editing or account claims. See [#199](https://github.com/bbubb/squadsync/issues/199) for the separate Add Player lookup gate.
 
+## Provisional identity, roster departures and data lifecycle — Phase 4 direction
+
+**Status:** Approved product-boundary direction for [Sprint 12](https://github.com/bbubb/squadsync/issues/207) and [Sprint 13](https://github.com/bbubb/squadsync/issues/208); **not an implemented API, database deletion policy, authorization rule or approved membership-termination schema**. Existing [ADR 0006](../adr/0006-represented-person-identity-api-contract.md) remains authoritative for represented Person versus Account.
+
+### Provisioning and authority
+
+A coach may provision a `Person` to roster a player before that person or their guardian has an Account. This does not prove the Person is new or confer permanent authority over that person's identity. The trusted-local Development UI may allow provisional PlayerProfile edits; later authenticated claims, verified guardian delegation and ownership/stewardship transitions need their own authorization policy. Team-level authority over jersey number, roster status or TeamMembership must not automatically grant unrestricted control of Person-level information. A supplied GUID, display name, team role or invitation link is not identity proof.
+
+A **future** invitation/acceptance workflow must distinguish inviting someone to participate from granting them control of an existing Person; access/claim verification and revocation are deferred. See [discovery and identity gate #199](https://github.com/bbubb/squadsync/issues/199) before adding a production search or claim mechanism.
+
+### Team participation and removal
+
+- **Roster removal is not Person deletion:** The ability to remove a player's active RosterEntry is a Sprint 13 completion objective; preserve the reusable represented Person and optional Person-level PlayerProfile.
+- **TeamMembership lifecycle is distinct:** Define what ending TeamMembership means and how dependent RosterEntries are handled **before** implementing membership removal. Current restrictive foreign keys do not permit assuming broad cascade deletion. A later match/history model may require retained participation records; do not pre-select a soft-delete framework or claim current statuses encode departure.
+- **Multi-Team participation is ordinary:** Adding an existing Person to another Team creates a separate destination TeamMembership and, for players, destination RosterEntry. It does not move or duplicate their shared PlayerProfile, silently revoke source-Team relationships or prove an official competitive transfer.
+- **Official competition eligibility/transfer** may require governing-body approval and registration release distinct from SquadSync's basic Team roster edit; revisit when competition-registration workflows are designed.
+- **Data erasure and historical retention:** Person/Profile removal, user privacy requests, audit/provenance and event/history preservation require a separately reviewed lifecycle and applicable legal/authorization rules before production or permanent deletion endpoints. No global delete authorization is implied by Dev-only management APIs.
+
+**Revisit gates:** Review exact roster-entry removal/re-add behavior and associated persistence/HTTP semantics in Sprint 13 before coding; review membership termination before its own issue; revisit retained match history before Phase 5 depends on roster history; revisit verified stewardship, public discoverability and Person-level erasure before authenticated/public use. Link decisions to the canonical Domain/HTTP contract or ADR rather than creating a parallel design log.
+
 ## Current Player Profile and Roster Implementation Contract
 
 The accepted contract under [Sprint 5 tracker #102](https://github.com/bbubb/squadsync/issues/102) and [architecture gate #103](https://github.com/bbubb/squadsync/issues/103) separates person-level soccer attributes, team-context roster data, and match availability.
