@@ -53,17 +53,9 @@ These files own the exact prompt wording. The roadmap and other workflow documen
 
 ## Required Context
 
-Always begin with:
+Begin from the user's current intent and the active issue or pull request when the task is bounded. Use [root agent instructions](../../../../AGENTS.md) and [contribution rules](../../../../CONTRIBUTING.md) as the governing source and [navigation](navigation.md) to select only task-relevant context. For a new orientation or phase/sprint planning, use the [project roadmap](../../../planning/project-roadmap.md) and [README](../../../../README.md) to establish current state.
 
-- [README.md](../../../../README.md)
-- [AGENTS.md](../../../../AGENTS.md)
-- [CONTRIBUTING.md](../../../../CONTRIBUTING.md)
-- [Project roadmap](../../../planning/project-roadmap.md)
-- [Agentic workflow index](../../README.md)
-- [ChatGPT GitHub navigation](navigation.md)
-- the active issue or pull request when work is bounded
-
-Then load context by task:
+Select additional context by task:
 
 - complex or multi-step work: [PLANS.md](../../../../PLANS.md)
 - product or architecture decisions: [MVP scope](../../../planning/mvp-scope.md), [system overview](../../../architecture/system-overview.md), [domain model](../../../architecture/domain-model.md), and the exact governing [ADRs](../../../adr/)
