@@ -80,7 +80,7 @@ The following areas are outside the first MVP and should be introduced only thro
 - Mobile-first player/parent experience
 - Multi-team organization management
 - Account/guardian identity claims, self-service roster invitations, public Person discovery and production-search privacy/visibility policy (the local Development-only name lookup is a separate restricted demonstration; see [#199](https://github.com/bbubb/squadsync/issues/199))
-- Global Person deletion and formal cross-team competition transfer workflows; establish data retention and official eligibility rules before implementation
+- Global Person deletion and related retention/erasure policies; these require separate scope and authority review
 
 ## Success Criteria for the MVP
 
