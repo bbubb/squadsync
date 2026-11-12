@@ -62,19 +62,6 @@ When a document depends on other documents, include links in a References or Rel
 
 Agents should follow references before changing derivative docs.
 
-## Public Relevance and Disclosure Gate
-
-Before publishing **new or revised** content in a public repository document, issue, PR, ADR, example, non-goal, or agent prompt, apply both checks:
-
-1. **Relevance — does this belong in this public project?** Include a concept only when it explains an actual MVP requirement or architectural constraint, records an owner-approved *deliberately public* future MVP direction, or is necessary to prevent a concrete foreseeable implementation error. **Public-safe does not imply public-relevant.** Speculative future scenarios and lists of excluded features do not pass merely because they are common knowledge.
-2. **Disclosure — is it authorized for publication?** Even relevant information must not reveal confidential strategy, private explorations, or unapproved scope. If uncertain, **withhold the detail and ask the owner to classify it** before publishing.
-
-Apply **minimum necessary wording**: state the current invariant without introducing adjacent hypothetical actors, workflows, exclusions or examples. Removing an irrelevant future concept is usually better than rephrasing it. Do not create a public backlog issue, placeholder, or negative-scope hint solely to retain a private idea.
-
-When a consequential idea is withheld, preserve its intent, unresolved questions and revisit trigger in an authorized **private** source outside the public repository. Never reference private source files, confidential scenarios or their IDs in public issue/PR text or Codex prompts. Existing [context-management guidance](context-management.md#deferred-decision-handoff) governs public-safe decisions that genuinely affect the MVP.
-
-**Review check:** During planning, issue readiness and PR review, examine newly introduced future-facing language (including `Non-Goals` and `Deferred` sections). If it fails either test, remove it from the public change before merge and verify that any consequential private context is retained separately. This is an editorial check within the existing workflow, not a new approval stage or parallel register.
-
 ## Change Discipline
 
 When updating docs:
@@ -85,6 +72,7 @@ When updating docs:
 - avoid duplicating canonical content
 - link to canonical docs instead of copying large sections
 - keep README and AGENTS guidance evergreen: document current behavior, setup, validation instructions, and lasting constraints; record dated agent-environment observations, one-off test results, and issue/PR execution history in the relevant GitHub issue or PR instead. Describe persistent limitations without tying them to a particular run
+- before publishing, include only what is needed for the approved public project scope; omit speculative or unrelated future capabilities, including unnecessary non-goals and deferrals. When relevance or disclosure is uncertain, obtain owner approval first
 
 ## Agent Guidance
 
