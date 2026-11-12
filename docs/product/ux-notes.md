@@ -53,16 +53,11 @@ This is an initial UX direction, not a requirement to implement every shell regi
 
 The current API provides Development-only management capabilities without authenticated user permissions. The functional UI demonstrates these operations; it does not define who will be authorized to perform them later. Refer to the domain model and API contracts for underlying behavior.
 
-## Player selection, provisioning and later invitations
+## Add Player selection — Phase 4 planning
 
-**Phase 4 approved direction (not a complete API specification):** The normal Add Player journey starts from the destination Team's roster. Offer **Create New Person** for a coach-provisioned player who has no Account, and **Select Existing Person** through bounded **server-filtered** name lookup in trusted-local Development. Neither path requires the coach to find a source Team or obtain a database GUID from a player. The lookup contract and its safe duplicate-name/ambiguous-candidate behavior are the remaining design gate in [#199](https://github.com/bbubb/squadsync/issues/199); the connected workflow is [Sprint 12 #207](https://github.com/bbubb/squadsync/issues/207).
+From the selected Team's roster, the coach can **Create New Person** provisionally or **Select Existing Person** using bounded, server-filtered name lookup in trusted-local Development. Neither path requires an existing source Team or a human-facing GUID exchange. Search results expose only minimal candidate information, never treat matching names as verified identity, and provide clear ambiguous/no-match states. The exact query contract remains gated by [#199](https://github.com/bbubb/squadsync/issues/199); the connected workflow is tracked in [Sprint 12 #207](https://github.com/bbubb/squadsync/issues/207).
 
-- Show only minimal Person identity in candidate results. Do not download all People to filter them in React, treat identical names as a verified match, automatically merge People, or imply that the coach owns the represented Person.
-- Make ambiguity and no-match states explicit. The user may choose a well-understood existing result or deliberately create a new provisional record; an ID remains internal to API calls, not a human handoff mechanism.
-- Membership and RosterEntry actions belong to the selected Team; PlayerProfile information remains associated with the Person across Teams. Avoid presenting a roster departure as Person/Profile deletion.
-- [Sprint 13 #208](https://github.com/bbubb/squadsync/issues/208) addresses roster correction/removal, player details and explicit optional PlayerProfile editing. The Person-level editing screen in the trusted-local MVP is not a claim of authenticated coach or guardian authority.
-
-**Later authenticated UX — deferred:** A participant/guardian may be invited by a link or other verified mechanism to accept participation or claim a provisional Person, but a link alone is not proof of control over that Person. Participant-facing aliases, optional search visibility, private profile fields, organizational lookup and consent must be separately reviewed before public discovery. Do not add fake Invite buttons or public search affordances to the working MVP. These are public-safe future constraints, not approved Phase 4 features.
+Roster correction/removal and explicit, optional Person-level PlayerProfile editing are planned in [Sprint 13 #208](https://github.com/bbubb/squadsync/issues/208). The trusted-local UI does not establish authenticated Person stewardship; no unimplemented invitation or discovery controls should appear functional.
 
 ## Design Exploration Versus Shipped Behavior
 
