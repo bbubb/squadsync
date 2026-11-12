@@ -371,6 +371,8 @@ These examples describe possible work areas only. They do not assign sprint numb
 
 ## Sprint Planning Rules
 
+**Sprint records:** The roadmap tracks phase direction, the active next action, and an index of completed milestones. The detailed current and historical plans, issue dependencies, acceptance evidence and closeout live in GitHub sprint tracker issues linked here; do not duplicate each sprint as a separate planning Markdown file. Durable architectural decisions remain in domain/ADR/product docs, while deferred gates belong in their relevant existing issue or canonical document.
+
 Each sprint should define:
 
 - Goal
@@ -420,6 +422,8 @@ Implementation PRs, acceptance evidence, and relevant deferred decisions remain 
 
 ## Current Next Step
 
-**Phase 4 Sprint 11 complete** ([#181](https://github.com/bbubb/squadsync/issues/181)): the Development-only web workspace supports Team selection and creation, selected-Team Overview, and read-only player Roster and Team Members views. The implementation issues are closed through merged [PR #205](https://github.com/bbubb/squadsync/pull/205); owner-reported local full-stack manual testing passed.
+**Phase 4 Sprints 10–11 are complete.** The owner approved a planning split: **Sprint 12** establishes connected Add Player (coach-created provisional Person or bounded Development-only existing-Person lookup), followed by **Sprint 13** for roster edit/removal, membership termination design and optional PlayerProfile management. See [Sprint 12 #207](https://github.com/bbubb/squadsync/issues/207) and [Sprint 13 #208](https://github.com/bbubb/squadsync/issues/208).
 
-**Next:** return to Phase 4 planning for Sprint 12's Add Player journey. Resolve the [bounded Person discovery and account-scoped collections gate #199](https://github.com/bbubb/squadsync/issues/199) before approving Select Existing Person behavior. [Navigation follow-up #197](https://github.com/bbubb/squadsync/issues/197) remains deferred until a dedicated UX slice. No Sprint 12 implementation, authentication, or production deployment is approved by this closeout.
+**Immediate design gate:** resolve the precise local-only Person lookup contract in [#199](https://github.com/bbubb/squadsync/issues/199) before authorizing Sprint 12 candidate-search implementation. The prior source-Team-first/GUID-handoff proposal was superseded. Production discovery, verified identity/guardian stewardship and invitation acceptance remain deferred; [navigation #197](https://github.com/bbubb/squadsync/issues/197) remains a separate UX gate.
+
+**Implementation authorization:** Neither planning tracker is `agent-ready`. Each detailed API/UI write or removal contract needs owner review, small issue-backed work and validated PRs. Sprint 13 should finish ordinary roster administration before proceeding to Phase 5.
