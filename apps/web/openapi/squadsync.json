@@ -237,6 +237,76 @@
         }
       }
     },
+    "/api/people/candidates": {
+      "get": {
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": { "maxLength": 4096, "minLength": 0, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonCandidatePageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonCandidatePageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonCandidatePageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/people": {
       "post": {
         "tags": ["People"],
@@ -781,6 +851,96 @@
         }
       }
     },
+    "/api/teams/{teamId}/roster/players": {
+      "post": {
+        "tags": ["Rosters"],
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddPlayerRequest" }
+            },
+            "text/json": {
+              "schema": { "$ref": "#/components/schemas/AddPlayerRequest" }
+            },
+            "application/*+json": {
+              "schema": { "$ref": "#/components/schemas/AddPlayerRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/RosterEntryResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              },
+              "text/json": {
+                "schema": { "$ref": "#/components/schemas/ProblemDetails" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/teams/{teamId}/roster/{rosterEntryId}": {
       "get": {
         "tags": ["Rosters"],
@@ -998,6 +1158,26 @@
   },
   "components": {
     "schemas": {
+      "AddPlayerRequest": {
+        "required": ["rosterStatus"],
+        "type": "object",
+        "properties": {
+          "personId": { "type": "string", "format": "uuid", "nullable": true },
+          "newPerson": { "$ref": "#/components/schemas/CreatePersonRequest" },
+          "jerseyNumber": {
+            "type": "string",
+            "description": "Nullable, otherwise 1-3 ASCII digits. Leading zeros are preserved.",
+            "nullable": true
+          },
+          "rosterStatus": {
+            "minLength": 1,
+            "pattern": "^(Active|Reserved|Suspended)$",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Supply exactly one non-null personId or newPerson. Reuses an unrostered Player membership; staff and duplicate roster entries conflict. No PlayerProfile is created."
+      },
       "CreateMembershipRequest": {
         "required": ["personId", "teamRole"],
         "type": "object",
@@ -1079,6 +1259,28 @@
           "teamId": { "type": "string", "format": "uuid" },
           "person": { "$ref": "#/components/schemas/MembershipPersonResponse" },
           "teamRole": { "minLength": 1, "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "PersonCandidatePageResponse": {
+        "required": ["items", "nextCursor"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PersonCandidateResponse" }
+          },
+          "nextCursor": { "type": "string", "nullable": true }
+        },
+        "additionalProperties": false
+      },
+      "PersonCandidateResponse": {
+        "required": ["firstName", "lastName", "personId"],
+        "type": "object",
+        "properties": {
+          "personId": { "type": "string", "format": "uuid" },
+          "firstName": { "minLength": 1, "type": "string" },
+          "lastName": { "minLength": 1, "type": "string" }
         },
         "additionalProperties": false
       },
