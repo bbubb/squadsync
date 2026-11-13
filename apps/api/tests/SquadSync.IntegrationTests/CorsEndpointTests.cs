@@ -59,6 +59,7 @@ public class CorsEndpointTests
     [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/memberships", "GET", "accept")]
     [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/roster", "GET", "accept")]
     [InlineData("/api/people/11111111-1111-1111-1111-111111111111/player-profile", "GET", "accept")]
+    [InlineData("/api/teams/11111111-1111-1111-1111-111111111111/roster/players", "POST", "content-type")]
     [InlineData("/api/teams", "POST", "content-type")]
     [InlineData("/api/teams", "POST", "accept,content-type")]
     [InlineData("/api/people", "POST", "content-type")]

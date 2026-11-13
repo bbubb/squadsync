@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IPlayerProfilePersistence, EfPlayerProfilePersistence>();
+        services.AddScoped<IAddPlayerPersistence, EfAddPlayerPersistence>();
         services.AddScoped<IRosterPersistence, EfRosterPersistence>();
         services.AddScoped<IRosterQueries, EfRosterPersistence>();
         services.AddScoped<IMembershipPersistence, EfMembershipPersistence>();

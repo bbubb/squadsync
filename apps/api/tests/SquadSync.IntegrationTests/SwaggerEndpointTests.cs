@@ -78,7 +78,7 @@ public sealed class SwaggerEndpointTests
         var paths = document.GetProperty("paths");
         Assert.Equal(new[] { "/api/people", "/api/people/{id}", "/api/people/{personId}/player-profile", "/api/people/candidates", "/api/teams", "/api/teams/{id}",
                 "/api/teams/{teamId}/memberships", "/api/teams/{teamId}/memberships/{membershipId}",
-                "/api/teams/{teamId}/roster", "/api/teams/{teamId}/roster/{rosterEntryId}" },
+                "/api/teams/{teamId}/roster", "/api/teams/{teamId}/roster/{rosterEntryId}", "/api/teams/{teamId}/roster/players" },
             paths.EnumerateObject().Select(path => path.Name).Order().ToArray());
         var profile = paths.GetProperty("/api/people/{personId}/player-profile");
         Assert.Equal(new[] { "get", "post", "put" }, profile.EnumerateObject().Select(method => method.Name).Order().ToArray());

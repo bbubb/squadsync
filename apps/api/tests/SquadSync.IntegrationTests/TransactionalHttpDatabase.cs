@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ internal sealed class TransactionalHttpDatabase
 
     internal ConcurrentQueue<Guid> ContextIds { get; } = new();
 
-    internal async Task RunAsync(Func<HttpClient, SquadSyncDbContext, Task> action)
+    internal async Task RunAsync(Func<HttpClient, SquadSyncDbContext, Task> action, IInterceptor? interceptor = null)
     {
         var configured = Environment.GetEnvironmentVariable("ConnectionStrings__SquadSync");
         Assert.False(string.IsNullOrWhiteSpace(configured),
@@ -41,7 +42,9 @@ internal sealed class TransactionalHttpDatabase
         await connection.OpenAsync();
         await observer.OpenAsync();
         await using var transaction = await connection.BeginTransactionAsync();
-        var options = new DbContextOptionsBuilder<SquadSyncDbContext>().UseNpgsql(connection).Options;
+        var optionsBuilder = new DbContextOptionsBuilder<SquadSyncDbContext>().UseNpgsql(connection);
+        if (interceptor is not null) optionsBuilder.AddInterceptors(interceptor);
+        var options = optionsBuilder.Options;
         await using var db = new SquadSyncDbContext(options);
         await db.Database.UseTransactionAsync(transaction);
         string[]? before = null;

@@ -9,7 +9,7 @@ namespace SquadSync.Api.Rosters;
 [ApiController]
 [Route("api/teams/{teamId}/roster")]
 public sealed class RostersController(CreateRosterEntry createRosterEntry, GetRosterEntry getRosterEntry,
-    GetTeamRoster getTeamRoster) : ControllerBase
+    GetTeamRoster getTeamRoster, AddPlayer addPlayer) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<RosterEntryResponse>>(StatusCodes.Status200OK)]
@@ -31,6 +31,42 @@ public sealed class RostersController(CreateRosterEntry createRosterEntry, GetRo
         catch (RosterTeamNotFoundException)
         {
             return NotFound();
+        }
+    }
+
+    [HttpPost("players")]
+    [ProducesResponseType<RosterEntryResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<RosterEntryResponse>> AddPlayer(
+        Guid teamId, AddPlayerRequest request, CancellationToken cancellationToken)
+    {
+        if (!Enum.TryParse<RosterStatus>(request.RosterStatus, out var status) || status.ToString() != request.RosterStatus)
+        {
+            ModelState.AddModelError("rosterStatus", "A canonical roster status name is required.");
+            return ValidationProblem(ModelState);
+        }
+        try
+        {
+            var person = request.NewPerson is null ? null : new NewPlayerPerson(request.NewPerson.FirstName!, request.NewPerson.LastName!);
+            var entry = await addPlayer.ExecuteAsync(teamId, request.PersonId, person, request.JerseyNumber, status, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { teamId, rosterEntryId = entry.Id }, RosterEntryResponse.From(entry));
+        }
+        catch (RosterValidationException exception)
+        {
+            ModelState.AddModelError(exception.Field, "A valid Person variant, name, identifier, jersey number and roster status are required.");
+            return ValidationProblem(ModelState);
+        }
+        catch (RosterTeamNotFoundException) { return NotFound(); }
+        catch (AddPlayerPersonNotFoundException) { return NotFound(); }
+        catch (RosterMembershipNotPlayerException)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: "Only Player memberships may join the roster.");
+        }
+        catch (AddPlayerConflictException)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: "The player could not be added because of a conflicting write.");
         }
     }
 

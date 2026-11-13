@@ -41,11 +41,12 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddScoped<CreateMembership>();
     builder.Services.AddScoped<GetMembership>();
     builder.Services.AddScoped<GetTeamMemberships>();
+    builder.Services.AddScoped<AddPlayer>();
     builder.Services.AddScoped<AddPlayerToRoster>();
     builder.Services.AddScoped<CreateRosterEntry>();
     builder.Services.AddScoped<GetRosterEntry>();
     builder.Services.AddScoped<GetTeamRoster>();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options => options.SchemaFilter<SquadSync.Api.Rosters.AddPlayerRequestSchemaFilter>());
 }
 
 var app = builder.Build();
