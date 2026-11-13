@@ -271,6 +271,28 @@ Malformed/missing/empty IDs, malformed JSON, missing roles, numeric roles and no
 
 Application tests use fake ports. Membership HTTP tests exercise real controllers and use cases with controlled persistence, including cancellation, sanitized failures and Staging/Production route absence. Database-independent EF tests verify the existing unique mapping and exercise exception filters through a SaveChanges interceptor. Opt-in adapter and [HTTP database tests](#http-to-postgresql-validation) verify real projection, team scoping and duplicate translation in rolled-back transactions.
 
+## Atomic Add Player (Development only)
+
+The owner-approved [issue #215](https://github.com/bbubb/squadsync/issues/215) adds `POST /api/teams/{teamId}/roster/players`. Use exactly one of these bodies:
+
+```json
+{"newPerson":{"firstName":"Alex","lastName":"Player"},"jerseyNumber":"007","rosterStatus":"Active"}
+```
+
+```json
+{"personId":"<existing-person-guid>","jerseyNumber":null,"rosterStatus":"Reserved"}
+```
+
+The route supplies TeamId; Application generates Person (when needed), membership and roster IDs. Names follow existing Person validation and trimming. `rosterStatus` is required and exactly `Active`, `Reserved` or `Suspended`; jersey number is null or a string of 1?3 ASCII digits, preserving leading zeros. This operation creates no PlayerProfile or Account.
+
+A new Person gets a Player TeamMembership and RosterEntry. An existing Person gets a new Player membership if absent; an existing unrostered Player membership is reused. Existing non-Player roles are never changed. Success returns the existing typed RosterEntry response with `201 Created` and retrievable `Location: /api/teams/{teamId}/roster/{rosterEntryId}`. The standalone People, Membership and Roster routes keep their behavior.
+
+Malformed JSON/GUIDs, empty IDs, missing/both Person variants and invalid names/roster fields return `400 ValidationProblemDetails`. Missing Team or referenced Person returns `404 ProblemDetails`. Already-rostered People, non-Player memberships and known uniqueness conflicts return safe `409 ProblemDetails`. Known Person/Team foreign-key races map to 404; a disappearing roster membership maps to 409. Unrelated database failures and cancellation propagate through the existing HTTP conventions.
+
+Application owns orchestration and eligibility through the focused `IAddPlayerPersistence` / `IAddPlayerTransaction` port. Infrastructure holds one EF/PostgreSQL transaction across reference reads, Person/membership writes and the roster write. Any failure rolls back the new rows. An externally owned transaction uses an operation savepoint; successful release does not commit the caller's transaction. There are no automatic retries or idempotency keys: if a response is lost after commit, reconcile stored state before submitting again. The endpoint uses the existing exact-origin Development CORS policy and is unmapped in Staging/Production.
+
+`AddPlayerTests` and `AddPlayerEndpointTests` cover Application/HTTP behavior and Swagger. Opt-in `AddPlayerHttpPersistenceTests` proves both variants across separate requests, membership reuse, no automatic profile, rejection preservation, a deterministic stale-read uniqueness interleaving and rollback after an actual roster insert constraint failure. `AddPlayerPersistenceTests` additionally verifies owned-transaction rollback, known exception filters, unrelated failures and cancellation. These use the database configuration below, preserve complete-row fingerprints, and leave no durable test writes. Constraint-race interleavings are deterministic; they are not a load/concurrency stress test.
+
 ## Local Person-to-roster workflow
 
 **Development on trusted localhost only.** There is no authentication or authorization. Configure `ConnectionStrings__SquadSync` using your ignored local settings, confirm the four committed migrations are already applied, then start the API with the Development/localhost command above. Swagger at `/swagger` describes People, Teams, memberships and roster routes, including their response contracts. Do not expose this listener on a public network.
