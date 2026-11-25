@@ -55,19 +55,36 @@ test('accepts a rename within both allowed paths and CI on the bound test merge'
   assert.equal(evaluate(snapshot).reason, 'required-ci-not-current-and-successful');
 });
 
-test('requires the bound #217 merge before #218', () => {
+function proposed218(completed217Pr) {
   const snapshot = structuredClone(sample);
   const { grant, github, review, integration } = snapshot;
   for (const evidence of [grant.dispatch, github.pr, github.diff, github.protection, ...github.checks,
     github.approvals, review, integration, ...integration.stages]) evidence.issue = 218;
   github.issue.number = 218;
-  github.issue.dependencies.push({ issue: 217, merged: true, pr: 8999 });
+  github.issue.dependencies.push({ issue: 217, merged: true, pr: completed217Pr });
+  return snapshot;
+}
+
+test('requires the bound #217 merge before #218', () => {
+  const snapshot = proposed218(8999);
+  const { grant, github } = snapshot;
   assert.equal(evaluate(snapshot).reason, 'issue-not-ready-or-dependencies-unmet');
   grant.completed217Pr = 8999;
   assert.equal(evaluate(snapshot).decision, 'would-proceed');
   github.issue.dependencies[2].merged = false;
   assert.equal(evaluate(snapshot).reason, 'issue-not-ready-or-dependencies-unmet');
 });
+
+for (const pull of [220, 221]) {
+  test(`#218 rejects completed217Pr reusing prerequisite PR #${pull}`, () => {
+    const snapshot = proposed218(pull);
+    snapshot.grant.completed217Pr = pull;
+    const result = evaluate(snapshot);
+    assert.equal(result.decision, 'reject');
+    assert.equal(result.reason, 'issue-not-ready-or-dependencies-unmet');
+    assert.equal(result.liveAuthority, false);
+  });
+}
 
 const cases = {
   'test-only-snapshot-required': {

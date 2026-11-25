@@ -69,9 +69,11 @@ export function evaluate(snapshot) {
       !text(dispatch.publisher) || pr.author !== dispatch.publisher) return result('pr-outside-dispatch');
 
   const dependencies = pr.issue === 217 ? prerequisitePulls : [...prerequisitePulls, [217, grant.completed217Pr]];
+  const distinctPulls = new Set(dependencies.map(([, pull]) => pull));
   if (issue?.number !== pr.issue || issue.repository !== repository ||
       issue.state !== 'open' || issue.agentReady !== true ||
       !Array.isArray(issue.dependencies) || issue.dependencies.length !== dependencies.length ||
+      distinctPulls.size !== dependencies.length ||
       (pr.issue === 217 && grant.completed217Pr !== undefined) ||
       !dependencies.every(([number, pull]) => Number.isSafeInteger(pull) && pull > 0 && pull !== pr.number &&
         issue.dependencies.some((dependency) =>
