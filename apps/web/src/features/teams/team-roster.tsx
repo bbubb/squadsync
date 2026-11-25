@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import type { components } from "@/lib/api/schema";
+import { AddPlayerForm } from "./add-player-form";
 import styles from "./team-roster.module.css";
 import { useTeamRoster } from "./use-team-roster";
 
@@ -30,8 +32,7 @@ export function RosterList({ entries }: { entries: readonly RosterEntry[] }) {
   );
 }
 
-export function TeamRoster({ teamId }: { teamId: string }) {
-  const query = useTeamRoster(teamId);
+function RosterResults({ query }: { query: ReturnType<typeof useTeamRoster> }) {
   if (query.isPending) return <p role="status">Loading roster…</p>;
   if (query.isError) {
     return (
@@ -53,4 +54,56 @@ export function TeamRoster({ teamId }: { teamId: string }) {
     return <p role="status">No roster entries yet for this Team.</p>;
   }
   return <RosterList entries={query.data} />;
+}
+
+export function TeamRoster({ teamId }: { teamId: string }) {
+  const query = useTeamRoster(teamId);
+  const [showForm, setShowForm] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
+  const opener = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef(false);
+
+  useEffect(() => {
+    if (!showForm && restoreFocus.current) {
+      opener.current?.focus();
+      restoreFocus.current = false;
+    }
+  }, [showForm]);
+
+  function closeForm() {
+    restoreFocus.current = true;
+    setShowForm(false);
+  }
+
+  return (
+    <>
+      {showForm ? (
+        <AddPlayerForm
+          teamId={teamId}
+          onAdded={({ person }) => {
+            setAnnouncement(`${person.firstName} ${person.lastName} was added to the roster.`);
+            closeForm();
+          }}
+          onCancel={closeForm}
+          onRefreshRoster={async () => (await query.refetch()).isSuccess}
+        />
+      ) : (
+        <button
+          ref={opener}
+          type="button"
+          className="team-action mb-4"
+          onClick={() => {
+            setAnnouncement("");
+            setShowForm(true);
+          }}
+        >
+          Add Player
+        </button>
+      )}
+      <p className="wrap-anywhere empty:sr-only" role="status">
+        {announcement}
+      </p>
+      <RosterResults query={query} />
+    </>
+  );
 }

@@ -96,7 +96,8 @@ test("deep-linked roster shows selected Team, distinct same-name players, string
   await user.tab();
   expect(screen.getByRole("link", { name: /All Teams/ })).toHaveFocus();
   expect(screen.getByRole("link", { name: /All Teams/ })).toHaveAttribute("href", "/");
-  expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  await user.tab();
+  expect(screen.getByRole("button", { name: "Add Player" })).toHaveFocus();
   expect(fetcher).toHaveBeenCalledTimes(2);
 });
 
@@ -217,6 +218,7 @@ test.each(["bad-link", teamA])(
       expect(fetcher).toHaveBeenCalledTimes(1);
     }
     expect(screen.queryByRole("navigation", { name: "Selected Team" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Add Player" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /All Teams/ })).toHaveAttribute("href", "/");
   },
 );
