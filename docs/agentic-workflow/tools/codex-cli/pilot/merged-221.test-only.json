@@ -1,0 +1,48 @@
+{
+  "kind": "historical",
+  "testOnly": true,
+  "source": "https://github.com/bbubb/squadsync/pull/221",
+  "historicalPr": {
+    "repository": "bbubb/squadsync",
+    "issue": 216,
+    "number": 221,
+    "state": "closed",
+    "merged": true,
+    "baseBranch": "main",
+    "baseSha": "d5a9e290f37893eb3cc8a2195703b4e438dccf36",
+    "headBranch": "feature/216-add-player-web-boundary",
+    "headSha": "7b9f62b163572fede8329da158d37059becf251f",
+    "headRepository": "bbubb/squadsync",
+    "mergeCommitSha": "b8d8636690499f23bedd0d0988496a6258e308ff",
+    "changedFiles": 8
+  },
+  "observedWorkflowRuns": [
+    {
+      "workflow": "Web CI",
+      "workflowId": 404572922,
+      "runId": 45508766247,
+      "result": "success",
+      "jobs": [
+        {
+          "id": 138850733295,
+          "name": "Format, lint, typecheck, test, and build web",
+          "result": "success"
+        }
+      ]
+    },
+    {
+      "workflow": "API CI",
+      "workflowId": 368441854,
+      "runId": 45508766253,
+      "result": "success",
+      "jobs": [
+        {
+          "id": 138850733480,
+          "name": "Restore, build, and test API",
+          "result": "success"
+        }
+      ]
+    }
+  ],
+  "observedFormalReviews": []
+}

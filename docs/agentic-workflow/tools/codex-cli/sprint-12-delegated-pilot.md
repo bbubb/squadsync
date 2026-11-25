@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed operating setup for [#223](https://github.com/bbubb/squadsync/issues/223). The owner approved the design direction. [#224](https://github.com/bbubb/squadsync/issues/224) covers policy and dry-run design under supervised execution. Activation requires the owner's separate grant after the prerequisites below.
+Proposed operating setup for [#223](https://github.com/bbubb/squadsync/issues/223). The owner approved the design direction in [#224](https://github.com/bbubb/squadsync/issues/224). [#226](https://github.com/bbubb/squadsync/issues/226) supplies the offline prototype under supervised execution. Activation requires the owner's separate grant after the prerequisites below.
 
 ## Assignment
 
@@ -49,7 +49,15 @@ Immediately before a merge, the trusted controller reads live repository and PR 
 
 ## No-merge dry run
 
-Use a non-merging draft test PR under separate supervised approval and capture public PR metadata with read-only access. Exercise the decision logic offline with sanitized snapshots and synthetic verdicts, including a ready-state fixture derived from that PR. Run with network writes disabled, no secrets and no merge client. The output is a decision with the PR, base/head and failed condition. A passing fixture reports that it would proceed. It performs zero writes.
+Run the [Node.js evaluator](pilot/sprint-12-gate.mjs) from the repository root. It reads one local JSON snapshot and emits one JSON decision. Exit 0 means the synthetic case would proceed. Exit 1 means rejection. Both report `liveAuthority: false`.
+
+```powershell
+node docs/agentic-workflow/tools/codex-cli/pilot/sprint-12-gate.mjs docs/agentic-workflow/tools/codex-cli/pilot/proposed-217.test-only.json
+```
+
+The [synthetic #217 snapshot](pilot/proposed-217.test-only.json) shows the input format. The owner-side grant pins an issue, same-repo branch, PR, path allowance, publisher, readers and reviewers. The GitHub snapshot supplies readiness, merged prerequisites, current `main`, a complete changed-file list, protection, formal approvals and the latest eligible checks. The independent review and the integration observer supply their own records for the same repository, issue, PR, base and head. A path ending in `/` allows files beneath that directory. Any other path matches one file. Both names in a rename must qualify. The fixture's evaluation time is explicit so reruns make the same decision.
+
+The [historical #221 snapshot](pilot/merged-221.test-only.json) contains sanitized, read-only GitHub metadata for a merged PR. It is expected to reject, even with successful historical CI. No historical observation establishes current enforcement or authority. The evaluator only accepts test-only inputs and has no credential handling, network client or mutation capability. Identity fields in fixtures are assertions for exercising the gate. They provide no authentication and must never feed a live adapter.
 
 | Fixture | Expected decision |
 | --- | --- |
@@ -62,11 +70,42 @@ Use a non-merging draft test PR under separate supervised approval and capture p
 | Browser or PostgreSQL evidence skipped, unverified or for another SHA | Reject integration evidence |
 | Paused, revoked or expired grant, or unknown branch protection | Reject authority |
 
-Repeat from the same snapshots after a restart to verify the same decisions and no write attempts. Record outcomes in the implementation PR for the dry-run harness and link them from #223. These are proposed tests.
+Run `node --test docs/agentic-workflow/tools/codex-cli/pilot/sprint-12-gate.test.mjs` for the matrix, including #218 sequencing and byte-identical CLI output from fresh processes. Record outcomes in the implementation PR linked to #223. Real event delivery still requires a separately authorized draft PR.
+
+## Read-only host preflight
+
+Run these commands from the repository root in PowerShell under the intended unattended runner identity. Use the installed `codex` executable on other shells. The status probe returns an exit code without recording account output. A successful status is only evidence of a local login. The owner must independently confirm that the selected programmatic authentication method, entitlement and billing are approved for that identity.
+
+```powershell
+node --version
+codex.cmd --version
+codex.cmd login status *> $null
+"Codex login status exit: $LASTEXITCODE"
+gh api --method GET repos/bbubb/squadsync/issues/226 --jq '{number,state}'
+gh api --method GET repos/bbubb/squadsync/branches/main/protection --jq '{required_status_checks,required_pull_request_reviews,enforce_admins}'
+gh api --method GET repos/bbubb/squadsync/rules/branches/main --jq 'map({type,parameters})'
+dotnet --version
+Get-Command pnpm.cmd -ErrorAction SilentlyContinue | Select-Object Name
+docker compose version
+docker info --format '{{.ServerVersion}}'
+Test-Path 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
+Test-Path 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+```
+
+- Read both protection responses and confirm required check job names and GitHub App IDs, strict updates, formal approval counts and qualifying reviewers. Have an authorized owner inspect applicable repository and organization rulesets, bypass lists and allowed merge methods if the read identity lacks visibility. A failed read or absent enforcement blocks activation. Compare historical Actions jobs and review metadata to their expected producers. Verify producer identity and eligibility again for the actual draft.
+- Confirm the runner stays available with the editor closed. Verify separate worker directories and identities, no PR access to credential stores or controller files, and a fresh read-only reviewer. Local tool availability and status probes do not prove isolation or uptime.
+- Locate the intended browser if it is installed elsewhere. Check the documented disposable PostgreSQL, Development API and browser setup on the selected host. Read-only probes do not establish that the stack can run together. Record browser launch, API responses and PostgreSQL observations after the owner authorizes the disposable smoke. Use the linked web and API instructions above.
+- Record actual results, unavailable observations and any deviations in the setup PR. Keep the owner follow-up in #223 and the sprint outcome in #207.
+
+## Next operational step
+
+After owner review of #226, ask the owner to authorize one supervised, non-merging draft PR rehearsal on a named host under a distinct approved publisher. Confirm API and Web CI can both trigger on its permitted patch. Have that publisher open it and push one follow-up commit. Record both ordinary `pull_request` event deliveries, eligible check producers, a fresh read-only review of the final revision, formal approval eligibility, and the disposable browser/API/PostgreSQL smoke. Keep model authentication, publishing credentials and any future merge credential outside the worker and PR checkout. Receive owner approval before model billing, protection changes, credential creation or any new persistent service.
+
+For activation, use owner-controlled code outside the checkout to read grant state from #223 and live GitHub state through read-only access. Collect complete paginated files, effective rules and latest eligible Actions jobs and formal reviews using authenticated GitHub reads. Receive independent review and integration records over owner-controlled channels bound to the exact PR, base and head. Before enabling a future merge adapter, demonstrate credential isolation and server enforcement with no bypass, including rejection when evidence is missing or stale. The separate merge identity would use the protected endpoint with the final verified head and the owner-approved method, as specified above. It must derive authority from trusted live evidence and the active grant. If this boundary requires a persistent GitHub App or broker, propose an ADR under #77 before implementation.
 
 ## Owner activation and shutdown
 
-1. Review and merge the #224 setup PR through supervised execution. Approve the concrete host, reviewer, credential boundary and any billing or repository settings needed before operational implementation. Confirm the account-level checks above and authorize a separate implementation issue. If a new persistent App or credential broker is required, propose an ADR for owner review under #77 before implementation.
+1. Review and merge the #226 prototype PR through supervised execution. Approve the concrete host, reviewer, credential boundary and any billing or repository settings needed for the supervised rehearsal and subsequent operational implementation.
 2. Review the resulting dry-run evidence and confirm real CI event delivery, reviewer eligibility, branch protection without bypass, and real browser/API/PostgreSQL validation on the chosen host. Verify #217 readiness. If any prerequisite fails, continue supervised.
 3. Record an explicit active grant in #223 with the start and deadline, controller and reviewer identities, merge method, per-issue allowed paths, authorized #217/#218 merge eligibility and #219 owner acceptance. Bind each actual PR to its issue on dispatch. The controller rechecks owner-authored grant state before dispatch and before attempting a merge.
 4. To pause, mark the grant paused in #223, stop the controller job and halt queued or active workers. Reconcile any in-flight GitHub request by reading its result. Resume only after the owner records resumption within the unexpired grant and rechecks head, CI and readiness. To revoke or expire, disable the job, remove the gate's credential access, revoke outstanding tokens or suspend the dedicated installation as applicable, and return to supervised execution. The owner handles any already-merged change through normal reviewed follow-up.
