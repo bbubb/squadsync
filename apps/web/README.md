@@ -2,6 +2,8 @@
 
 The local SquadSync workspace shell uses Next.js App Router, React, strict TypeScript, and Tailwind CSS. It has a responsive layout, semantic navigation, and a keyboard skip link. The workspace loads stored Teams through the typed API query. Each Team links to its canonical Overview at `/teams/[teamId]`, displaying its real name, ID, roster-entry total and membership total with an All Teams return path. The existing sidebar separates global Workspace navigation from selected-Team navigation and adapts to a wrapping bar on narrow screens. Roster links to `/teams/[teamId]/roster`, showing stored player names, jersey numbers and statuses. Members links to `/teams/[teamId]/members`, showing represented people and readable Team role labels separately from the player roster and authenticated permissions. Create Team opens `/teams/new`, submits a name to the Development API, and selects the created Team. Add Player opens inline on the selected Team's Roster. It can create a Person from a first and last name or select an existing Person through a bounded name search. The Development API adds the Player membership and roster entry in one operation, and the web app refreshes the selected Team's Roster and Members data.
 
+Each roster row links to `/teams/[teamId]/roster/[rosterEntryId]`. Player details use the individual Team-scoped roster GET for the represented Person name, jersey number, and roster status. Back to Team roster works from a direct link or reload.
+
 ## Prerequisites
 
 - Node.js **26.13.0** (also pinned in `.node-version` and `package.json`).
@@ -84,6 +86,12 @@ Before final approval, the repository owner must perform this environment-depend
 12. Check desktop and narrow phone viewports, long names, Tab/Enter navigation, visible focus, the skip link, and absence of horizontal scrolling. Confirm that global Workspace and selected-Team navigation share one sidebar, become usable compact navigation on phones, and that the Add Player form and roster fit without horizontal scrolling. All Teams and browser Back/Forward should restore the appropriate workspace/Overview current-page indication.
 
 Automated fetch-mocked tests and CI do not replace this real browser-to-API-to-PostgreSQL and responsive-layout review.
+
+### Player detail smoke check
+
+1. Open a Team roster with synthetic data. Tab to a player name and press Enter. Confirm the URL contains the roster-entry ID and the selected Team remains visible. Compare the name, jersey string, and status with the individual roster GET.
+2. Open that URL directly and reload it. Use browser Back and Forward after following a roster link, then activate Back to Team roster with the keyboard. At about 390px wide, verify the link focus indicator, legible details, and no horizontal scrolling.
+3. Keep the roster-entry ID and substitute a different existing Team ID. Confirm a 404 and the same safe missing-entry message as for an unknown roster-entry ID. Substitute a malformed or all-zero roster-entry ID and confirm an invalid-link message without an individual roster GET.
 
 ### Add Player smoke check
 

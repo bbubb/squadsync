@@ -16,6 +16,7 @@ function ResolvedTeamNavigation({ teamId, pathname }: { teamId: string; pathname
   const query = useTeam(teamId);
   if (!query.isSuccess) return null;
   const overview = `/teams/${teamId}`;
+  const roster = `${overview}/roster`;
 
   return (
     <nav className="team-navigation" aria-label="Selected Team">
@@ -33,8 +34,14 @@ function ResolvedTeamNavigation({ teamId, pathname }: { teamId: string; pathname
         <li>
           <Link
             className="workspace-nav"
-            href={`${overview}/roster`}
-            aria-current={pathname === `${overview}/roster` ? "page" : undefined}
+            href={roster}
+            aria-current={
+              pathname === roster
+                ? "page"
+                : pathname.startsWith(`${roster}/`)
+                  ? "location"
+                  : undefined
+            }
           >
             Roster
           </Link>
