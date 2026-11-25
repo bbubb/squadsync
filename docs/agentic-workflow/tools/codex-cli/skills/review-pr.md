@@ -4,7 +4,7 @@
 
 Use this skill when Codex is asked to support pull request review.
 
-Codex may assist review, but the human owner remains the approval and merge authority.
+Codex may assist review. The [execution policy](../../../policy/project-policy.md#execution-policy) defines approval and merge authority.
 
 ## Required Context
 

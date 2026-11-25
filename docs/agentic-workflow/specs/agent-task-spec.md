@@ -6,6 +6,8 @@ This specification defines the standard shape of an agent-ready GitHub issue.
 
 Agent tasks should be clear enough for Codex CLI or another future implementation tool to execute without relying on hidden chat context.
 
+The issue defines work scope and readiness. Resolve who may advance or merge through the [execution policy](../policy/project-policy.md#execution-policy).
+
 ## Required Sections
 
 ### Objective

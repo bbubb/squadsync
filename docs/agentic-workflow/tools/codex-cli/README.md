@@ -31,7 +31,7 @@ Codex CLI should not depend on private ChatGPT session context to understand wha
 ## Task-Specific Prompts
 
 - [Initial API Scaffold](../../../prompt-library/backend-scaffold.prompt.md) — copy-ready scaffold prompt that must be populated from a refreshed agent-ready issue.
-- [Pull Request Review](../../../prompt-library/pr-review.prompt.md) — bounded review prompt aligned with the PR specification and human merge authority.
+- [Pull Request Review](../../../prompt-library/pr-review.prompt.md) — bounded review prompt aligned with the PR specification and [execution policy](../../policy/project-policy.md#execution-policy).
 
 ## Relationship to Generic Workflow
 

@@ -10,7 +10,7 @@ These roles are not active. They are structured placeholders for future orchestr
 
 No active subagent automation is configured.
 
-Codex CLI remains the primary implementation profile. The human owner remains responsible for approval, merge decisions, phase transitions, and architecture decisions.
+Codex CLI remains the primary implementation profile. Use the [execution policy](../../../policy/project-policy.md#execution-policy) for approval and merge authority. Phase transitions and architecture decisions remain owner-owned.
 
 ## Planned Role Profiles
 

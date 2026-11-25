@@ -33,7 +33,7 @@ ChatGPT GitHub must:
 - avoid merging PRs
 - surface scope changes as follow-up issues or recommendations
 - document validation honestly
-- preserve human authority for merges, issue-completion decisions, and sprint/phase closeout
+- follow the [execution policy](../../policy/project-policy.md#execution-policy) for merge authority and preserve owner control of issue-completion decisions and sprint/phase closeout
 - stop when architecture, scope, or validation is unclear
 
 ## Tool Boundaries

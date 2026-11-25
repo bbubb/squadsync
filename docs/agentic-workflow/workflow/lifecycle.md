@@ -72,7 +72,7 @@ The pull request should summarize:
 
 ## 7. Review
 
-The human owner reviews for:
+Under the supervised default, the owner reviews for:
 
 - scope fit
 - architecture fit
@@ -83,7 +83,7 @@ The human owner reviews for:
 
 ## 8. Merge or Iterate
 
-Merge only after the human owner approves.
+Under the supervised default, the owner merges. Any delegated merge must pass the independent review and trusted gate defined by the [execution policy](../policy/project-policy.md#execution-policy).
 
 If implementation reveals a missing decision, pause and create or update an ADR before continuing.
 

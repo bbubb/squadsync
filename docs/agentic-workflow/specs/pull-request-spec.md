@@ -48,6 +48,8 @@ Checks not run, incomplete criteria, temporary constraints, or review risks that
 
 New issues or workflow improvements discovered during implementation.
 
+For delegated work, use these existing PR sections to record the material change, decision, deviation, deferral, evidence and revisit trigger, as applicable. Link the tracker grant and identify the reviewed head and validation evidence before the trusted gate considers the PR. Summarize material outcomes in the existing tracker closeout. See [execution policy](../policy/project-policy.md#execution-policy).
+
 ## PR Quality Standard
 
 A PR is reviewable when:

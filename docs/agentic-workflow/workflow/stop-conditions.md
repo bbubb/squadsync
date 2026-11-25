@@ -20,6 +20,7 @@ An agent must stop when:
 - the task would introduce new infrastructure, cloud services, or dependencies without approval
 - the task would implement soccer-subber optimization logic inside the SquadSync core platform
 - the task would change tool workflow, agent behavior, or harness structure without a workflow issue
+- a delegated dispatch or merge lacks a valid grant or required evidence under the [execution policy](../policy/project-policy.md#execution-policy)
 
 ## Recommended Agent Response
 

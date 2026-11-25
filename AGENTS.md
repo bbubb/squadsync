@@ -98,6 +98,8 @@ Use native skills for repeatable workflows and use the playbooks for deeper expl
 
 ## Tool Roles
 
+Resolve task authority using the [execution policy](docs/agentic-workflow/policy/project-policy.md#execution-policy). Supervised execution is the default. Any delegated authority requires an explicit, active owner grant.
+
 - ChatGPT GitHub: planning, issue generation, documentation edits, PR setup, PR review support, and closeout summaries.
 - GitHub: canonical source of truth for docs, issues, PRs, ADRs, and workflow state.
 - Codex CLI: primary implementation agent for scoped `agent-ready` issues.

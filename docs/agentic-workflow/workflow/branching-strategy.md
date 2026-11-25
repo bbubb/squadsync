@@ -23,7 +23,7 @@ merge to main = accepted state
 - Create short-lived branches from `main` for each focused issue or task.
 - Prefer one issue-backed branch per PR.
 - Avoid long-running `develop`, phase, or mega-feature branches.
-- Merge only through reviewed PRs.
+- Merge only through reviewed PRs under the [execution policy](../policy/project-policy.md#execution-policy).
 - Keep PRs small enough for a human to understand quickly.
 - Do not mix unrelated docs, backend, frontend, and infrastructure work unless the issue explicitly scopes an integration change.
 

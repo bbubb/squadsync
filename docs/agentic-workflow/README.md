@@ -35,6 +35,7 @@ Local editor assistants may be used by a human contributor, but they are not par
 
 ## Core Workflow Docs
 
+- [Execution Policy](policy/project-policy.md#execution-policy)
 - [Lifecycle](workflow/lifecycle.md)
 - [Context Management](workflow/context-management.md)
 - [Prompting Standards](workflow/prompting-standards.md)

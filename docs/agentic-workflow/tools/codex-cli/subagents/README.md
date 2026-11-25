@@ -10,7 +10,7 @@ This directory defines planned role profiles without enabling subagent automatio
 
 No active subagents are configured for SquadSync.
 
-Codex CLI remains the primary implementation profile. The human owner remains the approval and merge authority.
+Codex CLI remains the primary implementation profile. Use the [execution policy](../../../policy/project-policy.md#execution-policy) for approval and merge authority.
 
 ## Planned Role Profiles
 

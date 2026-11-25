@@ -14,6 +14,8 @@ Generic workflow layer -> Codex CLI profile -> issue-scoped implementation -> va
 
 ## Operating Rules
 
+Follow the [execution policy](../../policy/project-policy.md#execution-policy) at dispatch. The Codex implementation process hands off a draft PR and never approves or merges its own work.
+
 Codex CLI must:
 
 - work from GitHub issues and repository docs
