@@ -1,0 +1,229 @@
+{
+  "kind": "synthetic",
+  "testOnly": true,
+  "evaluatedAt": "2026-11-25T13:00:00.000Z",
+  "grant": {
+    "repository": "bbubb/squadsync",
+    "tracker": 223,
+    "sprint": 207,
+    "owner": "bbubb",
+    "status": "active",
+    "mergeMethod": "squash",
+    "startsAt": "2026-11-25T12:00:00.000Z",
+    "expiresAt": "2026-11-25T14:00:00.000Z",
+    "githubReader": "fixture-reader",
+    "reviewer": "fixture-reviewer",
+    "integrationObserver": "fixture-observer",
+    "approvers": [
+      "fixture-approver"
+    ],
+    "expectedChecks": [
+      {
+        "workflow": ".github/workflows/api-ci.yml",
+        "job": "Restore, build, and test API",
+        "producer": "fixture-github-actions"
+      },
+      {
+        "workflow": ".github/workflows/web-ci.yml",
+        "job": "Format, lint, typecheck, test, and build web",
+        "producer": "fixture-github-actions"
+      }
+    ],
+    "dispatch": {
+      "issue": 217,
+      "pr": 9000,
+      "branch": "feature/217-connected-add-player",
+      "publisher": "fixture-publisher",
+      "allowedPaths": [
+        "apps/web/src/features/teams/"
+      ]
+    }
+  },
+  "github": {
+    "producer": "fixture-reader",
+    "main": {
+      "repository": "bbubb/squadsync",
+      "branch": "main",
+      "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "issue": {
+      "repository": "bbubb/squadsync",
+      "number": 217,
+      "state": "open",
+      "agentReady": true,
+      "dependencies": [
+        {
+          "issue": 215,
+          "pr": 220,
+          "merged": true
+        },
+        {
+          "issue": 216,
+          "pr": 221,
+          "merged": true
+        }
+      ]
+    },
+    "pr": {
+      "repository": "bbubb/squadsync",
+      "issue": 217,
+      "number": 9000,
+      "baseBranch": "main",
+      "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "headRepository": "bbubb/squadsync",
+      "headBranch": "feature/217-connected-add-player",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "author": "fixture-publisher",
+      "state": "open",
+      "draft": false,
+      "mergeable": true,
+      "upToDate": true
+    },
+    "diff": {
+      "repository": "bbubb/squadsync",
+      "issue": 217,
+      "pr": 9000,
+      "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "complete": true,
+      "total": 1,
+      "files": [
+        {
+          "path": "apps/web/src/features/teams/add-player-form.tsx",
+          "status": "added"
+        }
+      ]
+    },
+    "protection": {
+      "repository": "bbubb/squadsync",
+      "issue": 217,
+      "pr": 9000,
+      "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "verified": true,
+      "branch": "main",
+      "noBypass": true,
+      "strict": true,
+      "allowedMergeMethods": ["squash"],
+      "queueRequired": false,
+      "approvalCount": 1,
+      "requiredChecks": [
+        {
+          "workflow": ".github/workflows/api-ci.yml",
+          "job": "Restore, build, and test API",
+          "producer": "fixture-github-actions"
+        },
+        {
+          "workflow": ".github/workflows/web-ci.yml",
+          "job": "Format, lint, typecheck, test, and build web",
+          "producer": "fixture-github-actions"
+        }
+      ]
+    },
+    "checks": [
+      {
+        "repository": "bbubb/squadsync",
+        "issue": 217,
+        "pr": 9000,
+        "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "workflow": ".github/workflows/api-ci.yml",
+        "job": "Restore, build, and test API",
+        "producer": "fixture-github-actions",
+        "ref": "head",
+        "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "event": "pull_request",
+        "latestEligible": true,
+        "result": "success"
+      },
+      {
+        "repository": "bbubb/squadsync",
+        "issue": 217,
+        "pr": 9000,
+        "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "workflow": ".github/workflows/web-ci.yml",
+        "job": "Format, lint, typecheck, test, and build web",
+        "producer": "fixture-github-actions",
+        "ref": "head",
+        "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "event": "pull_request",
+        "latestEligible": true,
+        "result": "success"
+      }
+    ],
+    "approvals": {
+      "repository": "bbubb/squadsync",
+      "issue": 217,
+      "pr": 9000,
+      "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "complete": true,
+      "unresolvedChanges": false,
+      "latest": [
+        {
+          "actor": "fixture-approver",
+          "state": "approved",
+          "eligible": true,
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ]
+    }
+  },
+  "review": {
+    "repository": "bbubb/squadsync",
+    "issue": 217,
+    "pr": 9000,
+    "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "producer": "fixture-reviewer",
+    "verdict": "proceed",
+    "criteriaMet": true,
+    "unresolvedFindings": false,
+    "residualRisks": []
+  },
+  "integration": {
+    "repository": "bbubb/squadsync",
+    "issue": 217,
+    "pr": 9000,
+    "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "producer": "fixture-observer",
+    "disposableData": true,
+    "stages": [
+      {
+        "repository": "bbubb/squadsync",
+        "issue": 217,
+        "pr": 9000,
+        "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "stage": "browser",
+        "result": "success",
+        "command": "synthetic browser command",
+        "observation": "synthetic browser observation"
+      },
+      {
+        "repository": "bbubb/squadsync",
+        "issue": 217,
+        "pr": 9000,
+        "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "stage": "api",
+        "result": "success",
+        "command": "synthetic api command",
+        "observation": "synthetic api observation"
+      },
+      {
+        "repository": "bbubb/squadsync",
+        "issue": 217,
+        "pr": 9000,
+        "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "stage": "postgresql",
+        "result": "success",
+        "command": "synthetic postgresql command",
+        "observation": "synthetic postgresql observation"
+      }
+    ]
+  }
+}
