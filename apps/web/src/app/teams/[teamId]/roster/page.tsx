@@ -17,7 +17,7 @@ export default async function RosterPage({ params }: { params: Promise<{ teamId:
             <h1>Team roster</h1>
           </div>
           <TeamDetail teamId={teamId}>
-            <TeamRoster teamId={teamId} />
+            <TeamRoster key={teamId} teamId={teamId} />
           </TeamDetail>
         </>
       ) : (
