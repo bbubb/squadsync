@@ -120,6 +120,16 @@ The selected route renders `TeamDetail`, which calls `useTeam(teamId)` using the
 
 ## Source layout
 
+### Add Player data boundary
+
+`usePersonCandidates({ q, limit?, cursor? })` performs bounded `GET /api/people/candidates` reads through the shared client. It trims `q`, enables automatic fetching only for 2–100 characters and integer limits from 1–20, and defaults to 20. Query keys include the trimmed query, limit and opaque cursor; callers pass `nextCursor` back unchanged and reset the cursor when changing the search. Each result is a generated `{ items, nextCursor }` page with minimal candidate names and `personId`; no whole-directory filtering or identity verification occurs. Loading/error states and cancellation follow the existing read hooks.
+
+`useAddPlayer(teamId)` accepts `AddPlayerInput`: exactly one non-null `personId` or `newPerson`, plus the generated roster fields. The narrow feature union compensates for Swagger's prose-only exclusivity rule; generated DTOs remain unchanged and the API validates business rules. `add-player-input.typecheck.ts` checks invalid combinations during `pnpm typecheck`.
+
+The mutation sends one `POST /api/teams/{teamId}/roster/players` and returns the generated 201 roster entry. Success invalidates the exact target Team roster and membership keys, refetching mounted queries and their Overview totals; other Teams, Team identity, workspace list and candidate queries remain untouched. Automatic mutation retries are disabled even when the QueryClient defaults enable retries.
+
+The typed `AddPlayerError.failure` distinguishes `validation` (400), `not-found` (404), `conflict` (409), and `unknown-outcome`. `problem` preserves server ProblemDetails/validation feedback when supplied. Unknown outcomes distinguish a `transport` failure from a missing/unreadable/unexpected server `response`; callers should check the roster before deliberately repeating a potentially committed write. These hooks provide the data boundary for the later Add Player form; no Add Player controls are present yet.
+
 The Team-scoped read hooks `useTeamMemberships(teamId)` and `useTeamRoster(teamId)` live beside `useTeams` under `src/features/teams/`. They use the same typed client, 30-second stale time, and Query result states. Their keys are `["teams", teamId, "memberships"]` and `["teams", teamId, "roster"]`: including `teamId` isolates each Team's cached data, while the final segment separates the collections. Switching IDs starts with pending data for an uncached Team instead of displaying the previous Team's collection; returning within the stale time reuses that Team's cache. The hooks pass the fetch abort signal so Query can cancel requests that no longer have observers.
 
 TanStack Query owns these remote collections and their loading/error state; future components should keep only transient UI interactions locally. As with `useTeams`, successful `[]` means the API returned an empty collection. HTTP/network failures and missing bodies propagate as errors instead of being converted to `[]`. Fetch-mocked hook tests cover represented-person/role/status/jersey fields (including null jerseys), empty results, failures, Team switching, cache reuse, and cancellation. The hooks themselves own no presentation or write operations.
