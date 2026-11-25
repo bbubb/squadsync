@@ -48,6 +48,8 @@ Avoid issues that combine unrelated app, infra, docs, and workflow changes.
 
 ## Dispatch Rule
 
+Resolve scope and authority under the [execution policy](../policy/project-policy.md#execution-policy) before dispatch.
+
 Before executing an issue, identify:
 
 - primary path affected
@@ -57,7 +59,7 @@ Before executing an issue, identify:
 - likely stop conditions
 - whether an ADR may be needed
 
-Use the agent-task specification for work intended for autonomous implementation. Planning, architecture-decision, and exploratory issues should use their applicable contracts and should not receive `agent-ready` until they are converted into an executable task.
+Use the agent-task specification for implementation work. Planning, architecture-decision, and exploratory issues should use their applicable contracts and should not receive `agent-ready` until they are converted into an executable task.
 
 ## Human Ownership
 
@@ -66,7 +68,7 @@ The human owner approves:
 - sprint scope
 - architecture changes
 - ADRs
-- PR merges
+- grants of merge authority
 - phase transitions
 - toolchain changes
 

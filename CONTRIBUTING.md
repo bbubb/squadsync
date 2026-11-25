@@ -11,7 +11,7 @@ Read the nearest scoped `AGENTS.md` and applicable skill or playbook for the aff
 ## Workflow
 
 ```text
-Issue -> short-lived branch -> scoped change -> validation -> pull request -> human review -> merge
+Issue -> short-lived branch -> scoped change -> validation -> pull request -> review -> authorized merge
 ```
 
 ## Contribution Rules
@@ -23,7 +23,7 @@ Issue -> short-lived branch -> scoped change -> validation -> pull request -> hu
 - Preserve documented architecture boundaries.
 - Update docs when behavior, architecture, workflow, or scope changes.
 - Run relevant validation or document why validation cannot be run.
-- Do not merge without human approval.
+- Under the supervised default, the owner reviews and merges. Follow the [execution policy](docs/agentic-workflow/policy/project-policy.md#execution-policy) for any explicit owner grant.
 
 ## Branch Naming
 
@@ -72,4 +72,4 @@ Repo-native Codex skills live under:
 
 - [.agents/skills](.agents/skills)
 
-AI tools may assist planning, documentation, implementation, and review, but the human owner retains final authority over architecture, scope, and merge decisions.
+AI tools may assist planning, documentation, implementation, and review. The human owner retains final authority over architecture, scope, and any grant of merge authority.

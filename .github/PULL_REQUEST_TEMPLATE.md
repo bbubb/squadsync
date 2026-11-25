@@ -50,6 +50,8 @@ List checks not run, incomplete criteria, temporary constraints, or remaining re
 
 ## Agentic Workflow Notes
 
+For delegated work, link the active grant and reviewed head. Capture material decisions, deviations, deferrals, evidence and revisit triggers in the relevant sections above.
+
 - [ ] Relevant workflow docs/specs were considered
 - [ ] Validation gates were run or limitations documented
 - [ ] Stop conditions were considered

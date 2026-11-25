@@ -75,7 +75,7 @@ Start here:
 
 ## Agentic Workflow
 
-SquadSync uses repository-owned planning, workflow, and tool-profile documents so AI-assisted development remains reviewable and durable. GitHub issues define executable work, pull requests provide review gates, and human review owns merge decisions.
+SquadSync uses repository-owned planning, workflow, and tool-profile documents so AI-assisted development remains reviewable and durable. GitHub issues define executable work and pull requests provide review gates. The owner reviews and merges under the default [supervised execution policy](docs/agentic-workflow/policy/project-policy.md#execution-policy).
 
 Start here:
 

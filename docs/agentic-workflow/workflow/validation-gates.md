@@ -100,4 +100,4 @@ The implementation tool should run available validation gates before opening or 
 
 Tool-specific validation behavior belongs in the applicable profile under `docs/agentic-workflow/tools/`.
 
-The human owner decides whether the validation evidence is sufficient to merge.
+The owner evaluates merge evidence under supervised execution. For an active delegated grant, the trusted gate verifies the required evidence under the [execution policy](../policy/project-policy.md#execution-policy).
