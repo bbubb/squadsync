@@ -1,38 +1,48 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { components } from "@/lib/api/schema";
 import { AddPlayerForm } from "./add-player-form";
+import { RosterEntryDetails } from "./roster-entry-details";
 import styles from "./team-roster.module.css";
 import { useTeamRoster } from "./use-team-roster";
 
 type RosterEntry = components["schemas"]["RosterEntryResponse"];
 
-export function RosterList({ entries }: { entries: readonly RosterEntry[] }) {
+export function RosterList({
+  teamId,
+  entries,
+}: {
+  teamId: string;
+  entries: readonly RosterEntry[];
+}) {
   return (
     <ul className={styles.list} aria-label="Roster entries">
       {entries.map((entry) => (
         <li key={entry.id} className={styles.entry}>
           <h3 className="min-w-0 font-semibold wrap-anywhere">
-            {entry.person.firstName} {entry.person.lastName}
+            <Link
+              className="inline-block min-h-6 underline underline-offset-4"
+              href={`/teams/${teamId}/roster/${entry.id}`}
+            >
+              {entry.person.firstName} {entry.person.lastName}
+            </Link>
           </h3>
-          <dl className={styles.details}>
-            <div>
-              <dt>Jersey number</dt>
-              <dd>{entry.jerseyNumber ?? "Not assigned"}</dd>
-            </div>
-            <div>
-              <dt>Roster status</dt>
-              <dd>{entry.rosterStatus}</dd>
-            </div>
-          </dl>
+          <RosterEntryDetails entry={entry} />
         </li>
       ))}
     </ul>
   );
 }
 
-function RosterResults({ query }: { query: ReturnType<typeof useTeamRoster> }) {
+function RosterResults({
+  teamId,
+  query,
+}: {
+  teamId: string;
+  query: ReturnType<typeof useTeamRoster>;
+}) {
   if (query.isPending) return <p role="status">Loading roster…</p>;
   if (query.isError) {
     return (
@@ -53,7 +63,7 @@ function RosterResults({ query }: { query: ReturnType<typeof useTeamRoster> }) {
   if (query.data.length === 0) {
     return <p role="status">No roster entries yet for this Team.</p>;
   }
-  return <RosterList entries={query.data} />;
+  return <RosterList teamId={teamId} entries={query.data} />;
 }
 
 export function TeamRoster({ teamId }: { teamId: string }) {
@@ -103,7 +113,7 @@ export function TeamRoster({ teamId }: { teamId: string }) {
       <p className="wrap-anywhere empty:sr-only" role="status">
         {announcement}
       </p>
-      <RosterResults query={query} />
+      <RosterResults teamId={teamId} query={query} />
     </>
   );
 }
